@@ -1,0 +1,40 @@
+{
+  "scripts": {
+    "lint": "run-s lint:*",
+    "lint:eslint": "eslint --fix ./src",
+    "lint:prettier": "prettier --write . --loglevel error"
+  },
+  "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^3.3.0",
+    "@vitest/coverage-c8": "^0.24.0",
+    "eslint": "^8.25.0",
+    "happy-dom": "^7.4.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.4",
+    "vite": "^3.1.6",
+    "vitest": "^0.24.0",
+    "vitest-dom": "^0.0.4"
+  },
+  "lint-staged": {
+    "*.{js,ts,mjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,mdx,html,css,scss,less,graphql,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "bracketSameLine": true,
+    "plugins": [
+      "@trivago/prettier-plugin-sort-imports"
+    ],
+    "importOrder": [],
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true
+  }
+}
