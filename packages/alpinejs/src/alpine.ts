@@ -51,7 +51,7 @@ import { debounce } from './utils/debounce';
 import { setStyles } from './utils/styles';
 import { throttle } from './utils/throttle';
 
-let Alpine = {
+const Alpine = {
   get reactive() {
     return reactive;
   },
@@ -105,3 +105,5 @@ let Alpine = {
 };
 
 export default Alpine;
+
+export type Alpine = typeof Alpine;
