@@ -5,12 +5,16 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.39.0
   '@typescript-eslint/parser': ^5.39.0
   '@vitest/coverage-c8': ^0.24.0
+  '@vue/reactivity': ~3.1.1
+  esbuild: ^0.15.10
   eslint: ^8.25.0
+  gzip-size: ^7.0.0
   happy-dom: ^7.4.0
   husky: ^8.0.1
   lint-staged: ^13.0.3
   npm-run-all: ^4.1.5
   prettier: ^2.7.1
+  pretty-bytes: ^6.0.0
   typescript: ^4.8.4
   vite: ^3.1.6
   vitest: ^0.24.0
@@ -21,12 +25,16 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 5.39.0_cfd7h3iktziq6hcwahu2qxhjhy
   '@typescript-eslint/parser': 5.39.0_z4bbprzjrhnsfa24uvmcbu7f5q
   '@vitest/coverage-c8': 0.24.0_happy-dom@7.4.0
+  '@vue/reactivity': 3.1.5
+  esbuild: 0.15.10
   eslint: 8.25.0
+  gzip-size: 7.0.0
   happy-dom: 7.4.0
   husky: 8.0.1
   lint-staged: 13.0.3
   npm-run-all: 4.1.5
   prettier: 2.7.1
+  pretty-bytes: 6.0.0
   typescript: 4.8.4
   vite: 3.1.6
   vitest: 0.24.0_happy-dom@7.4.0
@@ -796,6 +804,22 @@ packages:
       - terser
     dev: true
 
+  /@vue/reactivity/3.1.5:
+    resolution:
+      {
+        integrity: sha512-1tdfLmNjWG6t/CsPldh+foumYFo3cpyCHgBYQ34ylaMsJ+SNHQ1kApMIa8jN+i593zQuaw3AdWH0nJTARzCFhg==,
+      }
+    dependencies:
+      '@vue/shared': 3.1.5
+    dev: true
+
+  /@vue/shared/3.1.5:
+    resolution:
+      {
+        integrity: sha512-oJ4F3TnvpXaQwZJNF3ZK+kLPHKarDmJjJ6jyzVNDKH9md1dptjC7lWR//jrGuLdek/U6iltWxqAnYOu8gCiOvA==,
+      }
+    dev: true
+
   /acorn-jsx/5.3.2_acorn@8.8.0:
     resolution:
       {
@@ -1354,6 +1378,13 @@ packages:
     resolution:
       {
         integrity: sha512-NMt+m9zFMPZe0JcY9gN224Qvk6qLIdqex29clBvc/y75ZBX9YA9wNK3frsYvu2DI1xcCIwxwnX+TlsJ2DSOADg==,
+      }
+    dev: true
+
+  /duplexer/0.1.2:
+    resolution:
+      {
+        integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==,
       }
     dev: true
 
@@ -2212,6 +2243,16 @@ packages:
       {
         integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==,
       }
+    dev: true
+
+  /gzip-size/7.0.0:
+    resolution:
+      {
+        integrity: sha512-O1Ld7Dr+nqPnmGpdhzLmMTQ4vAsD+rHwMm1NLUmoUFFymBOMKxCCrtDxqdBRYXdeEPEi3SyoR4TizJLQrnKBNA==,
+      }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
+    dependencies:
+      duplexer: 0.1.2
     dev: true
 
   /happy-dom/7.4.0:
@@ -3329,6 +3370,14 @@ packages:
       }
     engines: { node: '>=10.13.0' }
     hasBin: true
+    dev: true
+
+  /pretty-bytes/6.0.0:
+    resolution:
+      {
+        integrity: sha512-6UqkYefdogmzqAZWzJ7laYeJnaXDy2/J+ZqiiMtS7t7OfpXWTlaeGMwX8U6EFvPV/YWWEKRkS8hKS4k60WHTOg==,
+      }
+    engines: { node: ^14.13.1 || >=16.0.0 }
     dev: true
 
   /process-nextick-args/2.0.1:
