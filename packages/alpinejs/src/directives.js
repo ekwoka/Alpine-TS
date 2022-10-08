@@ -159,7 +159,7 @@ export let into = (i) => i;
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 function toTransformedAttributes(callback = () => {}) {
   return ({ name, value }) => {
-    let { name: newName, value: newValue } = attributeTransformers.reduce(
+    const { name: newName, value: newValue } = attributeTransformers.reduce(
       (carry, transform) => {
         return transform(carry);
       },
@@ -189,10 +189,10 @@ function toParsedDirectives(
   originalAttributeOverride
 ) {
   return ({ name, value }) => {
-    let typeMatch = name.match(alpineAttributeRegex());
-    let valueMatch = name.match(/:([a-zA-Z0-9\-:]+)/);
-    let modifiers = name.match(/\.[^.\]]+(?=[^\]]*$)/g) || [];
-    let original =
+    const typeMatch = name.match(alpineAttributeRegex());
+    const valueMatch = name.match(/:([a-zA-Z0-9\-:]+)/);
+    const modifiers = name.match(/\.[^.\]]+(?=[^\]]*$)/g) || [];
+    const original =
       originalAttributeOverride || transformedAttributeMap[name] || name;
 
     return {
