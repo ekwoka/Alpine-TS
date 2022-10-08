@@ -6,7 +6,7 @@ import prettyBytes from 'pretty-bytes';
 
 const test = process.env.NODE_ENV === 'test';
 build({
-  entryPoints: ['./dist/index.js'],
+  entryPoints: ['./packages/alpinejs/dist/index.js'],
   inject: [],
   outfile: 'testing/bundle.js',
   write: test,
