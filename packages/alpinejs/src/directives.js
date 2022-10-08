@@ -97,7 +97,7 @@ export function deferHandlingDirectives(callback) {
   stopDeferring();
 }
 
-export function getElementBoundUtilities(el) {
+export const getElementBoundUtilities = (el) => {
   let cleanups = [];
 
   let cleanup = (callback) => cleanups.push(callback);
@@ -106,7 +106,7 @@ export function getElementBoundUtilities(el) {
 
   cleanups.push(cleanupEffect);
 
-  let utilities = {
+  const utilities = {
     Alpine,
     effect,
     cleanup,
@@ -114,10 +114,10 @@ export function getElementBoundUtilities(el) {
     evaluate: evaluate.bind(evaluate, el),
   };
 
-  let doCleanup = () => cleanups.forEach((i) => i());
+  const doCleanup = () => cleanups.forEach((i) => i());
 
   return [utilities, doCleanup];
-}
+};
 
 export function getDirectiveHandler(el, directive) {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
