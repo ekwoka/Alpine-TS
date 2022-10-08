@@ -1,3 +1,3 @@
-import { magic } from "../magics";
+import { magic } from '../magics';
 
-magic('el', el => el)
+magic('el', (el) => el);

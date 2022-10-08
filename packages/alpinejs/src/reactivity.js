@@ -1,64 +1,71 @@
+import { scheduler } from './scheduler';
 
-import { scheduler } from './scheduler'
+let reactive, effect, release, raw;
 
-let reactive, effect, release, raw
-
-let shouldSchedule = true
+let shouldSchedule = true;
 export function disableEffectScheduling(callback) {
-    shouldSchedule = false
+  shouldSchedule = false;
 
-    callback()
+  callback();
 
-    shouldSchedule = true
+  shouldSchedule = true;
 }
 
 export function setReactivityEngine(engine) {
-    reactive = engine.reactive
-    release = engine.release
-    effect = (callback) => engine.effect(callback, { scheduler: task => {
+  reactive = engine.reactive;
+  release = engine.release;
+  effect = (callback) =>
+    engine.effect(callback, {
+      scheduler: (task) => {
         if (shouldSchedule) {
-            scheduler(task)
+          scheduler(task);
         } else {
-            task()
+          task();
         }
-    } })
-    raw = engine.raw
+      },
+    });
+  raw = engine.raw;
 }
 
-export function overrideEffect(override) { effect = override }
+export function overrideEffect(override) {
+  effect = override;
+}
 
 export function elementBoundEffect(el) {
-    let cleanup = () => {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  let cleanup = () => {};
 
-    let wrappedEffect = (callback) => {
-        let effectReference = effect(callback)
+  let wrappedEffect = (callback) => {
+    let effectReference = effect(callback);
 
-        if (! el._x_effects) {
-            el._x_effects = new Set
+    if (!el._x_effects) {
+      el._x_effects = new Set();
 
-            // Livewire depends on el._x_runEffects.
-            el._x_runEffects = () => { el._x_effects.forEach(i => i()) }
-        }
-
-        el._x_effects.add(effectReference)
-
-        cleanup = () => {
-            if (effectReference === undefined) return
-
-            el._x_effects.delete(effectReference)
-
-            release(effectReference)
-        }
-
-        return effectReference
+      // Livewire depends on el._x_runEffects.
+      el._x_runEffects = () => {
+        el._x_effects.forEach((i) => i());
+      };
     }
 
-    return [wrappedEffect, () => { cleanup() }]
+    el._x_effects.add(effectReference);
+
+    cleanup = () => {
+      if (effectReference === undefined) return;
+
+      el._x_effects.delete(effectReference);
+
+      release(effectReference);
+    };
+
+    return effectReference;
+  };
+
+  return [
+    wrappedEffect,
+    () => {
+      cleanup();
+    },
+  ];
 }
 
-export {
-    release,
-    reactive,
-    effect,
-    raw,
-}
+export { release, reactive, effect, raw };

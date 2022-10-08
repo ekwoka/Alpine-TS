@@ -1,61 +1,63 @@
-import { effect, release, overrideEffect } from "./reactivity"
-import { initTree, isRoot } from "./lifecycle"
-import { walk } from "./utils/walk"
+import { initTree, isRoot } from './lifecycle';
+import { effect, overrideEffect, release } from './reactivity';
+import { walk } from './utils/walk';
 
-let isCloning = false
+let isCloning = false;
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 export function skipDuringClone(callback, fallback = () => {}) {
-    return (...args) => isCloning ? fallback(...args) : callback(...args)
+  return (...args) => (isCloning ? fallback(...args) : callback(...args));
 }
 
 export function onlyDuringClone(callback) {
-    return (...args) => isCloning && callback(...args)
+  return (...args) => isCloning && callback(...args);
 }
 
 export function interuptCrawl(callback) {
-    return (...args) => isCloning || callback(...args)
+  return (...args) => isCloning || callback(...args);
 }
 
 export function clone(oldEl, newEl) {
-    if (! newEl._x_dataStack) newEl._x_dataStack = oldEl._x_dataStack
+  if (!newEl._x_dataStack) newEl._x_dataStack = oldEl._x_dataStack;
 
-    isCloning = true
+  isCloning = true;
 
-    dontRegisterReactiveSideEffects(() => {
-        cloneTree(newEl)
-    })
+  dontRegisterReactiveSideEffects(() => {
+    cloneTree(newEl);
+  });
 
-    isCloning = false
+  isCloning = false;
 }
 
 export function cloneTree(el) {
-    let hasRunThroughFirstEl = false
+  let hasRunThroughFirstEl = false;
 
-    let shallowWalker = (el, callback) => {
-        walk(el, (el, skip) => {
-            if (hasRunThroughFirstEl && isRoot(el)) return skip()
+  let shallowWalker = (el, callback) => {
+    walk(el, (el, skip) => {
+      if (hasRunThroughFirstEl && isRoot(el)) return skip();
 
-            hasRunThroughFirstEl = true
+      hasRunThroughFirstEl = true;
 
-            callback(el, skip)
-        })
-    }
+      callback(el, skip);
+    });
+  };
 
-    initTree(el, shallowWalker)
+  initTree(el, shallowWalker);
 }
 
 function dontRegisterReactiveSideEffects(callback) {
-    let cache = effect
+  let cache = effect;
 
-    overrideEffect((callback, el) => {
-        let storedEffect = cache(callback)
+  overrideEffect((callback, _el) => {
+    let storedEffect = cache(callback);
 
-        release(storedEffect)
+    release(storedEffect);
 
-        return () => {}
-    })
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    return () => {};
+  });
 
-    callback()
+  callback();
 
-    overrideEffect(cache)
+  overrideEffect(cache);
 }

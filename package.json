@@ -1,12 +1,14 @@
 {
   "scripts": {
     "lint": "run-s lint:*",
-    "lint:eslint": "eslint --fix ./src",
-    "lint:prettier": "prettier --write . --loglevel error",
+    "lint:eslint": "eslint --fix .",
+    "lint:prettier": "prettier --write .",
     "prepare": "husky install"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^3.3.0",
+    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "@typescript-eslint/parser": "^5.39.0",
     "@vitest/coverage-c8": "^0.24.0",
     "eslint": "^8.25.0",
     "happy-dom": "^7.4.0",

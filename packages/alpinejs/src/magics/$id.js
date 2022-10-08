@@ -1,14 +1,10 @@
-import { magic } from '../magics'
-import { closestIdRoot, findAndIncrementId } from '../ids'
+import { closestIdRoot, findAndIncrementId } from '../ids';
+import { magic } from '../magics';
 
-magic('id', el => (name, key = null) => {
-    let root = closestIdRoot(el, name)
+magic('id', (el) => (name, key = null) => {
+  let root = closestIdRoot(el, name);
 
-    let id = root
-        ? root._x_ids[name]
-        : findAndIncrementId(name)
+  let id = root ? root._x_ids[name] : findAndIncrementId(name);
 
-    return key
-        ? `${name}-${id}-${key}`
-        : `${name}-${id}`
-})
+  return key ? `${name}-${id}-${key}` : `${name}-${id}`;
+});

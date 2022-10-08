@@ -1,4 +1,4 @@
-import { dispatch } from '../utils/dispatch'
-import { magic } from '../magics'
+import { magic } from '../magics';
+import { dispatch } from '../utils/dispatch';
 
-magic('dispatch', el => dispatch.bind(dispatch, el))
+magic('dispatch', (el) => dispatch.bind(dispatch, el));

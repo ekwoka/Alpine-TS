@@ -12,44 +12,7 @@
  * For starters, we'll import Alpine's core. This is the
  * object that will expose all of Alpine's public API.
  */
-import Alpine from './alpine'
-
-/**
- * _______________________________________________________
- * The Evaluator
- * -------------------------------------------------------
- *
- * Now we're ready to bootstrap Alpine's evaluation system.
- * It's the function that converts raw JavaScript string
- * expressions like @click="toggle()", into actual JS.
- */
-import { normalEvaluator } from './evaluator'
-
-Alpine.setEvaluator(normalEvaluator)
-
-/**
- * _______________________________________________________
- * The Reactivity Engine
- * -------------------------------------------------------
- *
- * This is the reactivity core of Alpine. It's the part of
- * Alpine that triggers an element with x-text="message"
- * to update its inner text when "message" is changed.
- */
-import { reactive, effect, stop, toRaw } from '@vue/reactivity'
-
-Alpine.setReactivityEngine({ reactive, effect, release: stop, raw: toRaw })
-
-/**
- * _______________________________________________________
- * The Magics
- * -------------------------------------------------------
- *
- * Yeah, we're calling them magics here like they're nouns.
- * These are the properties that are magically available
- * to all the Alpine expressions, within your web app.
- */
-import './magics/index'
+import Alpine from './alpine';
 
 /**
  * _______________________________________________________
@@ -60,7 +23,44 @@ import './magics/index'
  * directives like x-text or x-on that form the basis of
  * how Alpine adds behavior to an app's static markup.
  */
-import './directives/index'
+import './directives/index';
+
+/**
+ * _______________________________________________________
+ * The Evaluator
+ * -------------------------------------------------------
+ *
+ * Now we're ready to bootstrap Alpine's evaluation system.
+ * It's the function that converts raw JavaScript string
+ * expressions like @click="toggle()", into actual JS.
+ */
+import { normalEvaluator } from './evaluator';
+
+/**
+ * _______________________________________________________
+ * The Magics
+ * -------------------------------------------------------
+ *
+ * Yeah, we're calling them magics here like they're nouns.
+ * These are the properties that are magically available
+ * to all the Alpine expressions, within your web app.
+ */
+import './magics/index';
+
+/**
+ * _______________________________________________________
+ * The Reactivity Engine
+ * -------------------------------------------------------
+ *
+ * This is the reactivity core of Alpine. It's the part of
+ * Alpine that triggers an element with x-text="message"
+ * to update its inner text when "message" is changed.
+ */
+import { effect, reactive, stop, toRaw } from '@vue/reactivity';
+
+Alpine.setEvaluator(normalEvaluator);
+
+Alpine.setReactivityEngine({ reactive, effect, release: stop, raw: toRaw });
 
 /**
  * _______________________________________________________
@@ -71,4 +71,4 @@ import './directives/index'
  * Alpine-related that will need to be accessed on-going
  * will be made available through the "Alpine" global.
  */
-export default Alpine
+export default Alpine;

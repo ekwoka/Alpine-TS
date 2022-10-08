@@ -1,41 +1,44 @@
-import { directive, prefix } from '../directives'
-import { initInterceptors } from '../interceptor'
-import { injectDataProviders } from '../datas'
-import { addRootSelector } from '../lifecycle'
-import { skipDuringClone } from '../clone'
-import { addScopeToNode } from '../scope'
-import { injectMagics, magic } from '../magics'
-import { reactive } from '../reactivity'
-import { evaluate } from '../evaluator'
+import { skipDuringClone } from '../clone';
+import { injectDataProviders } from '../datas';
+import { directive, prefix } from '../directives';
+import { evaluate } from '../evaluator';
+import { initInterceptors } from '../interceptor';
+import { addRootSelector } from '../lifecycle';
+import { injectMagics } from '../magics';
+import { reactive } from '../reactivity';
+import { addScopeToNode } from '../scope';
 
-addRootSelector(() => `[${prefix('data')}]`)
+addRootSelector(() => `[${prefix('data')}]`);
 
-directive('data', skipDuringClone((el, { expression }, { cleanup }) => {
-    expression = expression === '' ? '{}' : expression
+directive(
+  'data',
+  skipDuringClone((el, { expression }, { cleanup }) => {
+    expression = expression === '' ? '{}' : expression;
 
-    let magicContext = {}
-    injectMagics(magicContext, el)
+    let magicContext = {};
+    injectMagics(magicContext, el);
 
-    let dataProviderContext = {}
-    injectDataProviders(dataProviderContext, magicContext)
+    let dataProviderContext = {};
+    injectDataProviders(dataProviderContext, magicContext);
 
-    let data = evaluate(el, expression, { scope: dataProviderContext })
+    let data = evaluate(el, expression, { scope: dataProviderContext });
 
-    if (data === undefined) data = {}
+    if (data === undefined) data = {};
 
-    injectMagics(data, el)
+    injectMagics(data, el);
 
-    let reactiveData = reactive(data)
+    let reactiveData = reactive(data);
 
-    initInterceptors(reactiveData)
+    initInterceptors(reactiveData);
 
-    let undo = addScopeToNode(el, reactiveData)
+    let undo = addScopeToNode(el, reactiveData);
 
-    reactiveData['init'] && evaluate(el, reactiveData['init'])
+    reactiveData['init'] && evaluate(el, reactiveData['init']);
 
     cleanup(() => {
-        reactiveData['destroy'] && evaluate(el, reactiveData['destroy'])
+      reactiveData['destroy'] && evaluate(el, reactiveData['destroy']);
 
-        undo()
-    })
-}))
+      undo();
+    });
+  })
+);

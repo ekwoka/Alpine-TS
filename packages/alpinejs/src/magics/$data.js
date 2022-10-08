@@ -1,4 +1,4 @@
-import { scope } from '../scope'
-import { magic } from '../magics'
+import { magic } from '../magics';
+import { scope } from '../scope';
 
-magic('data', el => scope(el))
+magic('data', (el) => scope(el));

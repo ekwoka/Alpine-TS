@@ -1,16 +1,17 @@
-
 export function throttle(func, limit) {
-    let inThrottle
+  let inThrottle;
 
-    return function() {
-        let context = this, args = arguments
+  return function () {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let context = this,
+      args = arguments;
 
-        if (! inThrottle) {
-            func.apply(context, args)
+    if (!inThrottle) {
+      func.apply(context, args);
 
-            inThrottle = true
+      inThrottle = true;
 
-            setTimeout(() => inThrottle = false, limit)
-        }
+      setTimeout(() => (inThrottle = false), limit);
     }
+  };
 }

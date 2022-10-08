@@ -1,19 +1,19 @@
-import { directive } from '../directives'
-import { initTree } from '../lifecycle'
-import { mutateDom } from '../mutation'
+import { directive } from '../directives';
+import { initTree } from '../lifecycle';
+import { mutateDom } from '../mutation';
 
 directive('html', (el, { expression }, { effect, evaluateLater }) => {
-    let evaluate = evaluateLater(expression)
+  let evaluate = evaluateLater(expression);
 
-    effect(() => {
-        evaluate(value => {
-            mutateDom(() => {
-                el.innerHTML = value
+  effect(() => {
+    evaluate((value) => {
+      mutateDom(() => {
+        el.innerHTML = value;
 
-                el._x_ignoreSelf = true
-                initTree(el)
-                delete el._x_ignoreSelf
-            })
-        })
-    })
-})
+        el._x_ignoreSelf = true;
+        initTree(el);
+        delete el._x_ignoreSelf;
+      });
+    });
+  });
+});

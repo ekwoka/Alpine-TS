@@ -1,18 +1,19 @@
-
 export function debounce(func, wait) {
-    var timeout
+  var timeout;
 
-    return function() {
-        var context = this, args = arguments
+  return function () {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    var context = this,
+      args = arguments;
 
-        var later = function () {
-            timeout = null
+    var later = function () {
+      timeout = null;
 
-            func.apply(context, args)
-        }
+      func.apply(context, args);
+    };
 
-        clearTimeout(timeout)
+    clearTimeout(timeout);
 
-        timeout = setTimeout(later, wait)
-    }
+    timeout = setTimeout(later, wait);
+  };
 }

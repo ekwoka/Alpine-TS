@@ -1,61 +1,64 @@
-import { attributesOnly, directives } from "./directives"
+import { attributesOnly, directives } from './directives';
 
-let binds = {}
+let binds = {};
 
 export function bind(name, bindings) {
-    let getBindings = typeof bindings !== 'function' ? () => bindings : bindings
+  let getBindings = typeof bindings !== 'function' ? () => bindings : bindings;
 
-    if (name instanceof Element) {
-        applyBindingsObject(name, getBindings())
-    } else {
-        binds[name] = getBindings
-    }
+  if (name instanceof Element) {
+    applyBindingsObject(name, getBindings());
+  } else {
+    binds[name] = getBindings;
+  }
 }
 
 export function injectBindingProviders(obj) {
-    Object.entries(binds).forEach(([name, callback]) => {
-        Object.defineProperty(obj, name, {
-            get() {
-                return (...args) => {
-                    return callback(...args)
-                }
-            }
-        })
-    })
+  Object.entries(binds).forEach(([name, callback]) => {
+    Object.defineProperty(obj, name, {
+      get() {
+        return (...args) => {
+          return callback(...args);
+        };
+      },
+    });
+  });
 
-    return obj
+  return obj;
 }
 
 export function addVirtualBindings(el, bindings) {
-    let getBindings = typeof bindings !== 'function' ? () => bindings : bindings
+  let getBindings = typeof bindings !== 'function' ? () => bindings : bindings;
 
-    el._x_virtualDirectives = getBindings()
+  el._x_virtualDirectives = getBindings();
 }
 
 export function applyBindingsObject(el, obj, original) {
-    let cleanupRunners = []
+  let cleanupRunners = [];
 
-    while (cleanupRunners.length) cleanupRunners.pop()()
+  while (cleanupRunners.length) cleanupRunners.pop()();
 
-    let attributes = Object.entries(obj).map(([name, value]) => ({ name, value }))
+  let attributes = Object.entries(obj).map(([name, value]) => ({
+    name,
+    value,
+  }));
 
-    let staticAttributes = attributesOnly(attributes)
+  let staticAttributes = attributesOnly(attributes);
 
-    // Handle binding normal HTML attributes (non-Alpine directives).
-    attributes = attributes.map(attribute => {
-        if (staticAttributes.find(attr => attr.name === attribute.name)) {
-            return {
-                name: `x-bind:${attribute.name}`,
-                value: `"${attribute.value}"`,
-            }
-        }
+  // Handle binding normal HTML attributes (non-Alpine directives).
+  attributes = attributes.map((attribute) => {
+    if (staticAttributes.find((attr) => attr.name === attribute.name)) {
+      return {
+        name: `x-bind:${attribute.name}`,
+        value: `"${attribute.value}"`,
+      };
+    }
 
-        return attribute
-    })
+    return attribute;
+  });
 
-    directives(el, attributes, original).map(handle => {
-        cleanupRunners.push(handle.runCleanups)
+  directives(el, attributes, original).map((handle) => {
+    cleanupRunners.push(handle.runCleanups);
 
-        handle()
-    })
+    handle();
+  });
 }

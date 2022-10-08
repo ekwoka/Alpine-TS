@@ -1,5 +1,5 @@
-import Alpine from './alpine'
+import Alpine from './alpine';
 
 export function plugin(callback) {
-    callback(Alpine)
+  callback(Alpine);
 }

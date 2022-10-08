@@ -1,7 +1,7 @@
-import Alpine from './../src/index'
+import Alpine from './../src/index';
 
-window.Alpine = Alpine
+window.Alpine = Alpine;
 
 queueMicrotask(() => {
-    Alpine.start()
-})
+  Alpine.start();
+});
