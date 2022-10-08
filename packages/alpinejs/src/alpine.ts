@@ -1,6 +1,6 @@
 import { bind } from './binds';
 import { clone, skipDuringClone } from './clone';
-import { data } from './datas';
+import { data } from './data';
 import {
   directive,
   mapAttributes,

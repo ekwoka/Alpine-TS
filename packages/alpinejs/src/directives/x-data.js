@@ -1,5 +1,5 @@
 import { skipDuringClone } from '../clone';
-import { injectDataProviders } from '../datas';
+import { injectDataProviders } from '../data';
 import { directive, prefix } from '../directives';
 import { evaluate } from '../evaluator';
 import { initInterceptors } from '../interceptor';
