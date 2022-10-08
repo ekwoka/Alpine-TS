@@ -5,7 +5,6 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.39.0
   '@typescript-eslint/parser': ^5.39.0
   '@vitest/coverage-c8': ^0.24.0
-  '@vue/reactivity': ~3.1.1
   esbuild: ^0.15.10
   eslint: ^8.25.0
   gzip-size: ^7.0.0
@@ -25,7 +24,6 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 5.39.0_cfd7h3iktziq6hcwahu2qxhjhy
   '@typescript-eslint/parser': 5.39.0_z4bbprzjrhnsfa24uvmcbu7f5q
   '@vitest/coverage-c8': 0.24.0_happy-dom@7.4.0
-  '@vue/reactivity': 3.1.5
   esbuild: 0.15.10
   eslint: 8.25.0
   gzip-size: 7.0.0
@@ -802,22 +800,6 @@ packages:
       - stylus
       - supports-color
       - terser
-    dev: true
-
-  /@vue/reactivity/3.1.5:
-    resolution:
-      {
-        integrity: sha512-1tdfLmNjWG6t/CsPldh+foumYFo3cpyCHgBYQ34ylaMsJ+SNHQ1kApMIa8jN+i593zQuaw3AdWH0nJTARzCFhg==,
-      }
-    dependencies:
-      '@vue/shared': 3.1.5
-    dev: true
-
-  /@vue/shared/3.1.5:
-    resolution:
-      {
-        integrity: sha512-oJ4F3TnvpXaQwZJNF3ZK+kLPHKarDmJjJ6jyzVNDKH9md1dptjC7lWR//jrGuLdek/U6iltWxqAnYOu8gCiOvA==,
-      }
     dev: true
 
   /acorn-jsx/5.3.2_acorn@8.8.0:
