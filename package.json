@@ -2,7 +2,8 @@
   "scripts": {
     "lint": "run-s lint:*",
     "lint:eslint": "eslint --fix ./src",
-    "lint:prettier": "prettier --write . --loglevel error"
+    "lint:prettier": "prettier --write . --loglevel error",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^3.3.0",
