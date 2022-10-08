@@ -6,10 +6,10 @@ export const data = (name: string, callback: DataFunction) => {
   Data[name] = callback;
 };
 
-export function injectDataProviders(
+export const injectDataProviders = (
   obj: Record<string, unknown>,
   context: Record<string, unknown>
-) {
+) => {
   Object.entries(Data).forEach(([name, callback]) => {
     Object.defineProperty(obj, name, {
       get() {
@@ -22,4 +22,4 @@ export function injectDataProviders(
   });
 
   return obj;
-}
+};
