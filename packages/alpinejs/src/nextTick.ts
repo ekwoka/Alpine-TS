@@ -1,9 +1,9 @@
-let tickStack = [];
+const tickStack: (() => void)[] = [];
 
 let isHolding = false;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-export function nextTick(callback = () => {}) {
+export const nextTick = (callback = () => {}) => {
   queueMicrotask(() => {
     isHolding ||
       setTimeout(() => {
@@ -14,17 +14,17 @@ export function nextTick(callback = () => {}) {
   return new Promise((res) => {
     tickStack.push(() => {
       callback();
-      res();
+      res(null);
     });
   });
-}
+};
 
-export function releaseNextTicks() {
+export const releaseNextTicks = () => {
   isHolding = false;
 
   while (tickStack.length) tickStack.shift()();
-}
+};
 
-export function holdNextTicks() {
+export const holdNextTicks = () => {
   isHolding = true;
-}
+};
