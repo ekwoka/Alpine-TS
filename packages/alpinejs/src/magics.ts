@@ -1,19 +1,15 @@
 import { getElementBoundUtilities } from './directives';
 import { interceptor } from './interceptor';
 import { onElRemoved } from './mutation';
-import { ElementWithXAttributes } from './types';
+import { ElementWithXAttributes, MagicUtilities } from './types';
 import { MaybeFunction } from './utils/typeWrap';
 
 const magics: Record<string, MagicFn> = {};
 
 type MagicFn = (
   el: ElementWithXAttributes,
-  options: Utilities
+  options: MagicUtilities
 ) => MaybeFunction<unknown>;
-
-type Utilities = ReturnType<typeof getElementBoundUtilities>[0] & {
-  interceptor: typeof interceptor;
-};
 
 export function magic(name: string, callback: MagicFn) {
   magics[name] = callback;
@@ -28,7 +24,7 @@ export function injectMagics(
       get() {
         const [utilities, cleanup] = getElementBoundUtilities(el);
         onElRemoved(el, cleanup);
-        return callback(el, { interceptor, ...utilities } as Utilities);
+        return callback(el, { interceptor, ...utilities } as MagicUtilities);
       },
 
       enumerable: false,
