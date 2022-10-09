@@ -4,7 +4,12 @@ import { reactive } from './reactivity';
 let stores: Record<string, Store> = {};
 let isReactive = false;
 
-type Store = Record<string, unknown> | number | string | boolean;
+type Store =
+  | Record<string, unknown>
+  | Array<unknown>
+  | number
+  | string
+  | boolean;
 
 type StoreFn = {
   <T extends Store>(name: string, value: T): void;
@@ -25,6 +30,7 @@ export const store: StoreFn = <T extends Store>(name: string, value?: T) => {
     typeof value === 'object' &&
     value !== null &&
     Object.prototype.hasOwnProperty.call(value, 'init') &&
+    !Array.isArray(value) &&
     typeof value.init === 'function'
   )
     value.init();
