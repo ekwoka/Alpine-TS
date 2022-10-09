@@ -1,17 +1,32 @@
 import { scheduler } from './scheduler';
+import { ElementWithXAttributes } from './types';
+import {
+  effect as Veffect,
+  toRaw as Vraw,
+  reactive as Vreactive,
+  stop as Vrelease,
+} from '@vue/reactivity';
 
-let reactive, effect, release, raw;
+let reactive: typeof Vreactive,
+  effect: typeof Veffect,
+  release: typeof Vrelease,
+  raw: typeof Vraw;
 
 let shouldSchedule = true;
-export function disableEffectScheduling(callback) {
+export const disableEffectScheduling = (callback: () => void) => {
   shouldSchedule = false;
 
   callback();
 
   shouldSchedule = true;
-}
+};
 
-export function setReactivityEngine(engine) {
+export const setReactivityEngine = (engine: {
+  reactive: typeof Vreactive;
+  effect: typeof Veffect;
+  release: typeof Vrelease;
+  raw: typeof Vraw;
+}) => {
   reactive = engine.reactive;
   release = engine.release;
   effect = (callback) =>
@@ -25,26 +40,22 @@ export function setReactivityEngine(engine) {
       },
     });
   raw = engine.raw;
-}
+};
 
-export function overrideEffect(override) {
-  effect = override;
-}
+export const overrideEffect = (override: typeof Veffect) => (effect = override);
 
-export function elementBoundEffect(el) {
+export const elementBoundEffect = (el: ElementWithXAttributes) => {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   let cleanup = () => {};
 
-  let wrappedEffect = (callback) => {
-    let effectReference = effect(callback);
+  const wrappedEffect = (callback: () => void) => {
+    const effectReference = effect(callback);
 
     if (!el._x_effects) {
       el._x_effects = new Set();
 
       // Livewire depends on el._x_runEffects.
-      el._x_runEffects = () => {
-        el._x_effects.forEach((i) => i());
-      };
+      el._x_runEffects = () => el._x_effects.forEach((i) => i());
     }
 
     el._x_effects.add(effectReference);
@@ -60,12 +71,7 @@ export function elementBoundEffect(el) {
     return effectReference;
   };
 
-  return [
-    wrappedEffect,
-    () => {
-      cleanup();
-    },
-  ];
-}
+  return [wrappedEffect, () => cleanup()];
+};
 
 export { release, reactive, effect, raw };
