@@ -2,24 +2,24 @@ import Alpine from './alpine';
 import { evaluate, evaluateLater } from './evaluator';
 import { onAttributeRemoved } from './mutation';
 import { elementBoundEffect } from './reactivity';
+import { DirectiveCallback, ElementWithXAttributes, Utilities } from './types';
 
 let prefixAsString = 'x-';
 
-export function prefix(subject = '') {
-  return prefixAsString + subject;
-}
+export const prefix = (subject = '') => prefixAsString + subject;
 
-export function setPrefix(newPrefix) {
-  prefixAsString = newPrefix;
-}
+export const setPrefix = (newPrefix: string) => (prefixAsString = newPrefix);
 
-let directiveHandlers = {};
+const directiveHandlers: Record<string, DirectiveCallback> = {};
 
-export function directive(name, callback) {
-  directiveHandlers[name] = callback;
-}
+export const directive = (name: string, callback: DirectiveCallback) =>
+  (directiveHandlers[name] = callback);
 
-export function directives(el, attributes, originalAttributeOverride) {
+export const directives = (
+  el: ElementWithXAttributes,
+  attributes: Array<{ name: string; value: string }>,
+  originalAttributeOverride: string
+) => {
   attributes = Array.from(attributes);
 
   if (el._x_virtualDirectives) {
@@ -27,7 +27,7 @@ export function directives(el, attributes, originalAttributeOverride) {
       ([name, value]) => ({ name, value })
     );
 
-    let staticAttributes = attributesOnly(vAttributes);
+    const staticAttributes = attributesOnly(vAttributes);
 
     // Handle binding normal HTML attributes (non-Alpine directives).
     vAttributes = vAttributes.map((attribute) => {
@@ -44,9 +44,9 @@ export function directives(el, attributes, originalAttributeOverride) {
     attributes = attributes.concat(vAttributes);
   }
 
-  let transformedAttributeMap = {};
+  const transformedAttributeMap = {};
 
-  let directives = attributes
+  const directives = attributes
     .map(
       toTransformedAttributes(
         (newName, oldName) => (transformedAttributeMap[newName] = oldName)
@@ -59,35 +59,35 @@ export function directives(el, attributes, originalAttributeOverride) {
   return directives.map((directive) => {
     return getDirectiveHandler(el, directive);
   });
-}
+};
 
-export function attributesOnly(attributes) {
+export function attributesOnly(attributes: Attribute[]) {
   return Array.from(attributes)
     .map(toTransformedAttributes())
     .filter((attr) => !outNonAlpineAttributes(attr));
 }
 
 let isDeferringHandlers = false;
-let directiveHandlerStacks = new Map();
+const directiveHandlerStacks = new Map();
 let currentHandlerStackKey = Symbol();
 
 export function deferHandlingDirectives(callback) {
   isDeferringHandlers = true;
 
-  let key = Symbol();
+  const key = Symbol();
 
   currentHandlerStackKey = key;
 
   directiveHandlerStacks.set(key, []);
 
-  let flushHandlers = () => {
+  const flushHandlers = () => {
     while (directiveHandlerStacks.get(key).length)
       directiveHandlerStacks.get(key).shift()();
 
     directiveHandlerStacks.delete(key);
   };
 
-  let stopDeferring = () => {
+  const stopDeferring = () => {
     isDeferringHandlers = false;
     flushHandlers();
   };
@@ -97,16 +97,18 @@ export function deferHandlingDirectives(callback) {
   stopDeferring();
 }
 
-export const getElementBoundUtilities = (el) => {
-  let cleanups = [];
+export const getElementBoundUtilities = (
+  el: ElementWithXAttributes
+): [Utilities, () => void] => {
+  const cleanups: (() => void)[] = [];
 
-  let cleanup = (callback) => cleanups.push(callback);
+  const cleanup = (callback: () => void) => cleanups.push(callback);
 
-  let [effect, cleanupEffect] = elementBoundEffect(el);
+  const [effect, cleanupEffect] = elementBoundEffect(el);
 
   cleanups.push(cleanupEffect);
 
-  const utilities = {
+  const utilities: Utilities = {
     Alpine,
     effect,
     cleanup,
@@ -119,50 +121,50 @@ export const getElementBoundUtilities = (el) => {
   return [utilities, doCleanup];
 };
 
-export function getDirectiveHandler(el, directive) {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  let noop = () => {};
+export const getDirectiveHandler = (el: ElementWithXAttributes, directive) => {
+  const handler =
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    directiveHandlers[directive.type] || ((() => {}) as DirectiveCallback);
 
-  let handler = directiveHandlers[directive.type] || noop;
-
-  let [utilities, cleanup] = getElementBoundUtilities(el);
+  const [utilities, cleanup] = getElementBoundUtilities(el);
 
   onAttributeRemoved(el, directive.original, cleanup);
 
-  let fullHandler = () => {
+  const fullHandler = () => {
     if (el._x_ignore || el._x_ignoreSelf) return;
 
-    handler.inline && handler.inline(el, directive, utilities);
+    if (handler.inline) handler.inline(el, directive, utilities);
 
-    handler = handler.bind(handler, el, directive, utilities);
+    const boundHandler = handler.bind(handler, el, directive, utilities);
 
     isDeferringHandlers
-      ? directiveHandlerStacks.get(currentHandlerStackKey).push(handler)
-      : handler();
+      ? directiveHandlerStacks.get(currentHandlerStackKey).push(boundHandler)
+      : boundHandler();
   };
 
   fullHandler.runCleanups = cleanup;
 
   return fullHandler;
-}
+};
 
-export let startingWith =
-  (subject, replacement) =>
-  ({ name, value }) => {
+export const startingWith =
+  (subject: string, replacement: string) =>
+  ({ name, value }: Attribute): Attribute => {
     if (name.startsWith(subject)) name = name.replace(subject, replacement);
 
     return { name, value };
   };
 
-export let into = (i) => i;
+export const into = <T>(i: T): T => i;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-function toTransformedAttributes(callback = () => {}) {
-  return ({ name, value }) => {
+const toTransformedAttributes =
+  (
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    callback: (newName: string, oldName: string) => void = () => {}
+  ) =>
+  ({ name, value }: Attribute): Attribute => {
     const { name: newName, value: newValue } = attributeTransformers.reduce(
-      (carry, transform) => {
-        return transform(carry);
-      },
+      (carry, transform) => transform(carry),
       { name, value }
     );
 
@@ -170,24 +172,27 @@ function toTransformedAttributes(callback = () => {}) {
 
     return { name: newName, value: newValue };
   };
-}
 
-let attributeTransformers = [];
+const attributeTransformers: AttributeTransformer[] = [];
 
-export function mapAttributes(callback) {
+type AttributeTransformer = (attribute: Attribute) => Attribute;
+
+type Attribute = { name: string; value: string };
+
+export const mapAttributes = (callback: AttributeTransformer) => {
   attributeTransformers.push(callback);
-}
+};
 
-function outNonAlpineAttributes({ name }) {
+const outNonAlpineAttributes = ({ name }: Attribute) => {
   return alpineAttributeRegex().test(name);
-}
+};
 
-let alpineAttributeRegex = () => new RegExp(`^${prefixAsString}([^:^.]+)\\b`);
+const alpineAttributeRegex = () => new RegExp(`^${prefixAsString}([^:^.]+)\\b`);
 
-function toParsedDirectives(
+const toParsedDirectives = (
   transformedAttributeMap,
   originalAttributeOverride
-) {
+) => {
   return ({ name, value }) => {
     const typeMatch = name.match(alpineAttributeRegex());
     const valueMatch = name.match(/:([a-zA-Z0-9\-:]+)/);
@@ -203,11 +208,11 @@ function toParsedDirectives(
       original,
     };
   };
-}
+};
 
 const DEFAULT = 'DEFAULT';
 
-let directiveOrder = [
+const directiveOrder = [
   'ignore',
   'ref',
   'data',
@@ -232,9 +237,9 @@ let directiveOrder = [
   'teleport',
 ];
 
-function byPriority(a, b) {
-  let typeA = directiveOrder.indexOf(a.type) === -1 ? DEFAULT : a.type;
-  let typeB = directiveOrder.indexOf(b.type) === -1 ? DEFAULT : b.type;
+const byPriority = (a, b) => {
+  const typeA = directiveOrder.indexOf(a.type) === -1 ? DEFAULT : a.type;
+  const typeB = directiveOrder.indexOf(b.type) === -1 ? DEFAULT : b.type;
 
   return directiveOrder.indexOf(typeA) - directiveOrder.indexOf(typeB);
-}
+};

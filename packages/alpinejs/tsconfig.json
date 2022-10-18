@@ -1,5 +1,20 @@
 {
-  "include": ["src/**/*.js"],
+  "include": [
+    "src/**/*.js",
+    "src/directives.ts",
+    "src/clone.ts",
+    "src/store.ts",
+    "src/scheduler.ts",
+    "src/reactivity.ts",
+    "src/directives.ts",
+    "src/magics.ts",
+    "src/ids.ts",
+    "src/datas.ts",
+    "src/binds.ts",
+    "src/alpine.ts",
+    "src/plugin.ts",
+    "src/nextTick.ts"
+  ],
   "compilerOptions": {
     "allowJs": true,
     "declaration": true,

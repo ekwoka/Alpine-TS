@@ -5,13 +5,13 @@ import { functionWrap } from './utils/typeWrap';
 const binds: Record<string, BindingFactory> = {};
 
 export type Bindings = {
-  [key: string]: (() => unknown) | string | number | boolean | null;
+  [key: string]: string;
 };
 
 type BindingFactory = (...args: unknown[]) => Bindings;
 
 export const bind = (
-  name: string | Element,
+  name: string | ElementWithXAttributes,
   bindings: Bindings | BindingFactory
 ) => {
   const getBindings = functionWrap(bindings);
@@ -20,7 +20,7 @@ export const bind = (
   else binds[name] = getBindings;
 };
 
-export function injectBindingProviders(obj: Record<string, unknown>) {
+export const injectBindingProviders = (obj: Record<string, unknown>) => {
   Object.entries(binds).forEach(([name, callback]) => {
     Object.defineProperty(obj, name, {
       get() {
@@ -32,22 +32,22 @@ export function injectBindingProviders(obj: Record<string, unknown>) {
   });
 
   return obj;
-}
+};
 
-export function addVirtualBindings(
+export const addVirtualBindings = (
   el: ElementWithXAttributes,
   bindings: Bindings | BindingFactory
-) {
+) => {
   const getBindings = functionWrap(bindings);
 
   el._x_virtualDirectives = getBindings();
-}
+};
 
-export function applyBindingsObject(
-  el: Element,
+export const applyBindingsObject = (
+  el: ElementWithXAttributes,
   bindings: Bindings,
   original?: string
-) {
+) => {
   const cleanupRunners = [];
 
   while (cleanupRunners.length) cleanupRunners.pop()();
@@ -76,4 +76,4 @@ export function applyBindingsObject(
 
     handle();
   });
-}
+};

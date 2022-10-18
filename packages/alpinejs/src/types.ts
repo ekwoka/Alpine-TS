@@ -10,12 +10,14 @@ export type ElementWithXAttributes = Element & {
   _x_effects?: Set<() => void>;
   _x_runEffects?: () => void;
   _x_dataStack?: Record<string, unknown>[];
+  _x_ignore: unknown;
+  _x_ignoreSelf: unknown;
 };
 
 export type Utilities = {
   Alpine: Alpine;
   effect: typeof effect;
-  cleanup: () => void;
+  cleanup: (callback: () => void) => void;
   evaluateLater: typeof evaluateLater;
   evaluate: typeof evaluate;
 };
@@ -32,8 +34,15 @@ export type DirectiveData = {
   original: string;
 };
 
-export type DirectiveCallback = (
-  el: ElementWithXAttributes,
-  directive: DirectiveData,
-  utilities: Utilities
-) => void;
+export type DirectiveCallback = {
+  (
+    el: ElementWithXAttributes,
+    directive: DirectiveData,
+    utilities: Utilities
+  ): void;
+  inline?: (
+    el: ElementWithXAttributes,
+    directive: DirectiveData,
+    utilities: Utilities
+  ) => void;
+};

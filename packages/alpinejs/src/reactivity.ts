@@ -1,6 +1,7 @@
 import { scheduler } from './scheduler';
 import { ElementWithXAttributes } from './types';
 import {
+  ReactiveEffect,
   effect as Veffect,
   toRaw as Vraw,
   reactive as Vreactive,
@@ -44,11 +45,13 @@ export const setReactivityEngine = (engine: {
 
 export const overrideEffect = (override: typeof Veffect) => (effect = override);
 
-export const elementBoundEffect = (el: ElementWithXAttributes) => {
+export const elementBoundEffect = (
+  el: ElementWithXAttributes
+): ElementBoundEffects => {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   let cleanup = () => {};
 
-  const wrappedEffect = (callback: () => void) => {
+  const wrappedEffect = <T>(callback: () => T) => {
     const effectReference = effect(callback);
 
     if (!el._x_effects) {
@@ -71,7 +74,12 @@ export const elementBoundEffect = (el: ElementWithXAttributes) => {
     return effectReference;
   };
 
-  return [wrappedEffect, () => cleanup()];
+  return [wrappedEffect, cleanup];
 };
+
+type ElementBoundEffects = [
+  <T>(callback: () => T) => ReactiveEffect<T>,
+  () => void
+];
 
 export { release, reactive, effect, raw };
