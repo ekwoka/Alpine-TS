@@ -1,4 +1,10 @@
-export function dispatch(el, name, detail = {}) {
+import { ElementWithXAttributes } from '../types';
+
+export const dispatch = (
+  el: ElementWithXAttributes,
+  name: string,
+  detail = {}
+) =>
   el.dispatchEvent(
     new CustomEvent(name, {
       detail,
@@ -8,4 +14,3 @@ export function dispatch(el, name, detail = {}) {
       cancelable: true,
     })
   );
-}
