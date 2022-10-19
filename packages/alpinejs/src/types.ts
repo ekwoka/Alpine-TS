@@ -10,13 +10,18 @@ export type ElementWithXAttributes = HTMLElement & {
   _x_effects?: Set<() => void>;
   _x_runEffects?: () => void;
   _x_dataStack?: Record<string, unknown>[];
-  _x_ignore: unknown;
-  _x_ignoreSelf: unknown;
+  _x_ignore: true;
+  _x_ignoreSelf: true;
   _x_isShown: boolean;
   _x_bindings: Record<string, unknown>;
   _x_undoAddedClasses: () => void;
   _x_undoAddedStyles: () => void;
+  _x_cleanups: MutationCallback[];
+  _x_attributeCleanups: Record<string, (() => void)[]>;
+  _x_ignoreMutationObserver: boolean;
 };
+
+export type MutationCallback = (node?: ElementWithXAttributes) => void;
 
 export type Utilities = {
   Alpine: Alpine;
