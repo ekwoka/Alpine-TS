@@ -6,6 +6,7 @@ export const once = <T extends (...args: Parameters<T>) => void>(
   let called = false;
   return ((...args: Parameters<T>): void => {
     if (called) return fallback();
+
     called = true;
     func(...args);
   }) as T;
