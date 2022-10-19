@@ -1,7 +1,7 @@
 import { ElementWithXAttributes } from '../types';
 
 export const dispatch = (
-  el: ElementWithXAttributes,
+  el: ElementWithXAttributes | Window | Document,
   name: string,
   detail = {}
 ) =>

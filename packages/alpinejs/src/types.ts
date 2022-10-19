@@ -19,9 +19,15 @@ export type ElementWithXAttributes = HTMLElement & {
   _x_cleanups: MutationCallback[];
   _x_attributeCleanups: Record<string, (() => void)[]>;
   _x_ignoreMutationObserver: boolean;
+  _x_teleportBack: ElementWithXAttributes;
 };
 
 export type MutationCallback = (node?: ElementWithXAttributes) => void;
+
+export type AttrMutationCallback = (
+  el: ElementWithXAttributes,
+  attrs: { name: string; value: string }[]
+) => void;
 
 export type Utilities = {
   Alpine: Alpine;

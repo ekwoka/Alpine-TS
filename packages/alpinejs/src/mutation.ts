@@ -1,17 +1,22 @@
-import type { ElementWithXAttributes, MutationCallback } from './types';
+import type {
+  AttrMutationCallback,
+  ElementWithXAttributes,
+  MutationCallback,
+} from './types';
 
-const onAttributeAddeds: ((
-  el: ElementWithXAttributes,
-  attrs: { name: string; value: string }[]
-) => void)[] = [];
+const onAttributeAddeds: AttrMutationCallback[] = [];
 const onElRemoveds: MutationCallback[] = [];
 const onElAddeds: MutationCallback[] = [];
 
-export const onElAdded = (callback: () => void) => onElAddeds.push(callback);
-export const onElRemoved = (
-  el: ElementWithXAttributes,
-  callback?: MutationCallback
-) => {
+export const onElAdded = (callback: MutationCallback) =>
+  onElAddeds.push(callback);
+
+type OnElRemoved = {
+  (callback: MutationCallback): void;
+  (el: ElementWithXAttributes, callback: MutationCallback): void;
+};
+
+export const onElRemoved: OnElRemoved = ((el, callback) => {
   if (typeof callback === 'function') {
     if (!el._x_cleanups) el._x_cleanups = [];
     el._x_cleanups.push(callback);
@@ -19,9 +24,9 @@ export const onElRemoved = (
     callback = el as unknown as MutationCallback;
     onElRemoveds.push(callback);
   }
-};
+}) as OnElRemoved;
 
-export const onAttributesAdded = (callback: MutationCallback) =>
+export const onAttributesAdded = (callback: AttrMutationCallback) =>
   onAttributeAddeds.push(callback);
 
 export const onAttributeRemoved = (

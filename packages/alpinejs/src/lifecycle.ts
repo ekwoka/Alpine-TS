@@ -6,11 +6,12 @@ import {
   onElRemoved,
   startObservingMutations,
 } from './mutation';
+import { ElementWithXAttributes } from './types';
 import { dispatch } from './utils/dispatch';
 import { walk } from './utils/walk';
 import { warn } from './utils/warn';
 
-export function start() {
+export const start = () => {
   if (!document.body)
     warn(
       "Unable to initialize. Trying to load Alpine before `<body>` is available. Did you forget to add `defer` in Alpine's `<script>` tag?"
@@ -28,43 +29,45 @@ export function start() {
     directives(el, attrs).forEach((handle) => handle());
   });
 
-  let outNestedComponents = (el) => !closestRoot(el.parentElement, true);
-  Array.from(document.querySelectorAll(allSelectors()))
+  const outNestedComponents = (el: ElementWithXAttributes) =>
+    !closestRoot(el.parentElement as ElementWithXAttributes, true);
+  Array.from(document.querySelectorAll(allSelectors().join(',')))
     .filter(outNestedComponents)
-    .forEach((el) => {
+    .forEach((el: ElementWithXAttributes) => {
       initTree(el);
     });
 
   dispatch(document, 'alpine:initialized');
-}
+};
 
-let rootSelectorCallbacks = [];
-let initSelectorCallbacks = [];
+const rootSelectorCallbacks: (() => string)[] = [];
+const initSelectorCallbacks: (() => string)[] = [];
 
-export function rootSelectors() {
-  return rootSelectorCallbacks.map((fn) => fn());
-}
+export const rootSelectors = () => rootSelectorCallbacks.map((fn) => fn());
 
-export function allSelectors() {
-  return rootSelectorCallbacks.concat(initSelectorCallbacks).map((fn) => fn());
-}
+export const allSelectors = () =>
+  rootSelectorCallbacks.concat(initSelectorCallbacks).map((fn) => fn());
 
-export function addRootSelector(selectorCallback) {
+export const addRootSelector = (selectorCallback: () => string) =>
   rootSelectorCallbacks.push(selectorCallback);
-}
-export function addInitSelector(selectorCallback) {
-  initSelectorCallbacks.push(selectorCallback);
-}
 
-export function closestRoot(el, includeInitSelectors = false) {
-  return findClosest(el, (element) => {
+export const addInitSelector = (selectorCallback: () => string) =>
+  initSelectorCallbacks.push(selectorCallback);
+
+export const closestRoot = (
+  el: ElementWithXAttributes,
+  includeInitSelectors = false
+) =>
+  findClosest(el, (element) => {
     const selectors = includeInitSelectors ? allSelectors() : rootSelectors();
 
     if (selectors.some((selector) => element.matches(selector))) return true;
   });
-}
 
-export function findClosest(el, callback) {
+export const findClosest = (
+  el: ElementWithXAttributes,
+  callback: (el: ElementWithXAttributes) => boolean
+): ElementWithXAttributes | null => {
   if (!el) return;
 
   if (callback(el)) return el;
@@ -72,16 +75,15 @@ export function findClosest(el, callback) {
   // Support crawling up teleports.
   if (el._x_teleportBack) el = el._x_teleportBack;
 
-  if (!el.parentElement) return;
+  if (!el.parentElement) return null;
 
-  return findClosest(el.parentElement, callback);
-}
+  return findClosest(el.parentElement as ElementWithXAttributes, callback);
+};
 
-export function isRoot(el) {
-  return rootSelectors().some((selector) => el.matches(selector));
-}
+export const isRoot = (el: ElementWithXAttributes) =>
+  rootSelectors().some((selector) => el.matches(selector));
 
-export function initTree(el, walker = walk) {
+export const initTree = (el: ElementWithXAttributes, walker = walk) => {
   deferHandlingDirectives(() => {
     walker(el, (el, skip) => {
       directives(el, el.attributes).forEach((handle) => handle());
@@ -89,8 +91,8 @@ export function initTree(el, walker = walk) {
       el._x_ignore && skip();
     });
   });
-}
+};
 
-function destroyTree(root) {
+const destroyTree = (root: ElementWithXAttributes) => {
   walk(root, (el) => cleanupAttributes(el));
-}
+};

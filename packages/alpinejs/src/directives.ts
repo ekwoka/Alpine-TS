@@ -17,8 +17,8 @@ export const directive = (name: string, callback: DirectiveCallback) =>
 
 export const directives = (
   el: ElementWithXAttributes,
-  attributes: Array<{ name: string; value: string }>,
-  originalAttributeOverride: string
+  attributes: Array<{ name: string; value: string }> | NamedNodeMap,
+  originalAttributeOverride?: string
 ) => {
   attributes = Array.from(attributes);
 
