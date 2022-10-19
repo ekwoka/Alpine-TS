@@ -13,6 +13,9 @@ export type ElementWithXAttributes = HTMLElement & {
   _x_ignore: unknown;
   _x_ignoreSelf: unknown;
   _x_isShown: boolean;
+  _x_bindings: Record<string, unknown>;
+  _x_undoAddedClasses: () => void;
+  _x_undoAddedStyles: () => void;
 };
 
 export type Utilities = {

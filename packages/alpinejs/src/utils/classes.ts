@@ -7,7 +7,7 @@ export const setClasses = (
     | boolean
     | Record<string, boolean>
     | (() => string | boolean | Record<string, boolean>)
-) => {
+): (() => void) => {
   if (Array.isArray(value)) return setClassesFromString(el, value.join(' '));
   if (typeof value === 'object' && value !== null)
     return setClassesFromObject(el, value);

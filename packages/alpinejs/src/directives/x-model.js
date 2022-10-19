@@ -1,8 +1,10 @@
 import { directive } from '../directives';
 import { evaluateLater } from '../evaluator';
 import { mutateDom } from '../mutation';
-import bind from '../utils/bind';
+import { bind } from '../utils/bind';
 import { on } from '../utils/on';
+
+export let fromModel = false;
 
 directive('model', (el, { modifiers, expression }, { effect, cleanup }) => {
   let evaluate = evaluateLater(el, expression);
@@ -59,9 +61,9 @@ directive('model', (el, { modifiers, expression }, { effect, cleanup }) => {
       if (value === undefined && expression.match(/\./)) value = '';
 
       // @todo: This is nasty
-      window.fromModel = true;
+      fromModel = true;
       mutateDom(() => bind(el, 'value', value));
-      delete window.fromModel;
+      fromModel = false;
     });
   };
 

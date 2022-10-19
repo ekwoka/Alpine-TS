@@ -8,7 +8,7 @@ import {
 } from '../directives';
 import { evaluateLater } from '../evaluator';
 import { mutateDom } from '../mutation';
-import bind from '../utils/bind';
+import { bind } from '../utils/bind';
 
 mapAttributes(startingWith(':', into(prefix('bind:'))));
 
