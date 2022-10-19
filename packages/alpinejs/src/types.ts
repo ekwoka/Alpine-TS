@@ -4,7 +4,7 @@ import { evaluate, evaluateLater } from './evaluator';
 import { interceptor } from './interceptor';
 import { effect } from './reactivity';
 
-export type ElementWithXAttributes = Element & {
+export type ElementWithXAttributes = HTMLElement & {
   _x_virtualDirectives?: Bindings;
   _x_ids?: Record<string, number>;
   _x_effects?: Set<() => void>;
