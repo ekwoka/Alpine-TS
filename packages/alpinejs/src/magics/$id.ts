@@ -2,9 +2,9 @@ import { closestIdRoot, findAndIncrementId } from '../ids';
 import { magic } from '../magics';
 
 magic('id', (el) => (name, key = null) => {
-  let root = closestIdRoot(el, name);
+  const root = closestIdRoot(el, name);
 
-  let id = root ? root._x_ids[name] : findAndIncrementId(name);
+  const id = root ? root._x_ids[name] : findAndIncrementId(name);
 
   return key ? `${name}-${id}-${key}` : `${name}-${id}`;
 });

@@ -11,14 +11,14 @@ type MagicFn = (
   options: MagicUtilities
 ) => MaybeFunction<unknown>;
 
-export function magic(name: string, callback: MagicFn) {
+export const magic = (name: string, callback: MagicFn) => {
   magics[name] = callback;
-}
+};
 
-export function injectMagics(
+export const injectMagics = (
   obj: Record<string, unknown>,
   el: ElementWithXAttributes
-) {
+) => {
   Object.entries(magics).forEach(([name, callback]) => {
     Object.defineProperty(obj, `$${name}`, {
       get() {
@@ -32,4 +32,4 @@ export function injectMagics(
   });
 
   return obj;
-}
+};

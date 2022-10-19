@@ -29,15 +29,15 @@ export const evaluate = <T>(
 
 export const evaluateLater = <T>(
   el: ElementWithXAttributes,
-  expression: string | (() => T)
+  expression?: string | (() => T)
 ) => theEvaluatorFunction<T>(el, expression);
 
 type Evaluator = <T>(
   el: ElementWithXAttributes,
-  expression: string | (() => T)
+  expression?: string | (() => T)
 ) => (
   callback: (value: T) => void,
-  extras: { scope?: object; params?: unknown[] }
+  extras?: { scope?: object; params?: unknown[] }
 ) => void;
 
 export const setEvaluator = (newEvaluator: Evaluator) => {

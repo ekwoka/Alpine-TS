@@ -20,6 +20,8 @@ export type ElementWithXAttributes = HTMLElement & {
   _x_attributeCleanups: Record<string, (() => void)[]>;
   _x_ignoreMutationObserver: boolean;
   _x_teleportBack: ElementWithXAttributes;
+  _x_refs_proxy: Record<string, unknown>;
+  _x_refs: unknown;
 };
 
 export type MutationCallback = (node?: ElementWithXAttributes) => void;
@@ -33,8 +35,10 @@ export type Utilities = {
   Alpine: Alpine;
   effect: typeof effect;
   cleanup: (callback: () => void) => void;
-  evaluateLater: typeof evaluateLater;
-  evaluate: typeof evaluate;
+  evaluateLater: <T>(expression: string) => ReturnType<typeof evaluateLater<T>>;
+  evaluate: <T>(
+    callback: (val: T, extras: Record<string, unknown>) => void
+  ) => ReturnType<typeof evaluate<T>>;
 };
 
 export type MagicUtilities = Utilities & {
