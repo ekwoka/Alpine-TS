@@ -135,8 +135,14 @@ const generateEvaluatorFromString = (
 ): ReturnType<Evaluator> => {
   const func = generateFunctionFromString(expression, el);
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  return (receiver = () => {}, { scope = {}, params = [] } = {}) => {
+  return (
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    receiver = () => {},
+    {
+      scope = {},
+      params = [],
+    }: { scope?: Record<string, unknown>; params?: unknown[] } = {}
+  ) => {
     const status: {
       finished: boolean;
       result: unknown;
