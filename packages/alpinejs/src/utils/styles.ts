@@ -1,4 +1,5 @@
 import { ElementWithXAttributes } from '../types';
+import { kebabCase } from './stringTransformers';
 
 export const setStyles = (
   el: ElementWithXAttributes,
@@ -45,8 +46,4 @@ const setStylesFromString = (el: ElementWithXAttributes, value: string) => {
   el.setAttribute('style', value);
 
   return () => el.setAttribute('style', cache);
-};
-
-const kebabCase = (subject: string): string => {
-  return subject.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 };

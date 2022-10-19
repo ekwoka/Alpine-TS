@@ -12,6 +12,7 @@ export type ElementWithXAttributes = HTMLElement & {
   _x_dataStack?: Record<string, unknown>[];
   _x_ignore: unknown;
   _x_ignoreSelf: unknown;
+  _x_isShown: boolean;
 };
 
 export type Utilities = {

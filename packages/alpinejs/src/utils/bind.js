@@ -1,5 +1,6 @@
 import { reactive } from '../reactivity';
 import { setClasses } from './classes';
+import { camelCase } from './stringTransformers';
 import { setStyles } from './styles';
 
 export default function bind(el, name, value, modifiers = []) {
@@ -112,12 +113,6 @@ function updateSelect(el, value) {
   Array.from(el.options).forEach((option) => {
     option.selected = arrayWrappedValue.includes(option.value);
   });
-}
-
-function camelCase(subject) {
-  return subject
-    .toLowerCase()
-    .replace(/-(\w)/g, (match, char) => char.toUpperCase());
 }
 
 function checkedAttrLooseCompare(valueA, valueB) {

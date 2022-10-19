@@ -1,16 +1,32 @@
+import { ElementWithXAttributes } from '../types';
 import { debounce } from './debounce';
+import { camelCase, dotSyntax, kebabCase } from './stringTransformers';
 import { throttle } from './throttle';
 
-export default function on(el, event, modifiers, callback) {
-  let listenerTarget = el;
+export const on = (
+  el: ElementWithXAttributes,
+  event: string,
+  modifiers: string[],
+  callback: EventHandler
+) => {
+  let listenerTarget: ElementWithXAttributes | Window | Document = el;
 
-  let handler = (e) => callback(e);
+  let handler: EventHandler = (e: Event) => callback(e);
 
-  let options = {};
+  const options = {
+    passive: false,
+    capture: false,
+  };
 
   // This little helper allows us to add functionality to the listener's
   // handler more flexibly in a "middleware" style.
-  let wrapHandler = (callback, wrapper) => (e) => wrapper(callback, e);
+  const wrapHandler =
+    (
+      callback: EventHandler,
+      wrapper: (next: EventHandler, event: Event) => void
+    ): EventHandler =>
+    (e) =>
+      wrapper(callback, e);
 
   if (modifiers.includes('dot')) event = dotSyntax(event);
   if (modifiers.includes('camel')) event = camelCase(event);
@@ -37,9 +53,9 @@ export default function on(el, event, modifiers, callback) {
     listenerTarget = document;
 
     handler = wrapHandler(handler, (next, e) => {
-      if (el.contains(e.target)) return;
+      if (el.contains(e.target as Node)) return;
 
-      if (e.target.isConnected === false) return;
+      if ((e.target as Node).isConnected === false) return;
 
       if (el.offsetWidth < 1 && el.offsetHeight < 1) return;
 
@@ -71,9 +87,9 @@ export default function on(el, event, modifiers, callback) {
   });
 
   if (modifiers.includes('debounce')) {
-    let nextModifier =
+    const nextModifier =
       modifiers[modifiers.indexOf('debounce') + 1] || 'invalid-wait';
-    let wait = isNumeric(nextModifier.split('ms')[0])
+    const wait = isNumeric(nextModifier.split('ms')[0])
       ? Number(nextModifier.split('ms')[0])
       : 250;
 
@@ -81,13 +97,13 @@ export default function on(el, event, modifiers, callback) {
   }
 
   if (modifiers.includes('throttle')) {
-    let nextModifier =
-      modifiers[modifiers.indexOf('throttle') + 1] || 'invalid-wait';
-    let wait = isNumeric(nextModifier.split('ms')[0])
+    const nextModifier =
+      modifiers[modifiers.indexOf('throttle') + 1] || 'invalid-limit';
+    const limit = isNumeric(nextModifier.split('ms')[0])
       ? Number(nextModifier.split('ms')[0])
       : 250;
 
-    handler = throttle(handler, wait);
+    handler = throttle(handler, limit);
   }
 
   listenerTarget.addEventListener(event, handler, options);
@@ -95,40 +111,26 @@ export default function on(el, event, modifiers, callback) {
   return () => {
     listenerTarget.removeEventListener(event, handler, options);
   };
-}
+};
 
-function dotSyntax(subject) {
-  return subject.replace(/-/g, '.');
-}
+type EventHandler = (event: Event) => void;
 
-function camelCase(subject) {
-  return subject
-    .toLowerCase()
-    .replace(/-(\w)/g, (match, char) => char.toUpperCase());
-}
+const isNumeric = (subject: string | number | unknown[]) =>
+  !Array.isArray(subject) && !isNaN(Number(subject));
 
-function isNumeric(subject) {
-  return !Array.isArray(subject) && !isNaN(subject);
-}
+const isKeyEvent = (event: string): event is 'keydown' | 'keyup' =>
+  ['keydown', 'keyup'].includes(event);
 
-function kebabCase(subject) {
-  return subject
-    .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .replace(/[_\s]/, '-')
-    .toLowerCase();
-}
-
-function isKeyEvent(event) {
-  return ['keydown', 'keyup'].includes(event);
-}
-
-function isListeningForASpecificKeyThatHasntBeenPressed(e, modifiers) {
-  let keyModifiers = modifiers.filter((i) => {
-    return !['window', 'document', 'prevent', 'stop', 'once'].includes(i);
-  });
+const isListeningForASpecificKeyThatHasntBeenPressed = (
+  e: Event,
+  modifiers: string[]
+) => {
+  let keyModifiers = modifiers.filter(
+    (mod) => !['window', 'document', 'prevent', 'stop', 'once'].includes(mod)
+  );
 
   if (keyModifiers.includes('debounce')) {
-    let debounceIndex = keyModifiers.indexOf('debounce');
+    const debounceIndex = keyModifiers.indexOf('debounce');
     keyModifiers.splice(
       debounceIndex,
       isNumeric(
@@ -145,7 +147,7 @@ function isListeningForASpecificKeyThatHasntBeenPressed(e, modifiers) {
   // If one is passed, AND it matches the key pressed, we'll call it a press.
   if (
     keyModifiers.length === 1 &&
-    keyToModifiers(e.key).includes(keyModifiers[0])
+    keyToModifiers((e as KeyboardEvent).key).includes(keyModifiers[0])
   )
     return false;
 
@@ -174,20 +176,21 @@ function isListeningForASpecificKeyThatHasntBeenPressed(e, modifiers) {
       activelyPressedKeyModifiers.length === selectedSystemKeyModifiers.length
     ) {
       // AND the remaining key is pressed as well. It's a press.
-      if (keyToModifiers(e.key).includes(keyModifiers[0])) return false;
+      if (keyToModifiers((e as KeyboardEvent).key).includes(keyModifiers[0]))
+        return false;
     }
   }
 
   // We'll call it NOT a valid keypress.
   return true;
-}
+};
 
-function keyToModifiers(key) {
+const keyToModifiers = (key: string): string[] => {
   if (!key) return [];
 
   key = kebabCase(key);
 
-  let modifierToKeyMap = {
+  const modifierToKeyMap = {
     ctrl: 'control',
     slash: '/',
     space: '-',
@@ -204,9 +207,7 @@ function keyToModifiers(key) {
 
   modifierToKeyMap[key] = key;
 
-  return Object.keys(modifierToKeyMap)
-    .map((modifier) => {
-      if (modifierToKeyMap[modifier] === key) return modifier;
-    })
-    .filter((modifier) => modifier);
-}
+  return Object.entries(modifierToKeyMap)
+    .map(([modifier, keytype]) => (keytype === key ? modifier : false))
+    .filter((mod: string | false): mod is string => Boolean(mod));
+};

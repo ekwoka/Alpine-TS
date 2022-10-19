@@ -7,7 +7,7 @@ import {
   startingWith,
 } from '../directives';
 import { evaluateLater } from '../evaluator';
-import on from '../utils/on';
+import { on } from '../utils/on';
 
 mapAttributes(startingWith('@', into(prefix('on:'))));
 

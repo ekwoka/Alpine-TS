@@ -2,7 +2,7 @@ import { directive } from '../directives';
 import { evaluateLater } from '../evaluator';
 import { mutateDom } from '../mutation';
 import bind from '../utils/bind';
-import on from '../utils/on';
+import { on } from '../utils/on';
 
 directive('model', (el, { modifiers, expression }, { effect, cleanup }) => {
   let evaluate = evaluateLater(el, expression);
