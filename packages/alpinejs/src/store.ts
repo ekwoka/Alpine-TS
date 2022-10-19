@@ -35,7 +35,7 @@ export const store: StoreFn = <T extends Store>(name: string, value?: T) => {
   )
     value.init();
 
-  initInterceptors(stores[name]);
+  initInterceptors(stores[name] as Record<string, unknown>);
 };
 
 export const getStores = () => stores;
