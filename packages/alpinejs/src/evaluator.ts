@@ -157,7 +157,12 @@ const generateEvaluatorFromString = (
       // Check if the function ran synchronously,
       if (status.finished) {
         // Return the immediate result.
-        runIfTypeOfFunction(receiver, status.result, completeScope, params, el);
+        runIfTypeOfFunction(
+          receiver,
+          status.result,
+          completeScope,
+          params
+        ).catch((error) => handleError(error, el, expression));
         // Once the function has run, we clear status.result so we don't create
         // memory leaks. func is stored in the evaluatorMemo and every time
         // it runs, it assigns the evaluated expression to result which could
@@ -167,7 +172,7 @@ const generateEvaluatorFromString = (
         // If not, return the result when the promise resolves.
         promise
           .then((result) => {
-            runIfTypeOfFunction(receiver, result, completeScope, params, el);
+            runIfTypeOfFunction(receiver, result, completeScope, params);
           })
           .catch((error) => handleError(error, el, expression))
           .finally(() => (status.result = undefined));
@@ -180,17 +185,14 @@ export const runIfTypeOfFunction = <T>(
   receiver: (value: T) => unknown,
   value: T,
   scope?: Record<string, unknown>,
-  params?: unknown[],
-  el?: ElementWithXAttributes
+  params?: unknown[]
 ) => {
   if (!shouldAutoEvaluateFunctions || typeof value !== 'function')
     return receiver(value);
   const result: T | Promise<T> = value.apply(scope, params);
 
   if (result instanceof Promise)
-    return result
-      .then((i) => runIfTypeOfFunction(receiver, i, scope, params))
-      .catch((error) => handleError(error, el, value));
+    return result.then((i) => runIfTypeOfFunction(receiver, i, scope, params));
 
   return receiver(result);
 };
