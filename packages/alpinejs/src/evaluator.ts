@@ -163,12 +163,7 @@ const generateEvaluatorFromString = (
       // Check if the function ran synchronously,
       if (status.finished) {
         // Return the immediate result.
-        runIfTypeOfFunction(
-          receiver,
-          status.result,
-          completeScope,
-          params
-        ).catch((error) => handleError(error, el, expression));
+        runIfTypeOfFunction(receiver, status.result, completeScope, params);
         // Once the function has run, we clear status.result so we don't create
         // memory leaks. func is stored in the evaluatorMemo and every time
         // it runs, it assigns the evaluated expression to result which could
