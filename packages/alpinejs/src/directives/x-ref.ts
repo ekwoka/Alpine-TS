@@ -1,11 +1,12 @@
 import { directive } from '../directives';
 import { closestRoot } from '../lifecycle';
+import { DirectiveCallback } from '../types';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-function handler() {}
+const handler: DirectiveCallback = () => {};
 
 handler.inline = (el, { expression }, { cleanup }) => {
-  let root = closestRoot(el);
+  const root = closestRoot(el);
 
   if (!root._x_refs) root._x_refs = {};
 

@@ -3,7 +3,7 @@ import { kebabCase } from './stringTransformers';
 
 export const setStyles = (
   el: ElementWithXAttributes,
-  value: string | Record<string, string>
+  value: string | Partial<CSSStyleDeclaration>
 ) => {
   if (typeof value === 'object' && value !== null)
     return setStylesFromObject(el, value);
@@ -13,7 +13,7 @@ export const setStyles = (
 
 const setStylesFromObject = (
   el: ElementWithXAttributes,
-  value: Record<string, string>
+  value: Partial<CSSStyleDeclaration>
 ) => {
   const previousStyles = {};
 
@@ -26,7 +26,7 @@ const setStylesFromObject = (
     // In case key is a CSS variable, leave it as it is.
     if (!key.startsWith('--')) key = kebabCase(key);
 
-    el.style.setProperty(key, value);
+    el.style.setProperty(key, value as string);
   });
 
   setTimeout(() => {

@@ -35,7 +35,44 @@ export type ElementWithXAttributes = HTMLElement &
       set: (value: unknown) => void;
     };
     _x_forceModelUpdate: () => void;
+    _x_forwardEvents: string[];
+    _x_doHide: () => void;
+    _x_doShow: () => void;
+    _x_toggleAndCascadeWithTransitions: (
+      el: ElementWithXAttributes,
+      val: boolean,
+      show: () => void,
+      hide: () => void
+    ) => void;
+    _x_teleport: ElementWithXAttributes;
+    _x_transition: Transitions;
+    _x_hidePromise: Promise<() => void>;
+    _x_transitioning: {
+      beforeCancel: (fn: () => void) => void;
+      beforeCancels: (() => void)[];
+      cancel: () => void;
+      finish: () => void;
+    };
+    _x_hideChildren: ElementWithXAttributes[];
   };
+
+type Transitions = {
+  enter: TransitionStages;
+  leave: TransitionStages;
+} & TransitionFromObject;
+
+export type TransitionStages = Partial<{
+  start: string | TransitionFromHelpers;
+  during: string | TransitionFromHelpers;
+  end: string | TransitionFromHelpers;
+}>;
+
+type TransitionFromHelpers = Partial<CSSStyleDeclaration>;
+
+type TransitionFromObject = {
+  in: (before: () => void, after?: () => void) => void;
+  out: (before: () => void, after?: () => void) => void;
+};
 
 export type MutationCallback = (node?: ElementWithXAttributes) => void;
 

@@ -2,7 +2,7 @@ import { directive } from '../directives';
 import { mutateDom } from '../mutation';
 
 directive('text', (el, { expression }, { effect, evaluateLater }) => {
-  let evaluate = evaluateLater(expression);
+  const evaluate = evaluateLater<string>(expression);
 
   effect(() => {
     evaluate((value) => {

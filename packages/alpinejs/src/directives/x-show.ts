@@ -4,12 +4,12 @@ import { mutateDom } from '../mutation';
 import { once } from '../utils/once';
 
 directive('show', (el, { modifiers, expression }, { effect }) => {
-  let evaluate = evaluateLater(el, expression);
+  const evaluate = evaluateLater<boolean>(el, expression);
 
   // We're going to set this function on the element directly so that
   // other plugins like "Collapse" can overwrite them with their own logic.
   if (!el._x_doHide)
-    el._x_doHide = () => {
+    el._x_doHide = () =>
       mutateDom(() => {
         el.style.setProperty(
           'display',
@@ -17,10 +17,9 @@ directive('show', (el, { modifiers, expression }, { effect }) => {
           modifiers.includes('important') ? 'important' : undefined
         );
       });
-    };
 
   if (!el._x_doShow)
-    el._x_doShow = () => {
+    el._x_doShow = () =>
       mutateDom(() => {
         if (el.style.length === 1 && el.style.display === 'none') {
           el.removeAttribute('style');
@@ -28,14 +27,13 @@ directive('show', (el, { modifiers, expression }, { effect }) => {
           el.style.removeProperty('display');
         }
       });
-    };
 
-  let hide = () => {
+  const hide = () => {
     el._x_doHide();
     el._x_isShown = false;
   };
 
-  let show = () => {
+  const show = () => {
     el._x_doShow();
     el._x_isShown = true;
   };
@@ -43,9 +41,9 @@ directive('show', (el, { modifiers, expression }, { effect }) => {
   // We are wrapping this function in a setTimeout here to prevent
   // a race condition from happening where elements that have a
   // @click.away always view themselves as shown on the page.
-  let clickAwayCompatibleShow = () => setTimeout(show);
+  const clickAwayCompatibleShow = () => setTimeout(show);
 
-  let toggle = once(
+  const toggle = once<(val: boolean) => void>(
     (value) => (value ? show() : hide()),
     (value) => {
       if (typeof el._x_toggleAndCascadeWithTransitions === 'function') {
@@ -56,7 +54,7 @@ directive('show', (el, { modifiers, expression }, { effect }) => {
     }
   );
 
-  let oldValue;
+  let oldValue: boolean;
   let firstTime = true;
 
   effect(() =>
