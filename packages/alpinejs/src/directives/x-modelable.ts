@@ -1,18 +1,18 @@
 import { directive } from '../directives';
 
 directive('modelable', (el, { expression }, { effect, evaluateLater }) => {
-  let func = evaluateLater(expression);
-  let innerGet = () => {
-    let result;
+  const func = evaluateLater<unknown>(expression);
+  const innerGet = () => {
+    let result: unknown;
     func((i) => (result = i));
     return result;
   };
-  let evaluateInnerSet = evaluateLater(`${expression} = __placeholder`);
-  let innerSet = (val) =>
+  const evaluateInnerSet = evaluateLater(`${expression} = __placeholder`);
+  const innerSet = (val: unknown) =>
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     evaluateInnerSet(() => {}, { scope: { __placeholder: val } });
 
-  let initialValue = innerGet();
+  const initialValue = innerGet();
 
   innerSet(initialValue);
 
@@ -25,8 +25,8 @@ directive('modelable', (el, { expression }, { effect, evaluateLater }) => {
     // override any functionality added by x-modelable causing confusion.
     el._x_removeModelListeners['default']();
 
-    let outerGet = el._x_model.get;
-    let outerSet = el._x_model.set;
+    const outerGet = el._x_model.get;
+    const outerSet = el._x_model.set;
 
     effect(() => innerSet(outerGet()));
     effect(() => outerSet(innerGet()));

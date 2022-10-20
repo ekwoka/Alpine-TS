@@ -8,7 +8,7 @@ import { setStyles } from './styles';
 export const bind = (
   el: ElementWithXAttributes,
   name: string,
-  value: string,
+  value: unknown,
   modifiers: string[] = []
 ) => {
   // Register bound data as pure observable data for other APIs to use.
@@ -20,19 +20,22 @@ export const bind = (
 
   switch (name) {
     case 'value':
-      bindInputValue(el as ElementWithXAttributes & HTMLInputElement, value);
+      bindInputValue(
+        el as ElementWithXAttributes & HTMLInputElement,
+        value as string
+      );
       break;
 
     case 'style':
-      bindStyles(el, value);
+      bindStyles(el, value as string | Record<string, string>);
       break;
 
     case 'class':
-      bindClasses(el, value);
+      bindClasses(el, value as string | Record<string, boolean>);
       break;
 
     default:
-      bindAttribute(el, name, value);
+      bindAttribute(el, name, value as string | boolean);
       break;
   }
 };
@@ -136,7 +139,7 @@ const updateSelect = (
   );
 };
 
-const checkedAttrLooseCompare = (valueA: unknown, valueB: unknown) =>
+export const checkedAttrLooseCompare = (valueA: unknown, valueB: unknown) =>
   valueA == valueB;
 
 // As per HTML spec table https://html.spec.whatwg.org/multipage/indices.html#attributes-3:boolean-attribute

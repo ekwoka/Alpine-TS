@@ -1,7 +1,8 @@
 import { directive } from '../directives';
+import { DirectiveCallback } from '../types';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-let handler = () => {};
+const handler: DirectiveCallback = () => {};
 
 handler.inline = (el, { modifiers }, { cleanup }) => {
   modifiers.includes('self')

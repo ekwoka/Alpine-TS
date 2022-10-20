@@ -1,28 +1,33 @@
 import { directive } from '../directives';
 import { evaluateLater } from '../evaluator';
 import { mutateDom } from '../mutation';
-import { bind } from '../utils/bind';
-import { on } from '../utils/on';
+import { DirectiveData, ElementWithXAttributes } from '../types';
+import { bind, checkedAttrLooseCompare } from '../utils/bind';
+import { isNumeric, on } from '../utils/on';
 
 export let fromModel = false;
 
 directive('model', (el, { modifiers, expression }, { effect, cleanup }) => {
-  let evaluate = evaluateLater(el, expression);
-  let assignmentExpression = `${expression} = rightSideOfExpression($event, ${expression})`;
-  let evaluateAssignment = evaluateLater(el, assignmentExpression);
+  const evaluate = evaluateLater<unknown>(el, expression);
+  const assignmentExpression = `${expression} = rightSideOfExpression($event, ${expression})`;
+  const evaluateAssignment = evaluateLater<void>(el, assignmentExpression);
 
   // If the element we are binding to is a select, a radio, or checkbox
   // we'll listen for the change event instead of the "input" event.
-  var event =
+  const event =
     el.tagName.toLowerCase() === 'select' ||
     ['checkbox', 'radio'].includes(el.type) ||
     modifiers.includes('lazy')
       ? 'change'
       : 'input';
 
-  let assigmentFunction = generateAssignmentFunction(el, modifiers, expression);
+  const assigmentFunction = generateAssignmentFunction(
+    el,
+    modifiers,
+    expression
+  );
 
-  let removeListener = on(el, event, modifiers, (e) => {
+  const removeListener = on(el, event, modifiers, (e) => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     evaluateAssignment(() => {}, {
       scope: {
@@ -42,10 +47,10 @@ directive('model', (el, { modifiers, expression }, { effect, cleanup }) => {
   cleanup(() => el._x_removeModelListeners['default']());
 
   // Allow programmatic overiding of x-model.
-  let evaluateSetModel = evaluateLater(el, `${expression} = __placeholder`);
+  const evaluateSetModel = evaluateLater(el, `${expression} = __placeholder`);
   el._x_model = {
     get() {
-      let result;
+      let result: unknown;
       evaluate((value) => (result = value));
       return result;
     },
@@ -79,7 +84,11 @@ directive('model', (el, { modifiers, expression }, { effect, cleanup }) => {
   });
 });
 
-function generateAssignmentFunction(el, modifiers, expression) {
+const generateAssignmentFunction = (
+  el: ElementWithXAttributes,
+  modifiers: DirectiveData['modifiers'],
+  expression: DirectiveData['expression']
+) => {
   if (el.type === 'radio') {
     // Radio buttons only work properly when they share a name attribute.
     // People might assume we take care of that for them, because
@@ -89,59 +98,52 @@ function generateAssignmentFunction(el, modifiers, expression) {
     });
   }
 
-  return (event, currentValue) => {
-    return mutateDom(() => {
+  return (event: Event, currentValue: unknown) =>
+    mutateDom(() => {
       // Check for event.detail due to an issue where IE11 handles other events as a CustomEvent.
       // Safari autofill triggers event as CustomEvent and assigns value to target
       // so we return event.target.value instead of event.detail
-      if (event instanceof CustomEvent && event.detail !== undefined) {
-        return event.detail || event.target.value;
-      } else if (el.type === 'checkbox') {
+      const eventTarget = event.target as ElementWithXAttributes &
+        HTMLInputElement;
+      if (event instanceof CustomEvent && event.detail !== undefined)
+        return event.detail || eventTarget.value;
+      if (el.type === 'checkbox') {
         // If the data we are binding to is an array, toggle its value inside the array.
         if (Array.isArray(currentValue)) {
-          let newValue = modifiers.includes('number')
-            ? safeParseNumber(event.target.value)
-            : event.target.value;
+          const newValue = modifiers.includes('number')
+            ? safeParseNumber(eventTarget.value)
+            : eventTarget.value;
 
-          return event.target.checked
+          return eventTarget.checked
             ? currentValue.concat([newValue])
             : currentValue.filter(
                 (el) => !checkedAttrLooseCompare(el, newValue)
               );
-        } else {
-          return event.target.checked;
         }
-      } else if (el.tagName.toLowerCase() === 'select' && el.multiple) {
+        return eventTarget.checked;
+      }
+      if (el.tagName.toLowerCase() === 'select' && el.multiple)
         return modifiers.includes('number')
-          ? Array.from(event.target.selectedOptions).map((option) => {
-              let rawValue = option.value || option.text;
+          ? Array.from(
+              (eventTarget as unknown as HTMLSelectElement).selectedOptions
+            ).map((option) => {
+              const rawValue = option.value || option.text;
               return safeParseNumber(rawValue);
             })
-          : Array.from(event.target.selectedOptions).map((option) => {
-              return option.value || option.text;
-            });
-      } else {
-        let rawValue = event.target.value;
-        return modifiers.includes('number')
-          ? safeParseNumber(rawValue)
-          : modifiers.includes('trim')
-          ? rawValue.trim()
-          : rawValue;
-      }
+          : Array.from(
+              (eventTarget as unknown as HTMLSelectElement).selectedOptions
+            ).map((option) => option.value || option.text);
+      const rawValue = eventTarget.value;
+      return modifiers.includes('number')
+        ? safeParseNumber(rawValue)
+        : modifiers.includes('trim')
+        ? rawValue.trim()
+        : rawValue;
     });
-  };
-}
+};
 
-function safeParseNumber(rawValue) {
-  let number = rawValue ? parseFloat(rawValue) : null;
+const safeParseNumber = (rawValue: string) => {
+  const number = rawValue ? parseFloat(rawValue) : null;
 
   return isNumeric(number) ? number : rawValue;
-}
-
-function checkedAttrLooseCompare(valueA, valueB) {
-  return valueA == valueB;
-}
-
-function isNumeric(subject) {
-  return !Array.isArray(subject) && !isNaN(subject);
-}
+};

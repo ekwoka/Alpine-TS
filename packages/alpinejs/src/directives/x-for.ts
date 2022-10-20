@@ -6,6 +6,7 @@ import { reactive } from '../reactivity';
 import { dequeueJob } from '../scheduler';
 import { addScopeToNode, refreshScope } from '../scope';
 import { ElementWithXAttributes } from '../types';
+import { isNumeric } from '../utils/on';
 import { warn } from '../utils/warn';
 
 directive('for', (el, { expression }, { effect, cleanup }) => {
@@ -185,10 +186,8 @@ const loop = (
       const scope = scopes[index];
       const key = keys[index];
 
-      const clone = document.importNode(
-        (templateEl as unknown as HTMLTemplateElement).content,
-        true
-      ).firstElementChild as ElementWithXAttributes;
+      const clone = document.importNode(templateEl.content, true)
+        .firstElementChild as ElementWithXAttributes;
 
       addScopeToNode(clone, reactive(scope), templateEl);
 
@@ -296,6 +295,3 @@ const getIterationScopeVariables = (
 
   return scopeVariables;
 };
-
-const isNumeric = (subject: unknown | number): subject is number =>
-  !Array.isArray(subject) && !isNaN(subject as number);

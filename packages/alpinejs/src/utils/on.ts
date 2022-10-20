@@ -115,7 +115,7 @@ export const on = (
 
 type EventHandler = (event: Event) => void;
 
-const isNumeric = (subject: string | number | unknown[]) =>
+export const isNumeric = (subject: unknown): subject is number =>
   !Array.isArray(subject) && !isNaN(Number(subject));
 
 const isKeyEvent = (event: string): event is 'keydown' | 'keyup' =>

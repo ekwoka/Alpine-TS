@@ -4,15 +4,17 @@ import { initTree } from '../lifecycle';
 import { mutateDom } from '../mutation';
 import { dequeueJob } from '../scheduler';
 import { addScopeToNode } from '../scope';
+import { ElementWithXAttributes } from '../types';
 import { walk } from '../utils/walk';
 
 directive('if', (el, { expression }, { effect, cleanup }) => {
-  let evaluate = evaluateLater(el, expression);
+  const evaluate = evaluateLater(el, expression);
 
-  let show = () => {
+  const show = () => {
     if (el._x_currentIfEl) return el._x_currentIfEl;
 
-    let clone = el.content.cloneNode(true).firstElementChild;
+    const clone = (el.content.cloneNode(true) as ElementWithXAttributes)
+      .firstElementChild as ElementWithXAttributes;
 
     addScopeToNode(clone, {}, el);
 
@@ -39,7 +41,7 @@ directive('if', (el, { expression }, { effect, cleanup }) => {
     return clone;
   };
 
-  let hide = () => {
+  const hide = () => {
     if (!el._x_undoIf) return;
 
     el._x_undoIf();
@@ -47,11 +49,7 @@ directive('if', (el, { expression }, { effect, cleanup }) => {
     delete el._x_undoIf;
   };
 
-  effect(() =>
-    evaluate((value) => {
-      value ? show() : hide();
-    })
-  );
+  effect(() => evaluate((value) => (value ? show() : hide())));
 
   cleanup(() => el._x_undoIf && el._x_undoIf());
 });
