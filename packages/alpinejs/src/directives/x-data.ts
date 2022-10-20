@@ -15,28 +15,31 @@ directive(
   skipDuringClone((el, { expression }, { cleanup }) => {
     expression = expression === '' ? '{}' : expression;
 
-    let magicContext = {};
+    const magicContext = {};
     injectMagics(magicContext, el);
 
-    let dataProviderContext = {};
+    const dataProviderContext = {};
     injectDataProviders(dataProviderContext, magicContext);
 
-    let data = evaluate(el, expression, { scope: dataProviderContext });
+    let data = evaluate<Record<string, unknown>>(el, expression, {
+      scope: dataProviderContext,
+    });
 
     if (data === undefined) data = {};
 
     injectMagics(data, el);
 
-    let reactiveData = reactive(data);
+    const reactiveData = reactive(data);
 
     initInterceptors(reactiveData);
 
-    let undo = addScopeToNode(el, reactiveData);
+    const undo = addScopeToNode(el, reactiveData);
 
-    reactiveData['init'] && evaluate(el, reactiveData['init']);
+    reactiveData['init'] && evaluate(el, reactiveData['init'] as () => void);
 
     cleanup(() => {
-      reactiveData['destroy'] && evaluate(el, reactiveData['destroy']);
+      reactiveData['destroy'] &&
+        evaluate(el, reactiveData['destroy'] as () => void);
 
       undo();
     });

@@ -5,13 +5,14 @@ import { mutateDom } from '../mutation';
 import { reactive } from '../reactivity';
 import { dequeueJob } from '../scheduler';
 import { addScopeToNode, refreshScope } from '../scope';
+import { ElementWithXAttributes } from '../types';
 import { warn } from '../utils/warn';
 
 directive('for', (el, { expression }, { effect, cleanup }) => {
-  let iteratorNames = parseForExpression(expression);
+  const iteratorNames = parseForExpression(expression);
 
-  let evaluateItems = evaluateLater(el, iteratorNames.items);
-  let evaluateKey = evaluateLater(
+  const evaluateItems = evaluateLater<unknown>(el, iteratorNames.items);
+  const evaluateKey = evaluateLater<string>(
     el,
     // the x-bind:key expression is stored for our use instead of evaluated.
     el._x_keyExpression || 'index'
@@ -30,9 +31,15 @@ directive('for', (el, { expression }, { effect, cleanup }) => {
   });
 });
 
-function loop(el, iteratorNames, evaluateItems, evaluateKey) {
-  let isObject = (i) => typeof i === 'object' && !Array.isArray(i);
-  let templateEl = el;
+const loop = (
+  el: ElementWithXAttributes,
+  iteratorNames: IteratorNames,
+  evaluateItems: ReturnType<typeof evaluateLater<unknown>>,
+  evaluateKey: ReturnType<typeof evaluateLater<string>>
+) => {
+  const isObject = (i: unknown): i is Record<string, unknown> =>
+    typeof i === 'object' && !Array.isArray(i);
+  const templateEl = el;
 
   evaluateItems((items) => {
     // Prepare yourself. There's a lot going on here. Take heart,
@@ -40,27 +47,26 @@ function loop(el, iteratorNames, evaluateItems, evaluateKey) {
     // the purpose of making Alpine fast with large datas.
 
     // Support number literals. Ex: x-for="i in 100"
-    if (isNumeric(items) && items >= 0) {
-      items = Array.from(Array(items).keys(), (i) => i + 1);
-    }
+    if (isNumeric(items) && items >= 0)
+      items = Array.from({ length: items }, (_, i) => i + 1);
 
     if (items === undefined) items = [];
 
-    let lookup = el._x_lookup;
+    const lookup = el._x_lookup;
     let prevKeys = el._x_prevKeys;
-    let scopes = [];
-    let keys = [];
+    const scopes: Scope[] = [];
+    const keys: string[] = [];
 
     // In order to preserve DOM elements (move instead of replace)
     // we need to generate all the keys for every iteration up
     // front. These will be our source of truth for diffing.
     if (isObject(items)) {
       items = Object.entries(items).map(([key, value]) => {
-        let scope = getIterationScopeVariables(
+        const scope = getIterationScopeVariables(
           iteratorNames,
           value,
           key,
-          items
+          items as Record<string, unknown>
         );
 
         evaluateKey((value) => keys.push(value), {
@@ -70,36 +76,32 @@ function loop(el, iteratorNames, evaluateItems, evaluateKey) {
         scopes.push(scope);
       });
     } else {
-      for (let i = 0; i < items.length; i++) {
-        let scope = getIterationScopeVariables(
+      (items as unknown[]).forEach((item, index) => {
+        const scope = getIterationScopeVariables(
           iteratorNames,
-          items[i],
-          i,
-          items
+          item,
+          index,
+          items as unknown[]
         );
 
         evaluateKey((value) => keys.push(value), {
-          scope: { index: i, ...scope },
+          scope: { index, ...scope },
         });
 
         scopes.push(scope);
-      }
+      });
     }
 
     // Rather than making DOM manipulations inside one large loop, we'll
     // instead track which mutations need to be made in the following
     // arrays. After we're finished, we can batch them at the end.
-    let adds = [];
-    let moves = [];
-    let removes = [];
-    let sames = [];
+    const adds: [string, number][] = [];
+    const moves: [string, string][] = [];
+    const removes: string[] = [];
+    const sames: string[] = [];
 
     // First, we track elements that will need to be removed.
-    for (let i = 0; i < prevKeys.length; i++) {
-      let key = prevKeys[i];
-
-      if (keys.indexOf(key) === -1) removes.push(key);
-    }
+    prevKeys.forEach((key) => keys.indexOf(key) === -1 && removes.push(key));
 
     // Notice we're mutating prevKeys as we go. This makes it
     // so that we can efficiently make incremental comparisons.
@@ -110,22 +112,20 @@ function loop(el, iteratorNames, evaluateItems, evaluateKey) {
     // This is the important part of the diffing algo. Identifying
     // which keys (future DOM elements) are new, which ones have
     // or haven't moved (noting where they moved to / from).
-    for (let i = 0; i < keys.length; i++) {
-      let key = keys[i];
-
-      let prevIndex = prevKeys.indexOf(key);
+    keys.forEach((key, index) => {
+      const prevIndex = prevKeys.indexOf(key);
 
       if (prevIndex === -1) {
         // New key found.
-        prevKeys.splice(i, 0, key);
+        prevKeys.splice(index, 0, key);
 
-        adds.push([lastKey, i]);
-      } else if (prevIndex !== i) {
+        adds.push([lastKey, index]);
+      } else if (prevIndex !== index) {
         // A key has moved.
-        let keyInSpot = prevKeys.splice(i, 1)[0];
-        let keyForSpot = prevKeys.splice(prevIndex - 1, 1)[0];
+        const keyInSpot = prevKeys.splice(index, 1)[0];
+        const keyForSpot = prevKeys.splice(prevIndex - 1, 1)[0];
 
-        prevKeys.splice(i, 0, keyForSpot);
+        prevKeys.splice(index, 0, keyForSpot);
         prevKeys.splice(prevIndex, 0, keyInSpot);
 
         moves.push([keyInSpot, keyForSpot]);
@@ -136,7 +136,7 @@ function loop(el, iteratorNames, evaluateItems, evaluateKey) {
       }
 
       lastKey = key;
-    }
+    });
 
     // Now that we've done the diffing work, we can apply the mutations
     // in batches for both separating types work and optimizing
@@ -145,29 +145,23 @@ function loop(el, iteratorNames, evaluateItems, evaluateKey) {
     // We'll remove all the nodes that need to be removed,
     // letting the mutation observer pick them up and
     // clean up any side effects they had.
-    for (let i = 0; i < removes.length; i++) {
-      let key = removes[i];
-
+    removes.forEach((key) => {
       // Remove any queued effects that might run after the DOM node has been removed.
-      if (lookup[key]._x_effects) {
-        lookup[key]._x_effects.forEach(dequeueJob);
-      }
+      if (lookup[key]._x_effects) lookup[key]._x_effects.forEach(dequeueJob);
 
       lookup[key].remove();
 
       lookup[key] = null;
       delete lookup[key];
-    }
+    });
 
     // Here we'll move elements around, skipping
     // mutation observer triggers by using "mutateDom".
-    for (let i = 0; i < moves.length; i++) {
-      let [keyInSpot, keyForSpot] = moves[i];
+    moves.forEach(([keyInSpot, keyForSpot]) => {
+      const elInSpot = lookup[keyInSpot];
+      const elForSpot = lookup[keyForSpot];
 
-      let elInSpot = lookup[keyInSpot];
-      let elForSpot = lookup[keyForSpot];
-
-      let marker = document.createElement('div');
+      const marker = document.createElement('div');
 
       mutateDom(() => {
         elForSpot.after(marker);
@@ -179,24 +173,22 @@ function loop(el, iteratorNames, evaluateItems, evaluateKey) {
       });
 
       refreshScope(elForSpot, scopes[keys.indexOf(keyForSpot)]);
-    }
+    });
 
     // We can now create and add new elements.
-    for (let i = 0; i < adds.length; i++) {
-      let [lastKey, index] = adds[i];
-
+    adds.forEach(([lastKey, index]) => {
       let lastEl = lastKey === 'template' ? templateEl : lookup[lastKey];
       // If the element is a x-if template evaluated to true,
       // point lastEl to the if-generated node
       if (lastEl._x_currentIfEl) lastEl = lastEl._x_currentIfEl;
 
-      let scope = scopes[index];
-      let key = keys[index];
+      const scope = scopes[index];
+      const key = keys[index];
 
-      let clone = document.importNode(
-        templateEl.content,
+      const clone = document.importNode(
+        (templateEl as unknown as HTMLTemplateElement).content,
         true
-      ).firstElementChild;
+      ).firstElementChild as ElementWithXAttributes;
 
       addScopeToNode(clone, reactive(scope), templateEl);
 
@@ -214,82 +206,88 @@ function loop(el, iteratorNames, evaluateItems, evaluateKey) {
       }
 
       lookup[key] = clone;
-    }
+    });
 
     // If an element hasn't changed, we still want to "refresh" the
     // data it depends on in case the data has changed in an
     // "unobservable" way.
-    for (let i = 0; i < sames.length; i++) {
-      refreshScope(lookup[sames[i]], scopes[keys.indexOf(sames[i])]);
-    }
+    sames.forEach((key) => {
+      refreshScope(lookup[key], scopes[keys.indexOf(key)]);
+    });
 
     // Now we'll log the keys (and the order they're in) for comparing
     // against next time.
     templateEl._x_prevKeys = keys;
   });
-}
+};
+
+type IteratorNames = {
+  item: string;
+  index?: string;
+  collection?: string;
+  items: string;
+};
 
 // This was taken from VueJS 2.* core. Thanks Vue!
-function parseForExpression(expression) {
-  let forIteratorRE = /,([^,}\]]*)(?:,([^,}\]]*))?$/;
-  let stripParensRE = /^\s*\(|\)\s*$/g;
-  let forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/;
-  let inMatch = expression.match(forAliasRE);
+const parseForExpression = (expression: string) => {
+  const forIteratorRE = /,([^,}\]]*)(?:,([^,}\]]*))?$/;
+  const stripParensRE = /^\s*\(|\)\s*$/g;
+  const forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/;
+  const inMatch = expression.match(forAliasRE);
 
   if (!inMatch) return;
 
-  let res = {};
-  res.items = inMatch[2].trim();
-  let item = inMatch[1].replace(stripParensRE, '').trim();
-  let iteratorMatch = item.match(forIteratorRE);
+  const res: IteratorNames = {
+    items: inMatch[2].trim(),
+    item: inMatch[1].trim().replace(stripParensRE, ''),
+  };
 
+  const iteratorMatch = res.item.match(forIteratorRE);
   if (iteratorMatch) {
-    res.item = item.replace(forIteratorRE, '').trim();
+    res.item = res.item.replace(forIteratorRE, '').trim();
     res.index = iteratorMatch[1].trim();
 
-    if (iteratorMatch[2]) {
-      res.collection = iteratorMatch[2].trim();
-    }
-  } else {
-    res.item = item;
+    if (iteratorMatch[2]) res.collection = iteratorMatch[2].trim();
   }
 
   return res;
-}
+};
 
-function getIterationScopeVariables(iteratorNames, item, index, items) {
+type Scope = Record<string, unknown>;
+
+const getIterationScopeVariables = (
+  iteratorNames: IteratorNames,
+  item: unknown,
+  index: string | number,
+  items: Record<string, unknown> | unknown[]
+): Scope => {
   // We must create a new object, so each iteration has a new scope
-  let scopeVariables = {};
+  const scopeVariables: Record<string, unknown> = {};
 
   // Support array destructuring ([foo, bar]).
   if (/^\[.*\]$/.test(iteratorNames.item) && Array.isArray(item)) {
-    let names = iteratorNames.item
+    const names = iteratorNames.item
       .replace('[', '')
       .replace(']', '')
       .split(',')
       .map((i) => i.trim());
 
-    names.forEach((name, i) => {
-      scopeVariables[name] = item[i];
-    });
+    names.forEach((name, i) => (scopeVariables[name] = item[i]));
+
     // Support object destructuring ({ foo: 'oof', bar: 'rab' }).
   } else if (
     /^\{.*\}$/.test(iteratorNames.item) &&
     !Array.isArray(item) &&
     typeof item === 'object'
   ) {
-    let names = iteratorNames.item
+    const names = iteratorNames.item
       .replace('{', '')
       .replace('}', '')
       .split(',')
       .map((i) => i.trim());
 
-    names.forEach((name) => {
-      scopeVariables[name] = item[name];
-    });
-  } else {
-    scopeVariables[iteratorNames.item] = item;
-  }
+    names.forEach((name) => (scopeVariables[name] = item[name]));
+  } else scopeVariables[iteratorNames.item] = item;
 
   if (iteratorNames.index) scopeVariables[iteratorNames.index] = index;
 
@@ -297,8 +295,7 @@ function getIterationScopeVariables(iteratorNames, item, index, items) {
     scopeVariables[iteratorNames.collection] = items;
 
   return scopeVariables;
-}
+};
 
-function isNumeric(subject) {
-  return !Array.isArray(subject) && !isNaN(subject);
-}
+const isNumeric = (subject: unknown | number): subject is number =>
+  !Array.isArray(subject) && !isNaN(subject as number);

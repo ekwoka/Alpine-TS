@@ -6,7 +6,7 @@ export const scope = (node: ElementWithXAttributes) =>
 export const addScopeToNode = (
   node: ElementWithXAttributes,
   data: Record<string, unknown>,
-  referenceNode: ElementWithXAttributes
+  referenceNode?: ElementWithXAttributes
 ) => {
   node._x_dataStack = [data, ...closestDataStack(referenceNode || node)];
 

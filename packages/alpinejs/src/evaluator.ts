@@ -36,7 +36,7 @@ type Evaluator = <T>(
   el: ElementWithXAttributes,
   expression?: string | (() => T)
 ) => (
-  callback: (value: T) => void,
+  callback?: (value: T) => void,
   extras?: { scope?: object; params?: unknown[] }
 ) => void;
 

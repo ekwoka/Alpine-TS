@@ -1,4 +1,8 @@
-import { applyBindingsObject, injectBindingProviders } from '../binds';
+import {
+  Bindings,
+  applyBindingsObject,
+  injectBindingProviders,
+} from '../binds';
 import {
   directive,
   into,
@@ -8,6 +12,7 @@ import {
 } from '../directives';
 import { evaluateLater } from '../evaluator';
 import { mutateDom } from '../mutation';
+import { ElementWithXAttributes } from '../types';
 import { bind } from '../utils/bind';
 
 mapAttributes(startingWith(':', into(prefix('bind:'))));
@@ -16,10 +21,10 @@ directive(
   'bind',
   (el, { value, modifiers, expression, original }, { effect }) => {
     if (!value) {
-      let bindingProviders = {};
+      const bindingProviders = {};
       injectBindingProviders(bindingProviders);
 
-      let getBindings = evaluateLater(el, expression);
+      const getBindings = evaluateLater<Bindings>(el, expression);
 
       getBindings(
         (bindings) => {
@@ -33,7 +38,7 @@ directive(
 
     if (value === 'key') return storeKeyForXFor(el, expression);
 
-    let evaluate = evaluateLater(el, expression);
+    const evaluate = evaluateLater<string>(el, expression);
 
     effect(() =>
       evaluate((result) => {
@@ -52,6 +57,5 @@ directive(
   }
 );
 
-function storeKeyForXFor(el, expression) {
-  el._x_keyExpression = expression;
-}
+const storeKeyForXFor = (el: ElementWithXAttributes, expression: string) =>
+  (el._x_keyExpression = expression);

@@ -20,16 +20,20 @@ import './x-text';
 import './x-transition';
 
 // Register warnings for people using plugin syntaxes and not loading the plugin itself:
-warnMissingPluginDirective('Collapse', 'collapse', 'collapse');
-warnMissingPluginDirective('Intersect', 'intersect', 'intersect');
-warnMissingPluginDirective('Focus', 'trap', 'focus');
-warnMissingPluginDirective('Mask', 'mask', 'mask');
 
-function warnMissingPluginDirective(name, directiveName, slug) {
+const warnMissingPluginDirective = (
+  name: string,
+  directiveName: string,
+  slug: string
+) =>
   directive(directiveName, (el) =>
     warn(
       `You can't use [x-${directiveName}] without first installing the "${name}" plugin here: https://alpinejs.dev/plugins/${slug}`,
       el
     )
   );
-}
+
+warnMissingPluginDirective('Collapse', 'collapse', 'collapse');
+warnMissingPluginDirective('Intersect', 'intersect', 'intersect');
+warnMissingPluginDirective('Focus', 'trap', 'focus');
+warnMissingPluginDirective('Mask', 'mask', 'mask');

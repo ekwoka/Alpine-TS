@@ -22,6 +22,10 @@ export type ElementWithXAttributes = HTMLElement & {
   _x_teleportBack: ElementWithXAttributes;
   _x_refs_proxy: Record<string, unknown>;
   _x_refs: unknown;
+  _x_keyExpression: string;
+  _x_prevKeys: string[];
+  _x_lookup: Record<string, ElementWithXAttributes>;
+  _x_currentIfEl: ElementWithXAttributes;
 };
 
 export type MutationCallback = (node?: ElementWithXAttributes) => void;

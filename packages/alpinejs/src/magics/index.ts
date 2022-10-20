@@ -15,14 +15,13 @@ const warnMissingPluginMagic = (
   name: string,
   magicName: string,
   slug: string
-) => {
+) =>
   magic(magicName, (el) =>
     warn(
       `You can't use [$${magicName}] without first installing the "${name}" plugin here: https://alpinejs.dev/plugins/${slug}`,
       el
     )
   );
-};
 
 warnMissingPluginMagic('Focus', 'focus', 'focus');
 warnMissingPluginMagic('Persist', 'persist', 'persist');
