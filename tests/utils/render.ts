@@ -16,6 +16,7 @@ export const render = async (
     Element: window.Element,
   });
   const Alpine = (await import('../../packages/alpinejs/src')).default;
+  Object.assign(global, { Alpine });
   window.Alpine = Alpine;
   if (typeof prep === 'string') window.eval(prep);
   else prep(Alpine, window);
@@ -26,6 +27,7 @@ export const render = async (
     window,
     $: window.document.querySelector.bind(window.document),
     $$: window.document.querySelectorAll.bind(window.document),
+    happyDOM: window.happyDOM,
   };
 };
 
@@ -34,4 +36,5 @@ type RenderReturn = {
   window: Window & { Alpine: AlpineType };
   $: typeof window.document.querySelector;
   $$: typeof window.document.querySelectorAll;
+  happyDOM: Window['happyDOM'];
 };
