@@ -28,6 +28,10 @@ export const render = async (
     $: window.document.querySelector.bind(window.document),
     $$: window.document.querySelectorAll.bind(window.document),
     happyDOM: window.happyDOM,
+    click: async (selector: string) => {
+      window.document.querySelector(selector).click();
+      await window.happyDOM.whenAsyncComplete();
+    },
   };
 };
 
@@ -37,4 +41,5 @@ type RenderReturn = {
   $: typeof window.document.querySelector;
   $$: typeof window.document.querySelectorAll;
   happyDOM: Window['happyDOM'];
+  click: (selector: string) => Promise<void>;
 };

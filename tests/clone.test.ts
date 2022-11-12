@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 describe('Clone', () => {
   it('can clone a component', async () => {
-    const { $, happyDOM } = await render(
+    const { $, click } = await render(
       (_, window) => {
         window.document.addEventListener('alpine:initialized', () => {
           window.original = document.getElementById('original');
@@ -29,16 +29,14 @@ describe('Clone', () => {
       </div>
     `
     );
-    $('#original h1').click();
-    await happyDOM.whenAsyncComplete();
+    await click('#original h1');
     expect($('#original span').textContent).toBe('baz');
     expect($('#copy span').textContent).toBe('');
-    $('button').click();
-    await happyDOM.whenAsyncComplete();
+    await click('button');
     expect($('#copy span').textContent).toBe('baz');
   });
   it('ignores init on clone', async () => {
-    const { $, happyDOM } = await render(
+    const { $, click } = await render(
       (_, window) => {
         window.document.addEventListener('alpine:initialized', () => {
           window.original = document.getElementById('original');
@@ -60,12 +58,11 @@ describe('Clone', () => {
     );
     expect($('#original span').textContent).toBe('1');
     expect($('#copy span').textContent).toBe('');
-    $('button').click();
-    await happyDOM.whenAsyncComplete();
+    await click('button');
     expect($('#copy span').textContent).toBe('1');
   });
   it('skips registering listeners on clone', async () => {
-    const { $, happyDOM } = await render(
+    const { $, click } = await render(
       (_, window) => {
         window.document.addEventListener('alpine:initialized', () => {
           window.original = document.getElementById('original');
@@ -89,11 +86,9 @@ describe('Clone', () => {
     );
     expect($('#original span').textContent).toBe('1');
     expect($('#copy span').textContent).toBe('');
-    $('button').click();
-    await happyDOM.whenAsyncComplete();
+    await click('button');
     expect($('#copy span').textContent).toBe('1');
-    $('#copy h1').click();
-    await happyDOM.whenAsyncComplete();
+    await click('#copy h1');
     expect($('#copy span').textContent).toBe('1');
   });
 });

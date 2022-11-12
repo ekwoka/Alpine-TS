@@ -19,7 +19,7 @@ describe('Custom Directives', () => {
   });
 
   it('directives are auto cleaned up', async () => {
-    const { $, happyDOM } = await render(
+    const { $, click } = await render(
       (Alpine) => {
         Alpine.directive(
           'foo',
@@ -48,16 +48,12 @@ describe('Custom Directives', () => {
       `
     );
     expect($('h1').textContent).toBe('1');
-    $('#change').click();
-    await happyDOM.whenAsyncComplete();
+    await click('#change');
     expect($('h1').textContent).toBe('3');
-    $('#remove').click();
-    await happyDOM.whenAsyncComplete();
-    $('#change').click();
-    await happyDOM.whenAsyncComplete();
+    await click('#remove');
+    await click('#change');
     expect($('h1').textContent).toBe('6');
-    $('#change').click();
-    await happyDOM.whenAsyncComplete();
+    await click('#change');
     expect($('h1').textContent).toBe('7');
   });
 });
