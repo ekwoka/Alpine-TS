@@ -5,7 +5,7 @@ import { functionWrap } from './utils/typeWrap';
 const binds: Record<string, BindingFactory> = {};
 
 export type Bindings = {
-  [key: string]: string;
+  [key: string]: string | (() => unknown);
 };
 
 type BindingFactory = (...args: unknown[]) => Bindings;
@@ -16,7 +16,7 @@ export const bind = (
 ) => {
   const getBindings = functionWrap(bindings);
 
-  if (name instanceof Element) applyBindingsObject(name, getBindings());
+  if (typeof name !== 'string') applyBindingsObject(name, getBindings());
   else binds[name] = getBindings;
 };
 

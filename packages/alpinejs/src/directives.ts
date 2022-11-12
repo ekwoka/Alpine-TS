@@ -17,7 +17,9 @@ export const directive = (name: string, callback: DirectiveCallback) =>
 
 export const directives = (
   el: ElementWithXAttributes,
-  attributes: Array<{ name: string; value: string }> | NamedNodeMap,
+  attributes:
+    | Array<{ name: string; value: string | (() => unknown) }>
+    | NamedNodeMap,
   originalAttributeOverride?: string
 ) => {
   attributes = Array.from(attributes);
@@ -177,7 +179,7 @@ const attributeTransformers: AttributeTransformer[] = [];
 
 type AttributeTransformer = (attribute: Attribute) => Attribute;
 
-type Attribute = { name: string; value: string };
+type Attribute = { name: string; value: string | (() => unknown) };
 
 export const mapAttributes = (callback: AttributeTransformer) => {
   attributeTransformers.push(callback);

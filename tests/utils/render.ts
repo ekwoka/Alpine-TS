@@ -1,20 +1,37 @@
-import { Alpine } from '../../packages/alpinejs/src/alpine';
+import { Alpine as AlpineType } from '../../packages/alpinejs/src/alpine';
 import { Window } from 'happy-dom';
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
-
-const alpine = readFile(join('tests', 'dist', 'alpinejs.js'), 'utf-8');
 
 export const render = async (
-  prep: string | ((alpine: typeof Alpine) => void),
+  prep:
+    | string
+    | ((alpine: AlpineType, window: Window & { Alpine: AlpineType }) => void),
   html: string
-): Promise<Window> => {
-  const window = new Window();
+): Promise<RenderReturn> => {
+  const window = new Window() as Window & { Alpine: AlpineType };
   window.document.body.innerHTML = html;
-  window.eval(await alpine);
+  Object.assign(global, {
+    window,
+    document: window.document,
+    MutationObserver: window.MutationObserver.bind(window),
+    Element: window.Element,
+  });
+  const Alpine = (await import('../../packages/alpinejs/src')).default;
+  window.Alpine = Alpine;
   if (typeof prep === 'string') window.eval(prep);
-  else window.Alpine.plugin(prep);
+  else prep(Alpine, window);
+  Alpine.start();
   await window.happyDOM.whenAsyncComplete();
-  window.Alpine.start();
-  return window;
+  return {
+    Alpine,
+    window,
+    $: window.document.querySelector.bind(window.document),
+    $$: window.document.querySelectorAll.bind(window.document),
+  };
+};
+
+type RenderReturn = {
+  Alpine: AlpineType;
+  window: Window & { Alpine: AlpineType };
+  $: typeof window.document.querySelector;
+  $$: typeof window.document.querySelectorAll;
 };
