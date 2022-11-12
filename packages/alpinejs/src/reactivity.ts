@@ -74,7 +74,12 @@ export const elementBoundEffect = (
     return effectReference;
   };
 
-  return [wrappedEffect, cleanup];
+  return [
+    wrappedEffect,
+    () => {
+      cleanup();
+    },
+  ];
 };
 
 type ElementBoundEffects = [
