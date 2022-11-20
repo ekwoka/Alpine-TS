@@ -26,16 +26,18 @@ export const store: StoreFn = <T extends Store>(name: string, value?: T) => {
 
   stores[name] = value;
 
-  if (
-    typeof value === 'object' &&
-    value !== null &&
-    Object.prototype.hasOwnProperty.call(value, 'init') &&
-    !Array.isArray(value) &&
-    typeof value.init === 'function'
-  )
-    value.init();
+  const reactiveValue = stores[name];
 
-  initInterceptors(stores[name] as Record<string, unknown>);
+  if (
+    typeof reactiveValue === 'object' &&
+    reactiveValue !== null &&
+    Object.prototype.hasOwnProperty.call(reactiveValue, 'init') &&
+    !Array.isArray(reactiveValue) &&
+    typeof reactiveValue.init === 'function'
+  )
+    reactiveValue.init();
+
+  initInterceptors(reactiveValue as Record<string, unknown>);
 };
 
 export const getStores = () => stores;
