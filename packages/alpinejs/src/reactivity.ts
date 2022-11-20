@@ -33,11 +33,8 @@ export const setReactivityEngine = (engine: {
   effect = (callback) =>
     engine.effect(callback, {
       scheduler: (task) => {
-        if (shouldSchedule) {
-          scheduler(task);
-        } else {
-          task();
-        }
+        if (shouldSchedule) scheduler(task);
+        else task();
       },
     });
   raw = engine.raw;
