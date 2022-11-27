@@ -108,7 +108,6 @@ const generateFunctionFromString = (
     /^(let|const)\s/.test(expression)
       ? `(() => { ${expression} })()`
       : expression;
-
   const safeAsyncFunction = () => {
     try {
       return AsyncFunction(

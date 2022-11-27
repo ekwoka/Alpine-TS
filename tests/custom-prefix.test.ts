@@ -13,7 +13,6 @@ describe('Custom Prefix', () => {
       </div>
     `
     );
-    console.log($('span').getAttribute('test-text'));
     expect($('span').textContent).toBe('bar');
   });
 });
