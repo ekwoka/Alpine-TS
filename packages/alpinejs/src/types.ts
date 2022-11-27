@@ -6,12 +6,12 @@ import { effect } from './reactivity';
 
 export type ElementWithXAttributes = HTMLElement &
   HTMLInputElement &
-  HTMLTemplateElement & {
-    _x_virtualDirectives?: Bindings;
-    _x_ids?: Record<string, number>;
-    _x_effects?: Set<() => void>;
-    _x_runEffects?: () => void;
-    _x_dataStack?: Record<string, unknown>[];
+  HTMLTemplateElement & Partial<{
+    _x_virtualDirectives: Bindings;
+    _x_ids: Record<string, number>;
+    _x_effects: Set<() => void>;
+    _x_runEffects: () => void;
+    _x_dataStack: Record<string, unknown>[];
     _x_ignore: true;
     _x_ignoreSelf: true;
     _x_isShown: boolean;
@@ -54,7 +54,7 @@ export type ElementWithXAttributes = HTMLElement &
       finish: () => void;
     };
     _x_hideChildren: ElementWithXAttributes[];
-  };
+  }>;
 
 type Transitions = {
   enter: TransitionStages;
