@@ -1,7 +1,7 @@
 import { Alpine as AlpineType } from '../../packages/alpinejs/src/alpine';
-import { Window, CustomEvent } from 'happy-dom';
+import { CustomEvent, Window } from 'happy-dom';
 
-globlaThis.CustomEvent = CustomEvent
+globalThis.CustomEvent = CustomEvent;
 
 export const render = async (
   prep:
