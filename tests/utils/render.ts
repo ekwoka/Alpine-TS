@@ -1,8 +1,6 @@
 import { Alpine as AlpineType } from '../../packages/alpinejs/src/alpine';
 import { CustomEvent, Window } from 'happy-dom';
 
-globalThis.CustomEvent = CustomEvent;
-
 export const render = async (
   prep:
     | string
@@ -16,6 +14,7 @@ export const render = async (
     document: window.document,
     MutationObserver: window.MutationObserver.bind(window),
     Element: window.Element,
+    CustomEvent,
   });
   const Alpine = (await import('../../packages/alpinejs/src')).default;
   Object.assign(global, { Alpine });
