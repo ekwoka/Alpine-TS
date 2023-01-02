@@ -75,11 +75,7 @@ describe('Alpine Store', () => {
         Alpine.store('test', {
           count: 1,
           init() {
-            window.addEventListener('click', () => {
-              console.log('count:', this.count),
-                this.count++,
-                console.log('count:', this.count);
-            });
+            window.addEventListener('click', () => this.count++);
           },
           clickHandler() {
             this.count++;
