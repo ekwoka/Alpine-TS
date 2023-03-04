@@ -98,7 +98,7 @@ describe('entangle', () => {
                 get() { return inner },
                 set(value) { inner = value },
             }
-        ) && console.log('entangled')">
+        ) && 'entangled'">
             <input x-model="inner" inner>
         </div>
     </div>
