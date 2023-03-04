@@ -112,7 +112,7 @@ describe('x-model', () => {
     expect($('span').textContent).toBe('bob');
   });
   it('updates value when form is reset', async () => {
-    const { $, type, resetForm, Alpine } = await render(
+    const { $, type, resetForm, Alpine, getData } = await render(
       noop,
       `
         <div x-data="{ foo: 'bar' }">
@@ -130,5 +130,6 @@ describe('x-model', () => {
     await Alpine.nextTick();
     expect($('input').value).toBe('bar');
     expect($('span').textContent).toBe('bar');
+    expect(getData('div', 'foo')).toBe('bar');
   });
 });

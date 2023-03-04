@@ -1,12 +1,16 @@
 import { Alpine as AlpineType } from '../../packages/alpinejs/src/alpine';
 import { ElementWithXAttributes } from '../../packages/alpinejs/src/types';
+import { noop } from './noop';
 import { CustomEvent, Event, InputEvent, Window } from 'happy-dom';
 
 export const render = async (
   prep:
     | string
-    | ((alpine: AlpineType, window: Window & { Alpine: AlpineType }) => void),
-  html: string
+    | ((
+        alpine: AlpineType,
+        window: Window & { Alpine: AlpineType }
+      ) => void) = noop,
+  html = ''
 ): Promise<RenderReturn> => {
   const window = new Window() as Window & { Alpine: AlpineType };
   window.document.body.innerHTML = html;

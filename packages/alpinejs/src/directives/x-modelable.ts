@@ -1,14 +1,16 @@
 import { directive } from '../directives';
+import { entangle } from '../entangle';
 
-directive('modelable', (el, { expression }, { effect, evaluateLater }) => {
-  const func = evaluateLater<unknown>(expression);
+directive('modelable', (el, { expression }, { cleanup, evaluateLater }) => {
+  type T = unknown;
+  const func = evaluateLater<T>(expression);
   const innerGet = () => {
-    let result: unknown;
+    let result: T;
     func((i) => (result = i));
     return result;
   };
   const evaluateInnerSet = evaluateLater(`${expression} = __placeholder`);
-  const innerSet = (val: unknown) =>
+  const innerSet = (val: T) =>
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     evaluateInnerSet(() => {}, { scope: { __placeholder: val } });
 
@@ -28,7 +30,25 @@ directive('modelable', (el, { expression }, { effect, evaluateLater }) => {
     const outerGet = el._x_model.get;
     const outerSet = el._x_model.set;
 
-    effect(() => innerSet(outerGet()));
-    effect(() => outerSet(innerGet()));
+    const releaseEntanglement = entangle(
+      {
+        get() {
+          return outerGet();
+        },
+        set(value) {
+          outerSet(value);
+        },
+      },
+      {
+        get() {
+          return innerGet();
+        },
+        set(value) {
+          innerSet(value);
+        },
+      }
+    );
+
+    cleanup(releaseEntanglement);
   });
 });
