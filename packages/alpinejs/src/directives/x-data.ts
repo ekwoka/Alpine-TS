@@ -25,7 +25,7 @@ directive(
       scope: dataProviderContext,
     });
 
-    if (data === undefined) data = {};
+    if (([true, undefined] as unknown[]).includes(data)) data = {};
 
     injectMagics(data, el);
 

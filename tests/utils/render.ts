@@ -9,7 +9,7 @@ export const render = async (
     | ((
         alpine: AlpineType,
         window: Window & { Alpine: AlpineType }
-      ) => void) = noop,
+      ) => void | Promise<void>) = noop,
   html = ''
 ): Promise<RenderReturn> => {
   const window = new Window() as Window & { Alpine: AlpineType };
@@ -25,7 +25,7 @@ export const render = async (
   Object.assign(global, { Alpine });
   window.Alpine = Alpine;
   if (typeof prep === 'string') window.eval(prep);
-  else prep(Alpine, window);
+  else await prep(Alpine, window);
   Alpine.start();
   await window.happyDOM.whenAsyncComplete();
   return {
@@ -46,13 +46,14 @@ export const render = async (
       el.dispatchEvent(new InputEvent('input'));
       await window.happyDOM.whenAsyncComplete();
     },
-    getData: (selector: string, key: string) => {
+    getData: (selector: string, key?: string) => {
       const el = Alpine.closestRoot(
         window.document.querySelector(
           selector
         ) as unknown as ElementWithXAttributes
       );
-      return el?._x_dataStack[0][key];
+
+      return key ? el?._x_dataStack[0][key] : el?._x_dataStack;
     },
     resetForm: (selector: string) => {
       const el = window.document.querySelector(selector);
@@ -75,6 +76,6 @@ type RenderReturn = {
   happyDOM: Window['happyDOM'];
   click: (selector: string) => Promise<void>;
   type: (selector: string, value: string) => Promise<void>;
-  getData: (selector: string, key: string) => unknown;
+  getData: (selector: string, key?: string) => unknown;
   resetForm: (selector: string) => Promise<void>;
 };
