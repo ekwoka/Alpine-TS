@@ -9,38 +9,44 @@ import { ElementWithXAttributes } from '../types';
 import { isNumeric } from '../utils/on';
 import { warn } from '../utils/warn';
 
-directive('for', (el, { expression }, { effect, cleanup }) => {
-  const iteratorNames = parseForExpression(expression);
+directive(
+  'for',
+  (
+    el: ElementWithXAttributes<HTMLTemplateElement>,
+    { expression },
+    { effect, cleanup }
+  ) => {
+    const iteratorNames = parseForExpression(expression);
 
-  const evaluateItems = evaluateLater<unknown>(el, iteratorNames.items);
-  const evaluateKey = evaluateLater<string>(
-    el,
-    // the x-bind:key expression is stored for our use instead of evaluated.
-    el._x_keyExpression || 'index'
-  );
+    const evaluateItems = evaluateLater<unknown>(el, iteratorNames.items);
+    const evaluateKey = evaluateLater<string>(
+      el,
+      // the x-bind:key expression is stored for our use instead of evaluated.
+      el._x_keyExpression || 'index'
+    );
 
-  el._x_prevKeys = [];
-  el._x_lookup = {};
+    el._x_prevKeys = [];
+    el._x_lookup = {};
 
-  effect(() => loop(el, iteratorNames, evaluateItems, evaluateKey));
+    effect(() => loop(el, iteratorNames, evaluateItems, evaluateKey));
 
-  cleanup(() => {
-    Object.values(el._x_lookup).forEach((el) => el.remove());
+    cleanup(() => {
+      Object.values(el._x_lookup).forEach((el) => el.remove());
 
-    delete el._x_prevKeys;
-    delete el._x_lookup;
-  });
-});
+      delete el._x_prevKeys;
+      delete el._x_lookup;
+    });
+  }
+);
 
 const loop = (
-  el: ElementWithXAttributes,
+  templateEl: ElementWithXAttributes<HTMLTemplateElement>,
   iteratorNames: IteratorNames,
   evaluateItems: ReturnType<typeof evaluateLater<unknown>>,
   evaluateKey: ReturnType<typeof evaluateLater<string>>
 ) => {
   const isObject = (i: unknown): i is Record<string, unknown> =>
     typeof i === 'object' && !Array.isArray(i);
-  const templateEl = el;
 
   evaluateItems((items) => {
     // Prepare yourself. There's a lot going on here. Take heart,
@@ -53,8 +59,8 @@ const loop = (
 
     if (items === undefined) items = [];
 
-    const lookup = el._x_lookup;
-    let prevKeys = el._x_prevKeys;
+    const lookup = templateEl._x_lookup;
+    let prevKeys = templateEl._x_prevKeys;
     const scopes: Scope[] = [];
     const keys: string[] = [];
 

@@ -4,57 +4,59 @@ import { evaluate, evaluateLater } from './evaluator';
 import { interceptor } from './interceptor';
 import { effect } from './reactivity';
 
-export type ElementWithXAttributes = HTMLElement &
-  HTMLInputElement &
-  HTMLTemplateElement & Partial<{
-    _x_virtualDirectives: Bindings;
-    _x_ids: Record<string, number>;
-    _x_effects: Set<() => void>;
-    _x_runEffects: () => void;
-    _x_dataStack: Record<string, unknown>[];
-    _x_ignore: true;
-    _x_ignoreSelf: true;
-    _x_isShown: boolean;
-    _x_bindings: Record<string, unknown>;
-    _x_undoAddedClasses: () => void;
-    _x_undoAddedStyles: () => void;
-    _x_cleanups: MutationCallback[];
-    _x_attributeCleanups: Record<string, (() => void)[]>;
-    _x_ignoreMutationObserver: boolean;
-    _x_teleportBack: ElementWithXAttributes;
-    _x_refs_proxy: Record<string, unknown>;
-    _x_refs: unknown;
-    _x_keyExpression: string;
-    _x_prevKeys: string[];
-    _x_lookup: Record<string, ElementWithXAttributes>;
-    _x_currentIfEl: ElementWithXAttributes;
-    _x_undoIf: () => void;
-    _x_removeModelListeners: Record<string, () => void>;
-    _x_model: {
-      get: () => unknown;
-      set: (value: unknown) => void;
-    };
-    _x_forceModelUpdate: () => void;
-    _x_forwardEvents: string[];
-    _x_doHide: () => void;
-    _x_doShow: () => void;
-    _x_toggleAndCascadeWithTransitions: (
-      el: ElementWithXAttributes,
-      val: boolean,
-      show: () => void,
-      hide: () => void
-    ) => void;
-    _x_teleport: ElementWithXAttributes;
-    _x_transition: Transitions;
-    _x_hidePromise: Promise<() => void>;
-    _x_transitioning: {
-      beforeCancel: (fn: () => void) => void;
-      beforeCancels: (() => void)[];
-      cancel: () => void;
-      finish: () => void;
-    };
-    _x_hideChildren: ElementWithXAttributes[];
-  }>;
+export type ElementWithXAttributes<T extends Element = HTMLElement> =
+  withXAttributes<T>;
+
+export interface XAttributes {
+  _x_virtualDirectives: Bindings;
+  _x_ids: Record<string, number>;
+  _x_effects: Set<() => void>;
+  _x_runEffects: () => void;
+  _x_dataStack: Record<string, unknown>[];
+  _x_ignore: true;
+  _x_ignoreSelf: true;
+  _x_isShown: boolean;
+  _x_bindings: Record<string, unknown>;
+  _x_undoAddedClasses: () => void;
+  _x_undoAddedStyles: () => void;
+  _x_cleanups: MutationCallback[];
+  _x_attributeCleanups: Record<string, (() => void)[]>;
+  _x_ignoreMutationObserver: boolean;
+  _x_teleportBack: ElementWithXAttributes;
+  _x_refs_proxy: Record<string, unknown>;
+  _x_refs: unknown;
+  _x_keyExpression: string;
+  _x_prevKeys: string[];
+  _x_lookup: Record<string, ElementWithXAttributes>;
+  _x_currentIfEl: ElementWithXAttributes;
+  _x_undoIf: () => void;
+  _x_removeModelListeners: Record<string, () => void>;
+  _x_model: {
+    get: () => unknown;
+    set: (value: unknown) => void;
+  };
+  _x_forceModelUpdate: () => void;
+  _x_forwardEvents: string[];
+  _x_doHide: () => void;
+  _x_doShow: () => void;
+  _x_toggleAndCascadeWithTransitions: (
+    el: ElementWithXAttributes,
+    val: boolean,
+    show: () => void,
+    hide: () => void
+  ) => void;
+  _x_teleport: ElementWithXAttributes;
+  _x_transition: Transitions;
+  _x_hidePromise: Promise<() => void>;
+  _x_transitioning: {
+    beforeCancel: (fn: () => void) => void;
+    beforeCancels: (() => void)[];
+    cancel: () => void;
+    finish: () => void;
+  };
+  _x_hideChildren: ElementWithXAttributes[];
+}
+export type withXAttributes<T extends Element> = T & Partial<XAttributes>;
 
 type Transitions = {
   enter: TransitionStages;
