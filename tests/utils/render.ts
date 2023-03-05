@@ -46,10 +46,10 @@ export const render = async (
       el.dispatchEvent(new InputEvent('input'));
       await window.happyDOM.whenAsyncComplete();
     },
-    getData: (selector: string, key?: string) => {
+    getData: (selector?: string, key?: string) => {
       const el = Alpine.closestRoot(
         window.document.querySelector(
-          selector
+          selector ?? '[x-data]'
         ) as unknown as ElementWithXAttributes
       );
 
@@ -76,6 +76,6 @@ type RenderReturn = {
   happyDOM: Window['happyDOM'];
   click: (selector: string) => Promise<void>;
   type: (selector: string, value: string) => Promise<void>;
-  getData: (selector: string, key?: string) => unknown;
+  getData: (selector?: string, key?: string) => unknown;
   resetForm: (selector: string) => Promise<void>;
 };
