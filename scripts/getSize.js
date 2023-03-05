@@ -20,7 +20,6 @@ const bundleCode = async (pkg) => {
     target: 'esnext',
     platform: 'browser',
     minify: true,
-    watch: false,
     plugins: [],
     mainFields: ['module', 'main'],
   });

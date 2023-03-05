@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["vitest/globals"],
     "allowJs": true,
     "declaration": true,
     "declarationMap": true,

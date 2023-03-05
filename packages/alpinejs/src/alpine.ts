@@ -8,6 +8,7 @@ import {
   prefix as prefixed,
 } from './directives';
 import { transition } from './directives/x-transition';
+import { entangle } from './entangle';
 import {
   dontAutoEvaluateFunctions,
   evaluate,
@@ -86,6 +87,7 @@ const Alpine = {
   setStyles, // INTERNAL
   mutateDom,
   directive,
+  entangle,
   throttle,
   debounce,
   evaluate,

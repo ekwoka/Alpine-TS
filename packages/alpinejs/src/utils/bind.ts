@@ -76,12 +76,9 @@ const bindInputValue = (
     return (el.checked = !!value);
   }
 
-  if (el.tagName === 'SELECT') return;
-
-  updateSelect(el, value);
+  if (el.tagName === 'SELECT') return updateSelect(el, value);
 
   if (el.value === value) return;
-
   el.value = value;
 };
 
