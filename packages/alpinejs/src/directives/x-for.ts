@@ -235,27 +235,26 @@ type IteratorNames = {
 
 // This was taken from VueJS 2.* core. Thanks Vue!
 const parseForExpression = (expression: string) => {
-  const forIteratorRE = /,([^,}\]]*)(?:,([^,}\]]*))?$/;
+  const forIteratorRE =
+    /((?:(?=[[{])(?:[[{].*[\]}])|(?:(?={)(?:\[[^\]]*\})|(?:[^,}\]]*)))),?([^,}\]]*),?([^,}\]]*)$/;
   const stripParensRE = /^\s*\(|\)\s*$/g;
   const forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/;
   const inMatch = expression.match(forAliasRE);
 
   if (!inMatch) return;
+  const items = inMatch[2].trim();
+  const iterator = inMatch[1].trim().replace(stripParensRE, '').trim();
 
-  const res: IteratorNames = {
-    items: inMatch[2].trim(),
-    item: inMatch[1].trim().replace(stripParensRE, ''),
+  const [_, item, index, collection] = iterator
+    .match(forIteratorRE)
+    .map((match) => match?.trim());
+
+  return {
+    items,
+    item,
+    index,
+    collection,
   };
-
-  const iteratorMatch = res.item.match(forIteratorRE);
-  if (iteratorMatch) {
-    res.item = res.item.replace(forIteratorRE, '').trim();
-    res.index = iteratorMatch[1].trim();
-
-    if (iteratorMatch[2]) res.collection = iteratorMatch[2].trim();
-  }
-
-  return res;
 };
 
 type Scope = Record<string, unknown>;
