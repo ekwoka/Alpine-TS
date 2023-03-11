@@ -1,4 +1,4 @@
-import { render } from '../utils';
+import { cleanTextContent, render } from '../utils';
 
 describe('x-if', () => {
   it('reacts to state changes', async () => {
@@ -39,7 +39,7 @@ describe('x-if', () => {
         </div>
       `
     );
-    expect($('div').textContent.replaceAll(/\D/g, '')).toBe('123');
+    expect(cleanTextContent($('div').textContent)).toBe('1 2 3');
   });
   it('initializes nested directives after being added to DOM', async () => {
     const { $ } = await render(
