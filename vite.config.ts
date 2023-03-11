@@ -21,6 +21,7 @@ export default defineConfig({
       provider: 'c8',
       reporter: ['text-summary', 'text', 'html'],
     },
+    reporters: ['dot'],
     deps: {},
   },
 });

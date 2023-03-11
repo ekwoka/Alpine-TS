@@ -67,84 +67,6 @@ describe('x-for', () => {
     expect(cleanTextContent($('#one').textContent)).toBe('foo bar baz');
     expect(cleanTextContent($('#two').textContent)).toBe('foo bar baz');
   });
-  it('can destructure entry arrays', async () => {
-    const { $ } = await render(
-      (Alpine) =>
-        Alpine.data('forloop', () => ({
-          items: {
-            foo: 'bar',
-            fizz: 'buzz',
-          },
-        })),
-      `
-        <div x-data="forloop">
-          <template x-for="[key, val] in Object.entries(items)" :key="key">
-            <div>
-              <span x-text="key"></span>:
-              <span x-text="val"></span>
-            </div>
-          </template>
-        </div>
-      `
-    );
-    expect(cleanTextContent($('div').textContent)).toBe('foo: bar fizz: buzz');
-  });
-  it('can destructure object array', async () => {
-    const { $ } = await render(
-      (Alpine) =>
-        Alpine.data('forloop', () => ({
-          items: [
-            {
-              name: 'foo',
-              value: 'bar',
-            },
-            {
-              name: 'fizz',
-              value: 'buzz',
-            },
-          ],
-        })),
-      `
-        <div x-data="forloop">
-          <template x-for="{name, value} in items" :key="name">
-            <div>
-              <span x-text="name"></span>:
-              <span x-text="value"></span>
-            </div>
-          </template>
-        </div>
-      `
-    );
-    expect(cleanTextContent($('div').textContent)).toBe('foo: bar fizz: buzz');
-  });
-  it.skip('can nested destructure object array', async () => {
-    const { $ } = await render(
-      (Alpine) =>
-        Alpine.data('forloop', () => ({
-          items: [
-            {
-              name: 'foo',
-              value: 'bar',
-            },
-            {
-              name: 'fizz',
-              value: 'buzz',
-            },
-          ],
-        })),
-      `
-        <div x-data="forloop" x-init="console.error(Object.entries(items))">
-          <template x-for="[_,{name, value}] in Object.entries(items)" :key="name">
-            <div>
-              <span x-text="name"></span>:
-              <span x-text="value"></span>
-            </div>
-          </template>
-        </div>
-      `
-    );
-    expect(cleanTextContent($('div').textContent)).toBe('foo: bar fizz: buzz');
-  });
   it('removes all elements when last item is removed', async () => {
     const { $, click } = await render(
       (Alpine) =>
@@ -513,6 +435,103 @@ describe('x-for', () => {
     expect(cleanTextContent($('div').textContent)).toBe('Tony');
     await click('button');
     expect(cleanTextContent($('div').textContent)).toBe('');
+  });
+});
+
+describe('expression parser', () => {
+  it('can destructure entry arrays', async () => {
+    const { $ } = await render(
+      (Alpine) =>
+        Alpine.data('forloop', () => ({
+          items: {
+            foo: 'bar',
+            fizz: 'buzz',
+          },
+        })),
+      `
+        <div x-data="forloop">
+          <template x-for="[key, val] in Object.entries(items)" :key="key">
+            <div>
+              <span x-text="key"></span>:
+              <span x-text="val"></span>
+            </div>
+          </template>
+        </div>
+      `
+    );
+    expect(cleanTextContent($('div').textContent)).toBe('foo: bar fizz: buzz');
+  });
+  it('can destructure object array', async () => {
+    const { $ } = await render(
+      (Alpine) =>
+        Alpine.data('forloop', () => ({
+          items: [
+            {
+              name: 'foo',
+              value: 'bar',
+            },
+            {
+              name: 'fizz',
+              value: 'buzz',
+            },
+          ],
+        })),
+      `
+        <div x-data="forloop">
+          <template x-for="{name, value} in items" :key="name">
+            <div>
+              <span x-text="name"></span>:
+              <span x-text="value"></span>
+            </div>
+          </template>
+        </div>
+      `
+    );
+    expect(cleanTextContent($('div').textContent)).toBe('foo: bar fizz: buzz');
+  });
+  it.skip('can nested destructure object array', async () => {
+    const { $ } = await render(
+      (Alpine) =>
+        Alpine.data('forloop', () => ({
+          items: [
+            {
+              name: 'foo',
+              value: 'bar',
+            },
+            {
+              name: 'fizz',
+              value: 'buzz',
+            },
+          ],
+        })),
+      `
+        <div x-data="forloop" x-init="console.error(Object.entries(items))">
+          <template x-for="[_,{name, value}] in Object.entries(items)" :key="name">
+            <div>
+              <span x-text="name"></span>:
+              <span x-text="value"></span>
+            </div>
+          </template>
+        </div>
+      `
+    );
+    expect(cleanTextContent($('div').textContent)).toBe('foo: bar fizz: buzz');
+  });
+  it('can destructure from inline object', async () => {
+    const { $ } = await render(
+      undefined,
+      `
+        <div x-data>
+          <template x-for="{name, value} in [{name: 'foo', value: 'bar'}, {name: 'fizz', value: 'buzz'}]" :key="name">
+            <div>
+              <span x-text="name"></span>:
+              <span x-text="value"></span>
+            </div>
+          </template>
+        </div>
+      `
+    );
+    expect(cleanTextContent($('div').textContent)).toBe('foo: bar fizz: buzz');
   });
 });
 
