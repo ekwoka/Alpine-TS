@@ -10,29 +10,30 @@ import { walk } from '../utils/walk';
 directive(
   'if',
   (
-    el: ElementWithXAttributes<HTMLTemplateElement>,
+    templateEl: ElementWithXAttributes<HTMLTemplateElement>,
     { expression },
     { effect, cleanup }
   ) => {
-    const evaluate = evaluateLater(el, expression);
+    const evaluate = evaluateLater(templateEl, expression);
 
     const show = () => {
-      if (el._x_currentIfEl) return el._x_currentIfEl;
+      if (templateEl._x_currentIfEl) return templateEl._x_currentIfEl;
 
-      const clone = (el.content.cloneNode(true) as ElementWithXAttributes)
-        .firstElementChild as ElementWithXAttributes;
+      const clone = (
+        templateEl.content.cloneNode(true) as ElementWithXAttributes
+      ).firstElementChild as ElementWithXAttributes;
 
-      addScopeToNode(clone, {}, el);
+      addScopeToNode(clone, {}, templateEl);
 
       mutateDom(() => {
-        el.after(clone);
+        templateEl.after(clone);
 
         initTree(clone);
       });
 
-      el._x_currentIfEl = clone;
+      templateEl._x_currentIfEl = clone;
 
-      el._x_undoIf = () => {
+      templateEl._x_undoIf = () => {
         walk(clone, (node) => {
           if (node._x_effects) {
             node._x_effects.forEach(dequeueJob);
@@ -41,22 +42,22 @@ directive(
 
         clone.remove();
 
-        delete el._x_currentIfEl;
+        delete templateEl._x_currentIfEl;
       };
 
       return clone;
     };
 
     const hide = () => {
-      if (!el._x_undoIf) return;
+      if (!templateEl._x_undoIf) return;
 
-      el._x_undoIf();
+      templateEl._x_undoIf();
 
-      delete el._x_undoIf;
+      delete templateEl._x_undoIf;
     };
 
     effect(() => evaluate((value) => (value ? show() : hide())));
 
-    cleanup(() => el._x_undoIf && el._x_undoIf());
+    cleanup(() => templateEl._x_undoIf && templateEl._x_undoIf());
   }
 );
