@@ -463,3 +463,93 @@ describe('@click modifiers', () => {
     expect($('span').style.display).toBe('none');
   });
 });
+describe('event name behaviors', () => {
+  it('handles custom events', async () => {
+    const { $, click } = await render(
+      undefined,
+      `
+        <div x-data="{ count: 0 }" @custom-event="count++">
+          <button @click="$dispatch('custom-event')"></button>
+          <span x-text="count.toString()"></span>
+        </div>
+      `
+    );
+    expect($('[x-text]').textContent).toBe('0');
+    await click('button');
+    expect($('[x-text]').textContent).toBe('1');
+  });
+  it('handles namespaced events', async () => {
+    const { $, click } = await render(
+      undefined,
+      `
+        <div x-data="{ count: 0 }" @custom:event="count++">
+          <button @click="$dispatch('custom:event')"></button>
+          <span x-text="count.toString()"></span>
+        </div>
+      `
+    );
+    expect($('[x-text]').textContent).toBe('0');
+    await click('button');
+    expect($('[x-text]').textContent).toBe('1');
+  });
+  describe('.camel', () => {
+    it('converts event names to camelcase', async () => {
+      const { $, click } = await render(
+        undefined,
+        `
+          <div x-data="{ count: 0 }" @custom-event.camel="count++">
+            <button @click="$dispatch('customEvent')"></button>
+            <span x-text="count.toString()"></span>
+          </div>
+        `
+      );
+      expect($('[x-text]').textContent).toBe('0');
+      await click('button');
+      expect($('[x-text]').textContent).toBe('1');
+    });
+    it('does not break namespaces', async () => {
+      const { $, click } = await render(
+        undefined,
+        `
+          <div x-data="{ count: 0 }" @custom:camel-event.camel="count++">
+            <button @click="$dispatch('custom:camelEvent')"></button>
+            <span x-text="count.toString()"></span>
+          </div>
+        `
+      );
+      expect($('[x-text]').textContent).toBe('0');
+      await click('button');
+      expect($('[x-text]').textContent).toBe('1');
+    });
+  });
+  describe('.dot', () => {
+    it('can convert names to dots with .dot', async () => {
+      const { $, click } = await render(
+        undefined,
+        `
+          <div x-data="{ count: 0 }" @custom-event.dot="count++">
+            <button @click="$dispatch('custom.event')"></button>
+            <span x-text="count.toString()"></span>
+          </div>
+        `
+      );
+      expect($('[x-text]').textContent).toBe('0');
+      await click('button');
+      expect($('[x-text]').textContent).toBe('1');
+    });
+    it('does not break namespaces', async () => {
+      const { $, click } = await render(
+        undefined,
+        `
+          <div x-data="{ count: 0 }" @custom:dot-event.dot="count++">
+            <button @click="$dispatch('custom:dot.event')"></button>
+            <span x-text="count.toString()"></span>
+          </div>
+        `
+      );
+      expect($('[x-text]').textContent).toBe('0');
+      await click('button');
+      expect($('[x-text]').textContent).toBe('1');
+    });
+  });
+});
