@@ -1,7 +1,14 @@
 import { Alpine as AlpineType } from '../../packages/alpinejs/src/alpine';
 import { ElementWithXAttributes } from '../../packages/alpinejs/src/types';
 import { noop } from './noop';
-import { CustomEvent, Event, InputEvent, Window } from 'happy-dom';
+import {
+  CustomEvent,
+  Event,
+  IKeyboardEventInit,
+  InputEvent,
+  KeyboardEvent,
+  Window,
+} from 'happy-dom';
 
 export const render = async (
   prep:
@@ -19,6 +26,7 @@ export const render = async (
     document: window.document,
     MutationObserver: window.MutationObserver.bind(window),
     Element: window.Element,
+    requestAnimationFrame: window.requestAnimationFrame.bind(window),
     CustomEvent,
   });
   const Alpine = (await import('../../packages/alpinejs/src')).default;
@@ -44,6 +52,21 @@ export const render = async (
       const el = window.document.querySelector(selector);
       (el as unknown as HTMLInputElement).value = value;
       el.dispatchEvent(new InputEvent('input'));
+      await window.happyDOM.whenAsyncComplete();
+    },
+    keydown: async (
+      selector: string,
+      key: string,
+      options: IKeyboardEventInit = {}
+    ) => {
+      const el = window.document.querySelector(selector);
+      el.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key,
+          bubbles: true,
+          ...options,
+        })
+      );
       await window.happyDOM.whenAsyncComplete();
     },
     getData: (selector?: string, key?: string) => {
@@ -76,6 +99,11 @@ type RenderReturn = {
   happyDOM: Window['happyDOM'];
   click: (selector: string) => Promise<void>;
   type: (selector: string, value: string) => Promise<void>;
+  keydown: (
+    selector: string,
+    key: string,
+    options?: IKeyboardEventInit
+  ) => Promise<void>;
   getData: (selector?: string, key?: string) => unknown;
   resetForm: (selector: string) => Promise<void>;
 };

@@ -6,8 +6,8 @@ import { reactive } from '../reactivity';
 import { dequeueJob } from '../scheduler';
 import { addScopeToNode, refreshScope } from '../scope';
 import { ElementWithXAttributes } from '../types';
-import { isNumeric } from '../utils/on';
-import { warn } from '../utils/warn';
+import { isNumeric, parseForExpression, warn } from '../utils';
+import type { IteratorNames } from '../utils';
 
 directive(
   'for',
@@ -224,37 +224,6 @@ const loop = (
     // against next time.
     templateEl._x_prevKeys = keys;
   });
-};
-
-type IteratorNames = {
-  item: string;
-  index?: string;
-  collection?: string;
-  items: string;
-};
-
-// This was taken from VueJS 2.* core. Thanks Vue!
-const parseForExpression = (expression: string) => {
-  const forIteratorRE =
-    /((?:(?=[[{])(?:[[{].*[\]}])|(?:(?={)(?:\[[^\]]*\})|(?:[^,}\]]*)))),?([^,}\]]*),?([^,}\]]*)$/;
-  const stripParensRE = /^\s*\(|\)\s*$/g;
-  const forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/;
-  const inMatch = expression.match(forAliasRE);
-
-  if (!inMatch) return;
-  const items = inMatch[2].trim();
-  const iterator = inMatch[1].trim().replace(stripParensRE, '').trim();
-
-  const [_, item, index, collection] = iterator
-    .match(forIteratorRE)
-    .map((match) => match?.trim());
-
-  return {
-    items,
-    item,
-    index,
-    collection,
-  };
 };
 
 type Scope = Record<string, unknown>;

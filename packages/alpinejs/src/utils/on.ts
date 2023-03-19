@@ -193,8 +193,8 @@ const keyToModifiers = (key: string): string[] => {
   const modifierToKeyMap = {
     ctrl: 'control',
     slash: '/',
-    space: '-',
-    spacebar: '-',
+    space: ' ',
+    spacebar: ' ',
     cmd: 'meta',
     esc: 'escape',
     up: 'arrow-up',
@@ -203,6 +203,8 @@ const keyToModifiers = (key: string): string[] => {
     right: 'arrow-right',
     period: '.',
     equal: '=',
+    minus: '-',
+    underscore: '_',
   };
 
   modifierToKeyMap[key] = key;

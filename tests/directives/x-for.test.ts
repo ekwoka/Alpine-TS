@@ -1,3 +1,7 @@
+import {
+  IteratorNames,
+  parseForExpression,
+} from '../../packages/alpinejs/src/utils/parseForExpression';
 import { cleanTextContent, render } from '../utils';
 
 describe('x-for', () => {
@@ -439,6 +443,46 @@ describe('x-for', () => {
 });
 
 describe('expression parser', () => {
+  it('can parse expressions', () => {
+    const expressions: [string, IteratorNames][] = [
+      [
+        'item in items',
+        {
+          item: 'item',
+          items: 'items',
+        },
+      ],
+      [
+        `
+      ( item, index
+
+        ) in items`,
+        {
+          item: 'item',
+          index: 'index',
+          items: 'items',
+        },
+      ],
+      [
+        'user, idx, users in data.users',
+        {
+          item: 'user',
+          index: 'idx',
+          collection: 'users',
+          items: 'data.users',
+        },
+      ],
+      [
+        `{name, value} in [{name: 'foo', value: 'bar'}, {name: 'fizz', value: 'buzz'}]`,
+        {
+          item: '{name, value}',
+          items: `[{name: 'foo', value: 'bar'}, {name: 'fizz', value: 'buzz'}]`,
+        },
+      ],
+    ];
+    for (const [expression, expected] of expressions)
+      expect(parseForExpression(expression)).toEqual(expected);
+  });
   it('can destructure entry arrays', async () => {
     const { $ } = await render(
       (Alpine) =>
