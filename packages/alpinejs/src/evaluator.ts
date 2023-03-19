@@ -106,7 +106,7 @@ const generateFunctionFromString = (
     /^[\n\s]*if.*\(.*\)/.test(expression) ||
     // Support expressions starting with "let/const" like: "let foo = 'bar'"
     /^(let|const)\s/.test(expression)
-      ? `(() => { ${expression} })()`
+      ? `(async() => { ${expression} })()`
       : expression;
   const safeAsyncFunction = () => {
     try {

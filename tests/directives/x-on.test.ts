@@ -118,6 +118,20 @@ describe('x-on', () => {
     await click('div');
     expect($('button').textContent).toBe('1');
   });
+  it('handles await in invalid right hand expressions', async () => {
+    const { $, click } = await render(
+      undefined,
+      `
+        <div x-data="{ text: 'original' }">
+          <button @click="let value = 'new string'; text = await Promise.resolve(value)"></button>
+          <span x-text="text"></span>
+        </div>
+      `
+    );
+    expect($('span').textContent).toBe('original');
+    await click('button');
+    expect($('span').textContent).toBe('new string');
+  });
 });
 describe('x-on modifiers', () => {
   it('can prevent default', async () => {
