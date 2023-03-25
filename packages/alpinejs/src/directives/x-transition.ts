@@ -12,16 +12,38 @@ import { setStyles } from '../utils/styles';
 
 directive(
   'transition',
-  (el, { value, modifiers, expression }, { evaluate }) => {
+  (el, { value, modifiers, expression }, { evaluate, cleanup }) => {
     if (typeof expression === 'function') expression = evaluate(expression);
 
-    if (!expression) {
-      registerTransitionsFromHelper(el, modifiers, value);
-    } else {
-      registerTransitionsFromClassString(el, expression, value);
-    }
+    cleanup(
+      registerTransitionWithReducedMotion(el, expression || modifiers, value)
+    );
   }
 );
+
+const prefersReducedMotion = window.matchMedia(
+  '(prefers-reduced-motion: reduce)'
+);
+
+const registerTransitionWithReducedMotion = (
+  el: ElementWithXAttributes,
+  expressionOrMod: string | string[],
+  stage: string
+): (() => void) => {
+  const handler = ({ matches }: MediaQueryListEvent | MediaQueryList) => {
+    if (matches) return removeTransitions(el);
+    if (typeof expressionOrMod === 'string')
+      registerTransitionsFromClassString(el, expressionOrMod, stage);
+    else registerTransitionsFromHelper(el, expressionOrMod, stage);
+  };
+  prefersReducedMotion.addEventListener('change', handler);
+  handler(prefersReducedMotion);
+  return () => prefersReducedMotion.removeEventListener('change', handler);
+};
+
+const removeTransitions = (el: ElementWithXAttributes) => {
+  delete el._x_transition;
+};
 
 const registerTransitionsFromClassString = (
   el: ElementWithXAttributes,
