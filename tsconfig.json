@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "paths": {
+      "@/alpinejs/*": ["./packages/alpinejs/src/*"]
+    },
     "types": ["vitest/globals"],
     "allowJs": true,
     "declaration": true,
