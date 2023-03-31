@@ -1,7 +1,8 @@
 import { render } from './utils';
+import { Alpine } from '@/alpinejs/alpine';
 
 describe('Alpine.plugin', () => {
-  let Alpine;
+  let Alpine: Alpine;
   beforeAll(async () => {
     Alpine = (await render()).Alpine;
   });
