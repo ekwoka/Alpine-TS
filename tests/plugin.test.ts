@@ -24,4 +24,19 @@ describe('Alpine.plugin', () => {
       expect(callback).toHaveBeenCalledWith(Alpine)
     );
   });
+  it('accepts arbitrarily nested plugin arrays', () => {
+    const nested = callbacksOrNest(4, true) as (() => void)[];
+    Alpine.plugin(nested);
+    nested
+      .flat(Infinity)
+      .forEach((callback) => expect(callback).toHaveBeenCalledWith(Alpine));
+  });
 });
+
+const callbacksOrNest = (n: number, force = false) => {
+  if (force || (Math.random() * n) | 0)
+    return Array.from({ length: (Math.random() * 10) | 0 }, () =>
+      callbacksOrNest(n - 1)
+    );
+  return [vi.fn()];
+};
