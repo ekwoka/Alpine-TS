@@ -11,7 +11,8 @@
     "size": "node scripts/getSize.js",
     "size:test": "NODE_ENV=test node scripts/getSize.js",
     "test": "vitest",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "sandbox": "vite ./sandbox"
   },
   "devDependencies": {
     "@milahu/patch-package": "^6.4.14",
