@@ -179,7 +179,7 @@ const loop = (
         marker.remove();
       });
 
-      refreshScope(elForSpot, scopes[keys.indexOf(keyForSpot)]);
+      refreshScope(elForSpot, scopes[keys.indexOf(keyForSpot)], true);
     });
 
     // We can now create and add new elements.
@@ -196,6 +196,7 @@ const loop = (
         .firstElementChild as ElementWithXAttributes;
 
       addScopeToNode(clone, reactive(scope), templateEl);
+      clone._x_forScope = clone._x_dataStack[0];
 
       mutateDom(() => {
         lastEl.after(clone);
@@ -216,9 +217,9 @@ const loop = (
     // If an element hasn't changed, we still want to "refresh" the
     // data it depends on in case the data has changed in an
     // "unobservable" way.
-    sames.forEach((key) => {
-      refreshScope(lookup[key], scopes[keys.indexOf(key)]);
-    });
+    sames.forEach((key) =>
+      refreshScope(lookup[key], scopes[keys.indexOf(key)], true)
+    );
 
     // Now we'll log the keys (and the order they're in) for comparing
     // against next time.

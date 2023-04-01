@@ -19,13 +19,13 @@ export const hasScope = (node: ElementWithXAttributes) => !!node._x_dataStack;
 
 export const refreshScope = (
   element: ElementWithXAttributes,
-  scope: Record<string, unknown>
+  scope: Record<string, unknown>,
+  fromXFor = false
 ) => {
-  const existingScope = element._x_dataStack[0];
+  const existingScope =
+    (fromXFor && element._x_forScope) || element._x_dataStack[0];
 
-  Object.entries(scope).forEach(([key, value]) => {
-    existingScope[key] = value;
-  });
+  Object.assign(existingScope, scope);
 };
 
 export const closestDataStack = (node: ElementWithXAttributes) => {

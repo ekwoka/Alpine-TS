@@ -27,6 +27,7 @@ export interface XAttributes {
   _x_refs: unknown;
   _x_keyExpression: string;
   _x_prevKeys: string[];
+  _x_forScope: Record<string, unknown>;
   _x_lookup: Record<string, ElementWithXAttributes>;
   _x_currentIfEl: ElementWithXAttributes;
   _x_undoIf: () => void;
