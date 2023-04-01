@@ -9,10 +9,15 @@ directive(
   (el: ElementWithXAttributes, { modifiers, expression }, { effect }) => {
     const evaluate = evaluateLater<boolean>(el, expression);
 
+    // store old value when the element is hidden so we can restore it later
+    // TODO: implement onto element attributes to work with other directives
+    let oldDisplay = el.style.display !== 'none' ? el.style.display : null;
+
     // We're going to set this function on the element directly so that
     // other plugins like "Collapse" can overwrite them with their own logic.
     if (!el._x_doHide)
-      el._x_doHide = () =>
+      el._x_doHide = () => {
+        oldDisplay = el.style.display !== 'none' ? el.style.display : null;
         mutateDom(() => {
           el.style.setProperty(
             'display',
@@ -20,11 +25,13 @@ directive(
             modifiers.includes('important') ? 'important' : undefined
           );
         });
+      };
 
     if (!el._x_doShow)
       el._x_doShow = () =>
         mutateDom(() => {
-          if (el.style.length === 1 && el.style.display === 'none') {
+          if (oldDisplay) el.style.setProperty('display', oldDisplay);
+          else if (el.style.length === 1 && el.style.display === 'none') {
             el.removeAttribute('style');
           } else {
             el.style.removeProperty('display');
@@ -59,7 +66,6 @@ directive(
 
     let oldValue: boolean;
     let firstTime = true;
-
     effect(() =>
       evaluate((value) => {
         // Let's make sure we only call this effect if the value changed.
