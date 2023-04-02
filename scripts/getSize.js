@@ -10,7 +10,7 @@ const packages = ['alpinejs'];
 
 const bundleCode = async (pkg) => {
   const { outputFiles } = await build({
-    entryPoints: [`./packages/${pkg}/dist/index.js`],
+    entryPoints: [`./packages/${pkg}/src/index.js`],
     inject: [],
     outfile: 'testing/bundle.js',
     write: test,
