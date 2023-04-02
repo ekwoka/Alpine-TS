@@ -12,7 +12,7 @@ const bundleCode = async (pkg) => {
   const { outputFiles } = await build({
     entryPoints: [`./packages/${pkg}/src/index.js`],
     inject: [],
-    outfile: 'testing/bundle.js',
+    outfile: 'testing/bundle.ts',
     write: test,
     splitting: false,
     format: 'esm',
