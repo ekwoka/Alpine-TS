@@ -21,6 +21,7 @@ export const render = async (
 ): Promise<RenderReturn> => {
   const window = new Window() as Window & { Alpine: AlpineType };
   window.document.body.innerHTML = html;
+
   Object.assign(global, {
     window,
     document: window.document,
@@ -28,6 +29,7 @@ export const render = async (
     Element: window.Element,
     requestAnimationFrame: window.requestAnimationFrame.bind(window),
     CustomEvent,
+    getComputedStyle: window.getComputedStyle.bind(window),
   });
   const Alpine = (await import('../../packages/alpinejs/src')).default;
   Object.assign(global, { Alpine });

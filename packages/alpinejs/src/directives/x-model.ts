@@ -124,8 +124,8 @@ const generateAssignmentFunction = (
       // so we return event.target.value instead of event.detail
       const eventTarget = event.target as ElementWithXAttributes &
         HTMLInputElement;
-      if (event instanceof CustomEvent && event.detail !== undefined)
-        return event.detail || eventTarget.value;
+      if (event instanceof CustomEvent)
+        return event.detail ?? eventTarget.value;
       if (el.type === 'checkbox') {
         // If the data we are binding to is an array, toggle its value inside the array.
         if (Array.isArray(currentValue)) {
