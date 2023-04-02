@@ -145,6 +145,31 @@ index b5c67d0..6d2aed9 100644
          this.clientHeight = 0;
          this.clientWidth = 0;
          this._style = null;
+diff --git a/node_modules/happy-dom/lib/nodes/html-input-element/HTMLInputElement.js b/node_modules/happy-dom/lib/nodes/html-input-element/HTMLInputElement.js
+index 851023a..862c3f2 100644
+--- a/node_modules/happy-dom/lib/nodes/html-input-element/HTMLInputElement.js
++++ b/node_modules/happy-dom/lib/nodes/html-input-element/HTMLInputElement.js
+@@ -524,16 +524,16 @@ class HTMLInputElement extends HTMLElement_1.default {
+             case 'image':
+             case 'reset':
+             case 'button':
+-                return this.getAttributeNS(null, 'value') || '';
++                return this.getAttribute('value') || '';
+             case 'checkbox':
+             case 'radio':
+-                const attritube = this.getAttributeNS(null, 'value');
+-                return attritube !== null ? attritube : 'on';
++                const attribute = this.getAttribute('value');
++                return attribute !== null ? attribute : 'on';
+             case 'file':
+                 return this.files.length > 0 ? '/fake/path/' + this.files[0].name : '';
+         }
+         if (this._value === null) {
+-            return this.getAttributeNS(null, 'value') || '';
++            return this.getAttribute('value') || '';
+         }
+         return this._value;
+     }
 diff --git a/node_modules/happy-dom/lib/nodes/html-template-element/HTMLTemplateElement.js b/node_modules/happy-dom/lib/nodes/html-template-element/HTMLTemplateElement.js
 index 6498bbf..ebbf7f7 100644
 --- a/node_modules/happy-dom/lib/nodes/html-template-element/HTMLTemplateElement.js
@@ -210,3 +235,29 @@ index 1e5c28c..3390376 100644
 -		this._propagationStopped = true;
 -	}
  }
+diff --git a/node_modules/happy-dom/src/nodes/html-input-element/HTMLInputElement.ts b/node_modules/happy-dom/src/nodes/html-input-element/HTMLInputElement.ts
+index 6de805e..bae9306 100644
+--- a/node_modules/happy-dom/src/nodes/html-input-element/HTMLInputElement.ts
++++ b/node_modules/happy-dom/src/nodes/html-input-element/HTMLInputElement.ts
+@@ -574,17 +574,17 @@ export default class HTMLInputElement extends HTMLElement implements IHTMLInputE
+ 			case 'image':
+ 			case 'reset':
+ 			case 'button':
+-				return this.getAttributeNS(null, 'value') || '';
++				return this.getAttribute('value') || '';
+ 			case 'checkbox':
+ 			case 'radio':
+-				const attritube = this.getAttributeNS(null, 'value');
+-				return attritube !== null ? attritube : 'on';
++				const attribute = this.getAttribute('value');
++				return attribute !== null ? attribute : 'on';
+ 			case 'file':
+ 				return this.files.length > 0 ? '/fake/path/' + this.files[0].name : '';
+ 		}
+ 
+ 		if (this._value === null) {
+-			return this.getAttributeNS(null, 'value') || '';
++			return this.getAttribute('value') || '';
+ 		}
+ 
+ 		return this._value;

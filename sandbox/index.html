@@ -13,11 +13,6 @@
     </script>
   </head>
   <body x-data="{ show: false, transitioned: false }">
-    <button x-on:click="show = !show; transitioned = false">toggle</button>
-    <h1
-      x-show="show"
-      x-transition
-      x-text="transitioned"
-      @transitionend="transitioned = true"></h1>
+    <input type="checkbox" />
   </body>
 </html>

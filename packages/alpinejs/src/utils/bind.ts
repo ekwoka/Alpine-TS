@@ -44,11 +44,14 @@ const bindInputValue = (
   el: ElementWithXAttributes & HTMLInputElement,
   value: string
 ) => {
-  if (el.type === 'radio' && typeof value === 'string') {
+  if (el.type === 'radio') {
     // Set radio value from x-bind:value, if no "value" attribute exists.
     // If there are any initial state values, radio will have a correct
     // "checked" value since x-bind:value is processed before x-model.
-    if (el.attributes.getNamedItem(value) === undefined) el.value = value;
+    if (
+      (el.attributes as unknown as Record<string, unknown>).value === undefined
+    )
+      el.value = value;
 
     if (fromModel) el.checked = checkedAttrLooseCompare(el.value, value);
     return;
@@ -60,18 +63,12 @@ const bindInputValue = (
     // automatically.
     if (Number.isInteger(value)) return (el.value = value);
 
-    if (
-      !Number.isInteger(value) &&
-      !Array.isArray(value) &&
-      typeof value !== 'boolean' &&
-      ![null, undefined].includes(value)
-    )
-      return (el.value = String(value));
-
     if (Array.isArray(value))
       return (el.checked = value.some((val) =>
         checkedAttrLooseCompare(val, el.value)
       ));
+    if (typeof value !== 'boolean' && ![null, undefined].includes(value))
+      return (el.value = String(value));
 
     return (el.checked = !!value);
   }
