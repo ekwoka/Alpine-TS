@@ -5,67 +5,67 @@ importers:
   .:
     devDependencies:
       '@milahu/patch-package':
-        specifier: ^6.4.14
+        specifier: 6.4.14
         version: 6.4.14
       '@trivago/prettier-plugin-sort-imports':
-        specifier: ^4.1.1
+        specifier: 4.1.1
         version: 4.1.1(prettier@2.8.4)
       '@types/node':
-        specifier: ^18.15.0
+        specifier: 18.15.0
         version: 18.15.0
       '@typescript-eslint/eslint-plugin':
-        specifier: ^5.54.1
+        specifier: 5.54.1
         version: 5.54.1(@typescript-eslint/parser@5.54.1)(eslint@8.36.0)(typescript@4.9.5)
       '@typescript-eslint/parser':
-        specifier: ^5.54.1
+        specifier: 5.54.1
         version: 5.54.1(eslint@8.36.0)(typescript@4.9.5)
       '@vitest/coverage-c8':
-        specifier: ^0.29.2
+        specifier: 0.29.2
         version: 0.29.2(vitest@0.29.2)
       esbuild:
-        specifier: ^0.17.11
+        specifier: 0.17.11
         version: 0.17.11
       eslint:
-        specifier: ^8.36.0
+        specifier: 8.36.0
         version: 8.36.0
       gzip-size:
-        specifier: ^7.0.0
+        specifier: 7.0.0
         version: 7.0.0
       happy-dom:
-        specifier: ^8.9.0
+        specifier: 8.9.0
         version: 8.9.0
       husky:
-        specifier: ^8.0.3
+        specifier: 8.0.3
         version: 8.0.3
       lint-staged:
-        specifier: ^13.2.0
+        specifier: 13.2.0
         version: 13.2.0
       npm-run-all:
-        specifier: ^4.1.5
+        specifier: 4.1.5
         version: 4.1.5
       prettier:
-        specifier: ^2.8.4
+        specifier: 2.8.4
         version: 2.8.4
       pretty-bytes:
-        specifier: ^6.1.0
+        specifier: 6.1.0
         version: 6.1.0
       typescript:
-        specifier: ^4.9.5
+        specifier: 4.9.5
         version: 4.9.5
       vite:
-        specifier: ^4.1.4
+        specifier: 4.1.4
         version: 4.1.4(@types/node@18.15.0)
       vite-plugin-dts:
-        specifier: ^2.1.0
+        specifier: 2.1.0
         version: 2.1.0(@types/node@18.15.0)(vite@4.1.4)
       vite-tsconfig-paths:
-        specifier: ^4.0.7
+        specifier: 4.0.7
         version: 4.0.7(typescript@4.9.5)(vite@4.1.4)
       vitest:
-        specifier: ^0.29.2
+        specifier: 0.29.2
         version: 0.29.2(happy-dom@8.9.0)
       vitest-dom:
-        specifier: ^0.0.4
+        specifier: 0.0.4
         version: 0.0.4(vitest@0.29.2)
 
   packages/alpinejs:
@@ -1258,7 +1258,7 @@ packages:
       check-error: 1.0.2
       deep-eql: 4.1.3
       get-func-name: 2.0.0
-      loupe: 2.3.4
+      loupe: 2.3.6
       pathval: 1.1.1
       type-detect: 4.0.8
     dev: true
@@ -1278,11 +1278,6 @@ packages:
     dependencies:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
-    dev: true
-
-  /chalk@5.1.0:
-    resolution: {integrity: sha512-56zD4khRTBoIyzUYAFgDDaPhUMN/fC/rySe6aZGqbj/VWiU2eI3l6ZLOtYGFZAV5v02mwPjtpzlrOveJiz5eZQ==}
-    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
     dev: true
 
   /chalk@5.2.0:
@@ -1523,7 +1518,7 @@ packages:
       is-shared-array-buffer: 1.0.2
       is-string: 1.0.7
       is-weakref: 1.0.2
-      object-inspect: 1.12.2
+      object-inspect: 1.12.3
       object-keys: 1.1.1
       object.assign: 4.1.4
       regexp.prototype.flags: 1.4.3
@@ -2455,12 +2450,6 @@ packages:
       wrap-ansi: 6.2.0
     dev: true
 
-  /loupe@2.3.4:
-    resolution: {integrity: sha512-OvKfgCC2Ndby6aSTREl5aCCPTNIzlDfQZvZxNUrBrihDhL3xcrYegTblhmEiCrg2kKQz4XsFIaemE5BF4ybSaQ==}
-    dependencies:
-      get-func-name: 2.0.0
-    dev: true
-
   /loupe@2.3.6:
     resolution: {integrity: sha512-RaPMZKiMy8/JruncMU5Bt6na1eftNoo++R4Y+N2FrxkDVTrGvcyzFTsaGif4QTeKESheMGegbhw6iUAq+5A8zA==}
     dependencies:
@@ -2622,10 +2611,6 @@ packages:
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     dependencies:
       path-key: 4.0.0
-    dev: true
-
-  /object-inspect@1.12.2:
-    resolution: {integrity: sha512-z+cPxW0QGUp0mcqcsgQyLVRDoXFQbXOwBaqyF7VIgI4TWNQsDHrBpUQslRmIfAoYWdYzs6UlKJtB2XJpTaNSpQ==}
     dev: true
 
   /object-inspect@1.12.3:
@@ -3037,7 +3022,7 @@ packages:
     dependencies:
       call-bind: 1.0.2
       get-intrinsic: 1.1.3
-      object-inspect: 1.12.2
+      object-inspect: 1.12.3
     dev: true
 
   /siginfo@2.0.0:
@@ -3519,7 +3504,7 @@ packages:
       vitest: ^0.16.0
     dependencies:
       aria-query: 5.0.2
-      chalk: 5.1.0
+      chalk: 5.2.0
       dom-accessibility-api: 0.5.14
       lodash-es: 4.17.21
       redent: 3.0.0
