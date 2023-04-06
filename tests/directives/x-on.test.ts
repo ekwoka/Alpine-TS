@@ -477,6 +477,36 @@ describe('@click modifiers', () => {
     expect($('span').style.display).toBe('none');
   });
 });
+describe('@window / @document modifiers', () => {
+  it('listens on the window', async () => {
+    const { $, click } = await render(
+      undefined,
+      `
+        <div x-data="{ count: 0 }" @click.window="count++">
+          <button></button>
+          <span x-text="count.toString()"></span>
+        </div>
+      `
+    );
+    expect($('[x-text]').textContent).toBe('0');
+    await click('button');
+    expect($('[x-text]').textContent).toBe('1');
+  });
+  it('listens on the document', async () => {
+    const { $, click } = await render(
+      undefined,
+      `
+        <div x-data="{ count: 0 }" @click.document="count++">
+          <button></button>
+          <span x-text="count.toString()"></span>
+        </div>
+      `
+    );
+    expect($('[x-text]').textContent).toBe('0');
+    await click('button');
+    expect($('[x-text]').textContent).toBe('1');
+  });
+});
 describe('event name behaviors', () => {
   it('handles custom events', async () => {
     const { $, click } = await render(
