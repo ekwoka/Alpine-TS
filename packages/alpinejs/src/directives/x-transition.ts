@@ -14,10 +14,10 @@ directive(
   'transition',
   (el, { value, modifiers, expression }, { evaluate, cleanup }) => {
     if (typeof expression === 'function') expression = evaluate(expression);
-
-    cleanup(
-      registerTransitionWithReducedMotion(el, expression || modifiers, value)
-    );
+    if (expression === (false as unknown as string)) return;
+    const expressionOrMod =
+      expression && typeof expression !== 'boolean' ? expression : modifiers;
+    cleanup(registerTransitionWithReducedMotion(el, expressionOrMod, value));
   }
 );
 
