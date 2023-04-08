@@ -440,6 +440,29 @@ describe('x-for', () => {
     await click('button');
     expect(cleanTextContent($('div').textContent)).toBe('');
   });
+  it('properly updates synthetic scope passed from parent x-for', async () => {
+    const { $, click } = await render(
+      undefined,
+      `
+        <div x-data="{ items: [{x:0, k:1},{x:1, k:2}] }">
+          <button
+            x-on:click="items = [{x:3, k:1},{x:4, k:2}]">
+            update
+          </button>
+          <template x-for="item in items" :key="item.k">
+            <div :id="'item-' + item.k" x-data="{ inner: true }">
+              <span x-text="item.x.toString()"></span>: <span x-text="item.k"></span>
+            </div>
+          </template>
+        </div>
+      `
+    );
+    expect(cleanTextContent($('#item-1').textContent)).toBe('0: 1');
+    expect(cleanTextContent($('#item-2').textContent)).toBe('1: 2');
+    await click('button');
+    expect(cleanTextContent($('#item-1').textContent)).toBe('3: 1');
+    expect(cleanTextContent($('#item-2').textContent)).toBe('4: 2');
+  });
 });
 
 describe('expression parser', () => {
