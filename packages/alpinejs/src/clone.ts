@@ -6,13 +6,15 @@ import { ReactiveEffect } from '@vue/reactivity';
 
 let isCloning = false;
 
-export const skipDuringClone = (
-  callback: DirectiveCallback,
+export const skipDuringClone = <
+  T extends (...args: Parameters<T>) => ReturnType<T>
+>(
+  callback: T,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  fallback = (() => {}) as DirectiveCallback
+  fallback = (() => {}) as T
 ) => {
-  return ((...args: Parameters<DirectiveCallback>) =>
-    isCloning ? fallback(...args) : callback(...args)) as DirectiveCallback;
+  return ((...args: Parameters<T>): ReturnType<T> =>
+    isCloning ? fallback(...args) : callback(...args)) as T;
 };
 
 export const onlyDuringClone = (
