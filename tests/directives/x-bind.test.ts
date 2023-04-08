@@ -163,4 +163,47 @@ describe('x-bind', () => {
       );
     });
   });
+  it('casts non-string/non-boolean attributes to string on checkbox', async () => {
+    const { $$ } = await render(
+      undefined,
+      `
+        <div x-data>
+          <input id="number" type="checkbox" :value="1" />
+          <input id="zero" type="checkbox" :value="0" />
+          <input id="boolean" type="checkbox" :value="true" />
+          <input id="null" type="checkbox" :value="null" />
+        </div>
+      `
+    );
+    const inputs = $$('input');
+    expect(inputs[0].value).toBe('1');
+    expect(inputs[1].value).toBe('0');
+    expect(inputs[2].value).toBe('on');
+    expect(inputs[3].value).toBe('on');
+  });
+  it('accepts numbers in attribute names', async () => {
+    const { $ } = await render(
+      undefined,
+      `
+      <div x-data>
+        <span :x1="1"></span>
+      </div>
+    `
+    );
+    expect($('span').getAttribute('x1')).toBe('1');
+  });
+});
+
+describe('x-bind modifiers', () => {
+  it('properly handles camelCase with .camel', async () => {
+    const { $ } = await render(
+      undefined,
+      `
+      <div x-data>
+        <svg x-bind:view-box.camel="'0 0 69 420'"></svg>
+      </div>
+    `
+    );
+    expect($('svg').getAttribute('viewBox')).toBe('0 0 69 420');
+  });
 });

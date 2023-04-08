@@ -50,8 +50,6 @@ export const applyBindingsObject = (
 ) => {
   const cleanupRunners = [];
 
-  while (cleanupRunners.length) cleanupRunners.pop()();
-
   const allAttributes = Object.entries(bindings).map(([name, value]) => ({
     name,
     value,
