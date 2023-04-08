@@ -207,3 +207,25 @@ describe('x-bind modifiers', () => {
     expect($('svg').getAttribute('viewBox')).toBe('0 0 69 420');
   });
 });
+
+describe('Alpine.bound', () => {
+  it('allows retrieval of bound values of element', async () => {
+    const { $, Alpine } = await render(
+      undefined,
+      `
+        <div x-data>
+          <h1 :value="'foo'"></h1>
+          <h2 value="bar"></h2>
+          <h3 foo></h3>
+          <h4 :disabled="true"></h4>
+        </div>
+      `
+    );
+    expect(Alpine.bound($('h1'), 'value')).toEqual('foo');
+    expect(Alpine.bound($('h2'), 'value')).toEqual('bar');
+    expect(Alpine.bound($('h3'), 'foo')).toEqual(true);
+    expect(Alpine.bound($('h4'), 'disabled')).toEqual(true);
+    expect(Alpine.bound($('h1'), 'foo')).toEqual(undefined);
+    expect(Alpine.bound($('h1'), 'foo', 'bar')).toEqual('bar');
+  });
+});

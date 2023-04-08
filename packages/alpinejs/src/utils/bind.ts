@@ -177,11 +177,10 @@ const attributeShouldntBePreservedIfFalsy = (name: string) =>
 export const getBinding = (
   el: ElementWithXAttributes,
   name: string,
-  fallback: unknown
-) => {
+  fallback?: unknown
+): unknown => {
   // First let's get it out of Alpine bound data.
-  if (el._x_bindings && el._x_bindings[name] !== undefined)
-    return el._x_bindings[name];
+  if (el._x_bindings?.[name] !== undefined) return el._x_bindings[name];
 
   // If not, we'll return the literal attribute.
   const attr = el.getAttribute(name);
@@ -193,9 +192,7 @@ export const getBinding = (
   // The case of a custom attribute with no value. Ex: <div manual>
   if (attr === '') return true;
 
-  if (isBooleanAttr(name)) {
-    return !![name, 'true'].includes(attr);
-  }
+  if (isBooleanAttr(name)) return [name, 'true'].includes(attr);
 
   return attr;
 };
