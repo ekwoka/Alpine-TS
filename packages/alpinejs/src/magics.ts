@@ -20,22 +20,22 @@ export const injectMagics = (
   el: ElementWithXAttributes
 ) => {
   let memoizedUtilities = null;
-  function getUtilities() {
-    const [utilities, cleanup] = getElementBoundUtilities(el);
-
-    memoizedUtilities = { interceptor, ...utilities };
-
-    onElRemoved(el, cleanup);
-    return memoizedUtilities;
-  }
   Object.entries(magics).forEach(([name, callback]) =>
     Object.defineProperty(obj, `$${name}`, {
-      get() {
-        return callback(el, memoizedUtilities ?? getUtilities());
-      },
+      get: () =>
+        callback(
+          el,
+          memoizedUtilities ?? (memoizedUtilities = getUtilities(el))
+        ),
       enumerable: false,
     })
   );
 
   return obj;
+};
+
+const getUtilities = (el: ElementWithXAttributes) => {
+  const [utilities, cleanup] = getElementBoundUtilities(el);
+  onElRemoved(el, cleanup);
+  return { interceptor, ...utilities };
 };
