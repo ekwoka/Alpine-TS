@@ -21,21 +21,17 @@ export const injectMagics = (
 ) => {
   let memoizedUtilities = null;
   function getUtilities() {
-    if (memoizedUtilities) {
-      return memoizedUtilities;
-    } else {
-      const [utilities, cleanup] = getElementBoundUtilities(el);
+    const [utilities, cleanup] = getElementBoundUtilities(el);
 
-      memoizedUtilities = { interceptor, ...utilities };
+    memoizedUtilities = { interceptor, ...utilities };
 
-      onElRemoved(el, cleanup);
-      return memoizedUtilities;
-    }
+    onElRemoved(el, cleanup);
+    return memoizedUtilities;
   }
   Object.entries(magics).forEach(([name, callback]) =>
     Object.defineProperty(obj, `$${name}`, {
       get() {
-        return callback(el, getUtilities());
+        return callback(el, memoizedUtilities ?? getUtilities());
       },
       enumerable: false,
     })
