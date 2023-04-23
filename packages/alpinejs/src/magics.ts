@@ -19,28 +19,27 @@ export const injectMagics = (
   obj: Record<string, unknown>,
   el: ElementWithXAttributes
 ) => {
-  Object.entries(magics).forEach(([name, callback]) => {
-    let memoizedUtilities = null;
-    function getUtilities() {
-      if (memoizedUtilities) {
-        return memoizedUtilities;
-      } else {
-        const [utilities, cleanup] = getElementBoundUtilities(el);
+  let memoizedUtilities = null;
+  function getUtilities() {
+    if (memoizedUtilities) {
+      return memoizedUtilities;
+    } else {
+      const [utilities, cleanup] = getElementBoundUtilities(el);
 
-        memoizedUtilities = { interceptor, ...utilities };
+      memoizedUtilities = { interceptor, ...utilities };
 
-        onElRemoved(el, cleanup);
-        return memoizedUtilities;
-      }
+      onElRemoved(el, cleanup);
+      return memoizedUtilities;
     }
-
+  }
+  Object.entries(magics).forEach(([name, callback]) =>
     Object.defineProperty(obj, `$${name}`, {
       get() {
         return callback(el, getUtilities());
       },
       enumerable: false,
-    });
-  });
+    })
+  );
 
   return obj;
 };
