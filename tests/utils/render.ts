@@ -80,6 +80,25 @@ export const render = async (
 
       return key ? el?._x_dataStack[0][key] : el?._x_dataStack;
     },
+    setData: (
+      key: string | string[],
+      value: unknown | ((data: unknown) => void),
+      selector?: string
+    ) => {
+      if (typeof key === 'string') key = key.split('.');
+      const el = Alpine.closestRoot(
+        window.document.querySelector(
+          selector ?? '[x-data]'
+        ) as unknown as ElementWithXAttributes
+      );
+
+      const data = Alpine.mergeProxies(el._x_dataStack);
+      let target = data;
+      while (key.length > 1) target = target[key.shift() as string];
+      if (typeof value === 'function') value(target[key[0]]);
+      else target[key[0]] = value;
+      return window.happyDOM.whenAsyncComplete();
+    },
     resetForm: (selector: string) => {
       const el = window.document.querySelector(selector);
       el.querySelectorAll('input').forEach(
@@ -107,5 +126,10 @@ type RenderReturn = {
     options?: IKeyboardEventInit
   ) => Promise<void>;
   getData: (selector?: string, key?: string) => unknown;
+  setData: (
+    key: string | string[],
+    value: unknown | ((data: unknown) => void),
+    selector?: string
+  ) => Promise<void>;
   resetForm: (selector: string) => Promise<void>;
 };

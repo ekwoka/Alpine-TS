@@ -2,7 +2,12 @@ import Alpine from './alpine';
 import { evaluate, evaluateLater } from './evaluator';
 import { onAttributeRemoved } from './mutation';
 import { elementBoundEffect } from './reactivity';
-import { DirectiveCallback, ElementWithXAttributes, Utilities } from './types';
+import {
+  DirectiveCallback,
+  DirectiveData,
+  ElementWithXAttributes,
+  Utilities,
+} from './types';
 
 let prefixAsString = 'x-';
 
@@ -239,7 +244,7 @@ const directiveOrder = [
   'teleport',
 ];
 
-const byPriority = (a, b) => {
+const byPriority = (a: DirectiveData, b: DirectiveData) => {
   const typeA = directiveOrder.indexOf(a.type) === -1 ? DEFAULT : a.type;
   const typeB = directiveOrder.indexOf(b.type) === -1 ? DEFAULT : b.type;
 
