@@ -260,6 +260,26 @@ describe('x-on modifiers', () => {
     await sleep(500);
     expect($('[x-text]').textContent).toBe('1');
   });
+  it('can be debounced by a set amount', async () => {
+    const { $, click } = await render(
+      undefined,
+      `
+        <div x-data="{ debounced: 0 }">
+            <button @click.debounce.1000ms="debounced++"></button>
+            <span x-text="debounced.toString()"></span>
+        </div>
+      `
+    );
+    expect($('[x-text]').textContent).toBe('0');
+    await click('button');
+    expect($('[x-text]').textContent).toBe('0');
+    await click('button');
+    expect($('[x-text]').textContent).toBe('0');
+    await sleep(500);
+    expect($('[x-text]').textContent).toBe('0');
+    await sleep(500);
+    expect($('[x-text]').textContent).toBe('1');
+  });
   it('can be throttled', async () => {
     const { $, click } = await render(
       undefined,

@@ -9,49 +9,23 @@ export const on = (
   modifiers: string[],
   callback: EventHandler
 ) => {
-  let listenerTarget: ElementWithXAttributes | Window | Document = el;
+  const listenerTarget: ElementWithXAttributes | Window | Document =
+    getTarget(modifiers) ?? el;
 
   let handler: EventHandler = (e: Event) => callback(e);
 
   const options = {
-    passive: false,
-    capture: false,
+    passive: modifiers.includes('passive'),
+    capture: modifiers.includes('capture'),
   };
 
-  // This little helper allows us to add functionality to the listener's
-  // handler more flexibly in a "middleware" style.
-  const wrapHandler =
-    (
-      callback: EventHandler,
-      wrapper: (next: EventHandler, event: Event) => void
-    ): EventHandler =>
-    (e) =>
-      wrapper(callback, e);
-
-  if (modifiers.includes('dot')) event = dotSyntax(event);
-  if (modifiers.includes('camel')) event = camelCase(event);
-  if (modifiers.includes('passive')) options.passive = true;
-  if (modifiers.includes('capture')) options.capture = true;
-  if (modifiers.includes('window')) listenerTarget = window;
-  if (modifiers.includes('document')) listenerTarget = document;
+  const moddedEvent = modifyEvent(event, modifiers);
   if (modifiers.includes('prevent'))
-    handler = wrapHandler(handler, (next, e) => {
-      e.preventDefault();
-      next(e);
-    });
-  if (modifiers.includes('stop'))
-    handler = wrapHandler(handler, (next, e) => {
-      e.stopPropagation();
-      next(e);
-    });
-  if (modifiers.includes('self'))
-    handler = wrapHandler(handler, (next, e) => {
-      e.target === el && next(e);
-    });
+    handler = wrapHandler(handler, preventWrapper);
+  if (modifiers.includes('stop')) handler = wrapHandler(handler, stopWrapper);
+  if (modifiers.includes('self')) handler = wrapHandler(handler, selfWrapper);
 
   if (modifiers.includes('away') || modifiers.includes('outside')) {
-    listenerTarget = document;
-
     handler = wrapHandler(handler, (next, e) => {
       if (el.contains(e.target as Node)) return;
 
@@ -89,9 +63,7 @@ export const on = (
   if (modifiers.includes('debounce')) {
     const nextModifier =
       modifiers[modifiers.indexOf('debounce') + 1] || 'invalid-wait';
-    const wait = isNumeric(nextModifier.split('ms')[0])
-      ? Number(nextModifier.split('ms')[0])
-      : 250;
+    const wait = Number(nextModifier.split('ms')[0]) || 250;
 
     handler = debounce(handler, wait);
   }
@@ -99,17 +71,15 @@ export const on = (
   if (modifiers.includes('throttle')) {
     const nextModifier =
       modifiers[modifiers.indexOf('throttle') + 1] || 'invalid-limit';
-    const limit = isNumeric(nextModifier.split('ms')[0])
-      ? Number(nextModifier.split('ms')[0])
-      : 250;
+    const limit = Number(nextModifier.split('ms')[0]) || 250;
 
     handler = throttle(handler, limit);
   }
 
-  listenerTarget.addEventListener(event, handler, options);
+  listenerTarget.addEventListener(moddedEvent, handler, options);
 
   return () => {
-    listenerTarget.removeEventListener(event, handler, options);
+    listenerTarget.removeEventListener(moddedEvent, handler, options);
   };
 };
 
@@ -212,4 +182,46 @@ const keyToModifiers = (key: string): string[] => {
   return Object.entries(modifierToKeyMap)
     .map(([modifier, keytype]) => (keytype === key ? modifier : false))
     .filter((mod: string | false): mod is string => Boolean(mod));
+};
+
+const documentModifiers = ['document', 'away', 'outside'];
+
+const eventStringMods = {
+  dot: dotSyntax,
+  camel: camelCase,
+};
+
+const modifyEvent = (event: string, modifiers: string[]): string => {
+  for (const modifier of modifiers)
+    event = eventStringMods[modifier]?.(event) ?? event;
+  return event;
+};
+
+const getTarget = (modifiers: string[]): Window | Document | null => {
+  for (const modifier of modifiers)
+    if (documentModifiers.includes(modifier)) return document;
+    else if (modifier === 'window') return window;
+  return null;
+};
+
+type HandlerWrapper = (next: EventHandler, event: Event) => void;
+// This little helper allows us to add functionality to the listener's
+// handler more flexibly in a "middleware" style.
+const wrapHandler =
+  (callback: EventHandler, wrapper: HandlerWrapper): EventHandler =>
+  (e) =>
+    wrapper(callback, e);
+
+const preventWrapper: HandlerWrapper = (next, e) => {
+  e.preventDefault();
+  next(e);
+};
+
+const stopWrapper: HandlerWrapper = (next, e) => {
+  e.stopPropagation();
+  next(e);
+};
+
+const selfWrapper: HandlerWrapper = (next, e) => {
+  e.target === e.currentTarget && next(e);
 };

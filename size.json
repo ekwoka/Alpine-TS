@@ -1,12 +1,12 @@
 {
   "alpinejs": {
     "minified": {
-      "pretty": "38.1 kB",
-      "raw": 38068
+      "pretty": "38 kB",
+      "raw": 38024
     },
     "gzipped": {
-      "pretty": "14.3 kB",
-      "raw": 14342
+      "pretty": "14.4 kB",
+      "raw": 14355
     }
   }
 }
