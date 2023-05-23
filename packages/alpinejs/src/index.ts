@@ -72,3 +72,4 @@ Alpine.setReactivityEngine({ reactive, effect, release: stop, raw: toRaw });
  * will be made available through the "Alpine" global.
  */
 export default Alpine;
+export type { Alpine } from './alpine';
