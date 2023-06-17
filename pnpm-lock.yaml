@@ -11,6 +11,9 @@ importers:
 
   .:
     devDependencies:
+      '@alpinejs/morph':
+        specifier: ^3.12.2
+        version: 3.12.2
       '@milahu/patch-package':
         specifier: 6.4.14
         version: 6.4.14
@@ -82,6 +85,10 @@ importers:
         version: 3.1.1
 
 packages:
+
+  /@alpinejs/morph@3.12.2:
+    resolution: {integrity: sha512-D6RyRwTPY9Dg0orpIyylKU+2p+OLRf9zSazEh1bGk/R15Zr+Z7q2Z9788aUCDAJedLNTJGjjyFSHy8QMFCXv3w==}
+    dev: true
 
   /@ampproject/remapping@2.2.1:
     resolution: {integrity: sha512-lFMjJTrFL3j7L9yBxwYfCq2k6qqwHyzuUl/XBnif78PWTJYyL/dfowQHWE3sp6U6ZzqWiiIZnpTMO96zhkjwtg==}

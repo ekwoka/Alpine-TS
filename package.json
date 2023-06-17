@@ -32,6 +32,7 @@
     "sandbox": "vite ./sandbox"
   },
   "devDependencies": {
+    "@alpinejs/morph": "3.12.2",
     "@milahu/patch-package": "6.4.14",
     "@trivago/prettier-plugin-sort-imports": "4.1.1",
     "@types/node": "20.3.1",

@@ -108,4 +108,6 @@ const Alpine = {
 
 export default Alpine;
 
-export type Alpine = typeof Alpine;
+export type Alpine = typeof Alpine & {
+  morph?: (el: Element, toEl: string) => void;
+};

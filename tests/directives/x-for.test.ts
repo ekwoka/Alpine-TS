@@ -3,6 +3,7 @@ import {
   parseForExpression,
 } from '../../packages/alpinejs/src/utils/parseForExpression';
 import { cleanTextContent, render } from '../utils';
+import morph from '@alpinejs/morph';
 
 describe('x-for', () => {
   it('reactively renders loops', async () => {
@@ -462,6 +463,54 @@ describe('x-for', () => {
     await click('button');
     expect(cleanTextContent($('#item-1').textContent)).toBe('3: 1');
     expect(cleanTextContent($('#item-2').textContent)).toBe('4: 2');
+  });
+});
+
+describe('x-for hydrate', () => {
+  it('can hydrate existing elements by matching key', async () => {
+    const { $ } = await render(
+      undefined,
+      `
+        <div x-data="{ items: [{id: 1, name: 'Tony'}, {id: 2, name: 'Bob'}] }">
+          <template x-for.hydrate="user in items" :key="user.id">
+            <div x-text="user.name"></div>
+          </template>
+          <div key="1" x-text="user.name">Tony</div>
+          <div key="2" x-text="user.name">Bob</div>
+        </div>
+      `
+    );
+    expect(cleanTextContent($('div').textContent)).toBe('TonyBob');
+  });
+  it('can reorder/correct elements during hydration', async () => {
+    const { $ } = await render(
+      undefined,
+      `
+        <div x-data="{ items: [{id: 1, name: 'Tony'}, {id: 2, name: 'Bob'}] }">
+          <template x-for.hydrate="user in items" :key="user.id">
+            <div x-text="user.name"></div>
+          </template>
+          <div key="2" x-text="user.name">Bob</div>
+          <div key="1" x-text="user.name">Tony</div>
+        </div>
+      `
+    );
+    expect(cleanTextContent($('div').textContent)).toBe('TonyBob');
+  });
+  it('can morph existing elements when Morph Plugin Exists', async () => {
+    const { $ } = await render(
+      (Alpine) => Alpine.plugin(morph),
+      `
+        <div x-data="{ items: [{id: 1, name: 'Tony'}, {id: 2, name: 'Bob'}] }">
+          <template x-for.hydrate="user in items" :key="user.id">
+            <div x-text="user.name"></div>
+          </template>
+          <div key="1">Tony</div>
+          <div key="2">Bob</div>
+        </div>
+      `
+    );
+    expect(cleanTextContent($('div').textContent)).toBe('TonyBob');
   });
 });
 
