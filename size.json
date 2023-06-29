@@ -4,9 +4,9 @@
       "pretty": "38 kB",
       "raw": 37979
     },
-    "gzipped": {
-      "pretty": "14.3 kB",
-      "raw": 14286
+    "brotli": {
+      "pretty": "13 kB",
+      "raw": 12976
     }
   }
 }
