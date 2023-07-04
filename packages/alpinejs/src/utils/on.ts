@@ -126,7 +126,10 @@ const isListeningForASpecificKeyThatHasntBeenPressed = (
   modifiers: string[]
 ) => {
   let keyModifiers = modifiers.filter(
-    (mod) => !['window', 'document', 'prevent', 'stop', 'once'].includes(mod)
+    (mod) =>
+      !['window', 'document', 'prevent', 'stop', 'once', 'capture'].includes(
+        mod
+      )
   );
 
   if (keyModifiers.includes('debounce')) {
