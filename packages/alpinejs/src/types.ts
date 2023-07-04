@@ -36,7 +36,7 @@ export interface XAttributes {
     get: () => unknown;
     set: (value: unknown) => void;
   };
-  _x_forceModelUpdate: () => void;
+  _x_forceModelUpdate: (value: unknown) => void;
   _x_forwardEvents: string[];
   _x_doHide: () => void;
   _x_doShow: () => void;
