@@ -29,11 +29,12 @@ export const directive = (name: string, callback: DirectiveCallback) => {
         );
         return;
       }
-      const pos =
-        directiveOrder.indexOf(directive) ?? directiveOrder.indexOf('DEFAULT');
-      if (pos >= 0) {
-        directiveOrder.splice(pos, 0, name);
-      }
+      const pos = directiveOrder.indexOf(directive);
+      directiveOrder.splice(
+        pos >= 0 ? pos : directiveOrder.indexOf('DEFAULT'),
+        0,
+        name
+      );
     },
   };
 };
@@ -221,7 +222,7 @@ const toParsedDirectives = (
   return ({ name, value }) => {
     const typeMatch = name.match(alpineAttributeRegex());
     const valueMatch = name.match(/:([a-zA-Z0-9\-:]+)/);
-    const modifiers = name.match(/\.[^.\]]+(?=[^\]]*$)/g) || [];
+    const modifiers: string[] = name.match(/\.[^.\]]+(?=[^\]]*$)/g) || [];
     const original =
       originalAttributeOverride || transformedAttributeMap[name] || name;
 
