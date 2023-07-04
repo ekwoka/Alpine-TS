@@ -54,10 +54,10 @@ export const normalEvaluator: Evaluator = (el, expression) => {
     ...closestDataStack(el),
   ];
 
-  if (typeof expression === 'function')
-    return generateEvaluatorFromFunction(dataStack, expression);
-
-  const evaluator = generateEvaluatorFromString(dataStack, expression, el);
+  const evaluator =
+    typeof expression === 'function'
+      ? generateEvaluatorFromFunction(dataStack, expression)
+      : generateEvaluatorFromString(dataStack, expression, el);
 
   return tryCatch.bind(null, el, expression, evaluator);
 };
