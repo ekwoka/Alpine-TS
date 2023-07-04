@@ -17,8 +17,26 @@ export const setPrefix = (newPrefix: string) => (prefixAsString = newPrefix);
 
 const directiveHandlers: Record<string, DirectiveCallback> = {};
 
-export const directive = (name: string, callback: DirectiveCallback) =>
-  (directiveHandlers[name] = callback);
+export const directive = (name: string, callback: DirectiveCallback) => {
+  directiveHandlers[name] = callback;
+
+  return {
+    before(directive: string) {
+      if (!directiveHandlers[directive]) {
+        console.warn(
+          'Cannot find directive `${directive}`. ' +
+            '`${name}` will use the default order of execution'
+        );
+        return;
+      }
+      const pos =
+        directiveOrder.indexOf(directive) ?? directiveOrder.indexOf('DEFAULT');
+      if (pos >= 0) {
+        directiveOrder.splice(pos, 0, name);
+      }
+    },
+  };
+};
 
 export const directives = (
   el: ElementWithXAttributes,
