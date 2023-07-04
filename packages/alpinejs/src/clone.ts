@@ -4,7 +4,7 @@ import { DirectiveCallback, ElementWithXAttributes } from './types';
 import { walk } from './utils/walk';
 import { ReactiveEffect } from '@vue/reactivity';
 
-let isCloning = false;
+export let isCloning = false;
 
 export const skipDuringClone = <
   T extends (...args: Parameters<T>) => ReturnType<T>

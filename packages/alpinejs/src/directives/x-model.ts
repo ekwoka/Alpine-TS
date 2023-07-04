@@ -1,3 +1,4 @@
+import { isCloning } from '../clone';
 import { directive } from '../directives';
 import { evaluateLater } from '../evaluator';
 import { mutateDom } from '../mutation';
@@ -58,9 +59,12 @@ directive(
     // does not trigger on the single inputs) and update
     // on nextTick so the page doesn't end up out of sync
     if (el.form) {
-      const removeResetListener = on(el.form, 'reset', [], () =>
-        nextTick(() => el._x_model && el._x_model.set(el.value))
-      );
+      const removeResetListener = isCloning
+        ? // eslint-disable-next-line @typescript-eslint/no-empty-function
+          () => {}
+        : on(el.form, 'reset', [], () =>
+            nextTick(() => el._x_model && el._x_model.set(el.value))
+          );
       cleanup(() => removeResetListener());
     }
 
