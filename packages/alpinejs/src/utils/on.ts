@@ -140,6 +140,17 @@ const isListeningForASpecificKeyThatHasntBeenPressed = (
         : 1
     );
   }
+  if (keyModifiers.includes('throttle')) {
+    const throttleIndex = keyModifiers.indexOf('throttle');
+    keyModifiers.splice(
+      throttleIndex,
+      isNumeric(
+        (keyModifiers[throttleIndex + 1] || 'invalid-wait').split('ms')[0]
+      )
+        ? 2
+        : 1
+    );
+  }
 
   // If no modifier is specified, we'll call it a press.
   if (keyModifiers.length === 0) return false;
