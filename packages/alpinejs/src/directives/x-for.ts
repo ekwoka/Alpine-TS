@@ -18,7 +18,7 @@ directive(
   ) => {
     const iteratorNames = parseForExpression(expression);
 
-    const evaluateItems = evaluateLater<unknown>(el, iteratorNames.items);
+    const evaluateItems = evaluateLater<unknown[]>(el, iteratorNames.items);
     const evaluateKey = evaluateLater<string>(
       el,
       // the x-bind:key expression is stored for our use instead of evaluated.
@@ -42,7 +42,7 @@ directive(
 const loop = (
   templateEl: ElementWithXAttributes<HTMLTemplateElement>,
   iteratorNames: IteratorNames,
-  evaluateItems: ReturnType<typeof evaluateLater<unknown>>,
+  evaluateItems: ReturnType<typeof evaluateLater<unknown[]>>,
   evaluateKey: ReturnType<typeof evaluateLater<string>>
 ) => {
   const isObject = (i: unknown): i is Record<string, unknown> =>
@@ -73,7 +73,7 @@ const loop = (
           iteratorNames,
           value,
           key,
-          items as Record<string, unknown>
+          items as Record<string, unknown>[]
         );
 
         evaluateKey((value) => keys.push(value), {
