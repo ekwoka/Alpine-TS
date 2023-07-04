@@ -34,6 +34,14 @@ export const bind = (
       bindClasses(el, value as string | Record<string, boolean>);
       break;
 
+    // 'selected' and 'checked' are special attributes that aren't necessarily
+    // synced with their corresponding properties when updated, so both the
+    // attribute and property need to be updated when bound.
+    case 'selected':
+    case 'checked':
+      bindAttributeAndProperty(el, name, value as boolean);
+      break;
+
     default:
       bindAttribute(el, name, value as string | boolean);
       break;
@@ -101,6 +109,15 @@ const bindStyles = (
   el._x_undoAddedStyles = setStyles(el, value);
 };
 
+const bindAttributeAndProperty = (
+  el: ElementWithXAttributes,
+  name: string,
+  value: string | boolean
+) => {
+  bindAttribute(el, name, value);
+  setPropertyIfChanged(el, name, value);
+};
+
 const bindAttribute = (
   el: ElementWithXAttributes,
   name: string,
@@ -121,6 +138,16 @@ const setIfChanged = (
   attrName: string,
   value: string
 ) => el.getAttribute(attrName) != value && el.setAttribute(attrName, value);
+
+const setPropertyIfChanged = (
+  el: ElementWithXAttributes,
+  propName: string,
+  value: unknown
+) => {
+  if (el[propName] !== value) {
+    el[propName] = value;
+  }
+};
 
 const updateSelect = (
   el: ElementWithXAttributes,

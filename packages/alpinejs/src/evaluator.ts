@@ -54,10 +54,10 @@ export const normalEvaluator: Evaluator = (el, expression) => {
     ...closestDataStack(el),
   ];
 
-  if (typeof expression === 'function')
-    return generateEvaluatorFromFunction(dataStack, expression);
-
-  const evaluator = generateEvaluatorFromString(dataStack, expression, el);
+  const evaluator =
+    typeof expression === 'function'
+      ? generateEvaluatorFromFunction(dataStack, expression)
+      : generateEvaluatorFromString(dataStack, expression, el);
 
   return tryCatch.bind(null, el, expression, evaluator);
 };
@@ -86,16 +86,16 @@ type AsyncEvaluator = (
   scope: unknown
 ) => Promise<unknown>;
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const AsyncFunction = (async () => {}).constructor as (
+  ...args: string[]
+) => AsyncEvaluator;
+
 const generateFunctionFromString = (
   expression: string,
   el: ElementWithXAttributes
 ) => {
   if (evaluatorMemo[expression]) return evaluatorMemo[expression];
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const AsyncFunction = (async () => {}).constructor as (
-    ...args: string[]
-  ) => AsyncEvaluator;
 
   // Some expressions that are useful in Alpine are not valid as the right side of an expression.
   // Here we'll detect if the expression isn't valid for an assignement and wrap it in a self-

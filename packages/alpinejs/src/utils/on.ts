@@ -126,7 +126,10 @@ const isListeningForASpecificKeyThatHasntBeenPressed = (
   modifiers: string[]
 ) => {
   let keyModifiers = modifiers.filter(
-    (mod) => !['window', 'document', 'prevent', 'stop', 'once'].includes(mod)
+    (mod) =>
+      !['window', 'document', 'prevent', 'stop', 'once', 'capture'].includes(
+        mod
+      )
   );
 
   if (keyModifiers.includes('debounce')) {
@@ -135,6 +138,17 @@ const isListeningForASpecificKeyThatHasntBeenPressed = (
       debounceIndex,
       isNumeric(
         (keyModifiers[debounceIndex + 1] || 'invalid-wait').split('ms')[0]
+      )
+        ? 2
+        : 1
+    );
+  }
+  if (keyModifiers.includes('throttle')) {
+    const throttleIndex = keyModifiers.indexOf('throttle');
+    keyModifiers.splice(
+      throttleIndex,
+      isNumeric(
+        (keyModifiers[throttleIndex + 1] || 'invalid-wait').split('ms')[0]
       )
         ? 2
         : 1

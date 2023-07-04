@@ -1,6 +1,6 @@
+const queue: (() => void)[] = [];
 let flushPending = false;
 let flushing = false;
-const queue: (() => void)[] = [];
 
 export const scheduler = (callback: () => void) => queueJob(callback);
 

@@ -56,4 +56,18 @@ describe('Custom Directives', () => {
     await click('#change');
     expect($('h1').textContent).toBe('7');
   });
+  it('can register directives order', async () => {
+    const { $ } = await render(
+      (Alpine) =>
+        Alpine.directive('foo', (el) => {
+          Alpine.addScopeToNode(el, { foo: 'bar' });
+        }).before('bind'),
+      `
+        <div x-data>
+          <span x-foo x-bind:foo="foo"></span>
+        </div>
+      `
+    );
+    expect($('span').getAttribute('foo')).toBe('bar');
+  });
 });

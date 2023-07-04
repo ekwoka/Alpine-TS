@@ -17,8 +17,27 @@ export const setPrefix = (newPrefix: string) => (prefixAsString = newPrefix);
 
 const directiveHandlers: Record<string, DirectiveCallback> = {};
 
-export const directive = (name: string, callback: DirectiveCallback) =>
-  (directiveHandlers[name] = callback);
+export const directive = (name: string, callback: DirectiveCallback) => {
+  directiveHandlers[name] = callback;
+
+  return {
+    before(directive: string) {
+      if (!directiveHandlers[directive]) {
+        console.warn(
+          'Cannot find directive `${directive}`. ' +
+            '`${name}` will use the default order of execution'
+        );
+        return;
+      }
+      const pos = directiveOrder.indexOf(directive);
+      directiveOrder.splice(
+        pos >= 0 ? pos : directiveOrder.indexOf('DEFAULT'),
+        0,
+        name
+      );
+    },
+  };
+};
 
 export const directives = (
   el: ElementWithXAttributes,
@@ -203,7 +222,7 @@ const toParsedDirectives = (
   return ({ name, value }) => {
     const typeMatch = name.match(alpineAttributeRegex());
     const valueMatch = name.match(/:([a-zA-Z0-9\-:]+)/);
-    const modifiers = name.match(/\.[^.\]]+(?=[^\]]*$)/g) || [];
+    const modifiers: string[] = name.match(/\.[^.\]]+(?=[^\]]*$)/g) || [];
     const original =
       originalAttributeOverride || transformedAttributeMap[name] || name;
 
