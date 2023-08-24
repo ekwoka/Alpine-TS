@@ -62,57 +62,22 @@ export const mergeProxies = (objects: Record<string, unknown>[]) => {
         objects.some((obj) => Object.prototype.hasOwnProperty.call(obj, name)),
       get: (_, name) => {
         if (name == 'toJSON') return collapseProxies;
-        return (objects.find((obj) => {
-          if (Object.prototype.hasOwnProperty.call(obj, name)) {
-            const descriptor = Object.getOwnPropertyDescriptor(obj, name);
-            let getter = descriptor.get as PropertyDescriptor['get'] & {
-              _x_alreadyBound?: boolean;
-            };
-            let setter = descriptor.set as PropertyDescriptor['get'] & {
-              _x_alreadyBound?: boolean;
-            };
-
-            // If we already bound this getter, don't rebind.
-            if (
-              (getter && getter._x_alreadyBound) ||
-              (setter && setter._x_alreadyBound)
-            )
-              return true;
-
-            // Properly bind getters and setters to this wrapper Proxy.
-            if ((getter || setter) && descriptor.enumerable) {
-              // Only bind user-defined getters, not our magic properties.
-              const property = descriptor;
-
-              getter = getter && getter.bind(thisProxy);
-              setter = setter && setter.bind(thisProxy);
-
-              if (getter) getter._x_alreadyBound = true;
-              if (setter) setter._x_alreadyBound = true;
-
-              Object.defineProperty(obj, name, {
-                ...property,
-                get: getter,
-                set: setter,
-              });
-            }
-
-            return true;
-          }
-
-          return false;
-        }) || {})[name as string];
-      },
-      set: (_, name, value) => {
-        const closestObjectWithKey = objects.find((obj) =>
-          Object.prototype.hasOwnProperty.call(obj, name)
+        return Reflect.get(
+          objects.find((obj) =>
+            Object.prototype.hasOwnProperty.call(obj, name)
+          ) ?? {},
+          name as string,
+          thisProxy
         );
-
-        if (closestObjectWithKey) closestObjectWithKey[name as string] = value;
-        else objects[objects.length - 1][name as string] = value;
-
-        return true;
       },
+      set: (_, name, value) =>
+        Reflect.set(
+          objects.find((obj) =>
+            Object.prototype.hasOwnProperty.call(obj, name)
+          ) ?? {},
+          name,
+          value
+        ),
     }
   );
 
