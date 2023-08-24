@@ -58,8 +58,12 @@ export const mergeProxies = (objects: Record<string, unknown>[]) => {
     {
       ownKeys: () =>
         Array.from(new Set(objects.flatMap((i) => Object.keys(i)))),
-      has: (_, name) =>
-        objects.some((obj) => Object.prototype.hasOwnProperty.call(obj, name)),
+      has: (_, name) => {
+        if (name == Symbol.unscopables) return false;
+        return objects.some((obj) =>
+          Object.prototype.hasOwnProperty.call(obj, name)
+        );
+      },
       get: (_, name) => {
         if (name == 'toJSON') return collapseProxies;
         return Reflect.get(
