@@ -42,6 +42,16 @@ export const closestDataStack = (node: ElementWithXAttributes) => {
 export const closestDataProxy = (el: ElementWithXAttributes) =>
   mergeProxies(closestDataStack(el));
 
+function collapseProxies(this: Record<string, unknown>) {
+  const keys = Reflect.ownKeys(this);
+  const collapsed = keys.reduce((acc, key) => {
+    console.log(key);
+    acc[key] = Reflect.get(this, key);
+    return acc;
+  }, {} as Record<string | symbol | number, unknown>);
+  return collapsed;
+}
+
 export const mergeProxies = (objects: Record<string, unknown>[]) => {
   const thisProxy = new Proxy(
     {},
@@ -50,8 +60,9 @@ export const mergeProxies = (objects: Record<string, unknown>[]) => {
         Array.from(new Set(objects.flatMap((i) => Object.keys(i)))),
       has: (_, name) =>
         objects.some((obj) => Object.prototype.hasOwnProperty.call(obj, name)),
-      get: (_, name) =>
-        (objects.find((obj) => {
+      get: (_, name) => {
+        if (name == 'toJSON') return collapseProxies;
+        return (objects.find((obj) => {
           if (Object.prototype.hasOwnProperty.call(obj, name)) {
             const descriptor = Object.getOwnPropertyDescriptor(obj, name);
             let getter = descriptor.get as PropertyDescriptor['get'] & {
@@ -90,7 +101,8 @@ export const mergeProxies = (objects: Record<string, unknown>[]) => {
           }
 
           return false;
-        }) || {})[name as string],
+        }) || {})[name as string];
+      },
       set: (_, name, value) => {
         const closestObjectWithKey = objects.find((obj) =>
           Object.prototype.hasOwnProperty.call(obj, name)
