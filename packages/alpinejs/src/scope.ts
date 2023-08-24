@@ -53,37 +53,42 @@ function collapseProxies(this: Record<string, unknown>) {
 }
 
 export const mergeProxies = (objects: Record<string, unknown>[]) => {
-  const thisProxy = new Proxy(
-    {},
-    {
-      ownKeys: () =>
-        Array.from(new Set(objects.flatMap((i) => Object.keys(i)))),
-      has: (_, name) => {
-        if (name == Symbol.unscopables) return false;
-        return objects.some((obj) =>
-          Object.prototype.hasOwnProperty.call(obj, name)
-        );
-      },
-      get: (_, name) => {
-        if (name == 'toJSON') return collapseProxies;
-        return Reflect.get(
-          objects.find((obj) =>
-            Object.prototype.hasOwnProperty.call(obj, name)
-          ) ?? {},
-          name as string,
-          thisProxy
-        );
-      },
-      set: (_, name, value) =>
-        Reflect.set(
-          objects.find((obj) =>
-            Object.prototype.hasOwnProperty.call(obj, name)
-          ) ?? {},
-          name,
-          value
-        ),
-    }
-  );
+  const thisProxy = new Proxy({ objects }, proxyMerger);
 
   return thisProxy;
+};
+
+type wrappedProxy = {
+  objects: Record<string | number | symbol, unknown>[];
+};
+
+const proxyMerger: ProxyHandler<wrappedProxy> = {
+  ownKeys(proxies) {
+    return Array.from(new Set(proxies.objects.flatMap((i) => Object.keys(i))));
+  },
+  has(proxies, name) {
+    if (name == Symbol.unscopables) return false;
+    return proxies.objects.some((obj) =>
+      Object.prototype.hasOwnProperty.call(obj, name)
+    );
+  },
+  get(proxies, name, thisProxy) {
+    if (name == 'toJSON') return collapseProxies;
+    return Reflect.get(
+      proxies.objects.find((obj) =>
+        Object.prototype.hasOwnProperty.call(obj, name)
+      ) ?? {},
+      name as string,
+      thisProxy
+    );
+  },
+  set(proxies, name, value) {
+    return Reflect.set(
+      proxies.objects.find((obj) =>
+        Object.prototype.hasOwnProperty.call(obj, name)
+      ) ?? {},
+      name,
+      value
+    );
+  },
 };
