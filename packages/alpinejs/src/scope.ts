@@ -55,7 +55,7 @@ function collapseProxies(this: Record<string, unknown>) {
 export const mergeProxies = (objects: Record<string, unknown>[]) => {
   const thisProxy = new Proxy({ objects }, proxyMerger);
 
-  return thisProxy;
+  return thisProxy as Record<string | symbol, unknown>;
 };
 
 type wrappedProxy = {

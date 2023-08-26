@@ -12,8 +12,8 @@ type Store =
   | boolean;
 
 type StoreFn = {
+  <T extends Store>(name: string): T;
   <T extends Store>(name: string, value: T): void;
-  <T extends Store>(name: string, value: undefined): T;
 };
 
 export const store: StoreFn = <T extends Store>(name: string, value?: T) => {

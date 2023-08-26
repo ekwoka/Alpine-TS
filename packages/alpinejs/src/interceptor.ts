@@ -31,7 +31,7 @@ export const initInterceptors = (data: Record<string, unknown>) => {
   return recurse(data);
 };
 
-type InterceptorCallback = <T>(
+type InterceptorCallback<T = unknown> = (
   initial: T,
   get: () => T,
   set: (val: T) => void,
@@ -39,8 +39,8 @@ type InterceptorCallback = <T>(
   key: string
 ) => void;
 
-type InterceptorObject = {
-  initialValue: unknown;
+type InterceptorObject<T = unknown> = {
+  initialValue: T;
   _x_interceptor: true;
   initialize: (
     data: Record<string, unknown>,
@@ -49,8 +49,8 @@ type InterceptorObject = {
   ) => void;
 };
 
-export const interceptor = (
-  callback: InterceptorCallback,
+export const interceptor = <T>(
+  callback: InterceptorCallback<T>,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   mutateObj: (obj: InterceptorObject) => void = () => {}
 ) => {
@@ -60,7 +60,7 @@ export const interceptor = (
     initialize(data, path, key) {
       return callback(
         this.initialValue,
-        () => get(data, path),
+        () => get<T>(data, path),
         (value) => set(data, path, value),
         path,
         key
@@ -95,8 +95,8 @@ export const interceptor = (
   };
 };
 
-const get = (obj: Record<string, unknown>, path: string) =>
-  path.split('.').reduce((carry, segment) => carry[segment], obj);
+const get = <T>(obj: Record<string, unknown>, path: string): T =>
+  path.split('.').reduce((carry, segment) => carry[segment], obj) as T;
 
 const set = (
   obj: Record<string, unknown | Record<string, unknown>>,
