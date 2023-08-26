@@ -56,7 +56,13 @@ export interface XAttributes {
     finish: () => void;
   };
   _x_hideChildren: ElementWithXAttributes[];
+  _x_inlineBindings: Record<string, Binding>;
 }
+
+type Binding = {
+  expression: string;
+  extract: boolean;
+};
 export type withXAttributes<T extends Element> = T & Partial<XAttributes>;
 
 type Transitions = {

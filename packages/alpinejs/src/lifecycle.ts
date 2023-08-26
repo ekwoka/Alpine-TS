@@ -1,6 +1,7 @@
 import { deferHandlingDirectives, directives } from './directives';
 import {
   cleanupAttributes,
+  cleanupElement,
   onAttributesAdded,
   onElAdded,
   onElRemoved,
@@ -8,7 +9,7 @@ import {
 } from './mutation';
 import { ElementWithXAttributes } from './types';
 import { dispatch } from './utils/dispatch';
-import { walk } from './utils/walk';
+import { WalkerCallback, walk } from './utils/walk';
 import { warn } from './utils/warn';
 
 export const start = () => {
@@ -23,7 +24,7 @@ export const start = () => {
   startObservingMutations();
 
   onElAdded((el) => initTree(el, walk));
-  onElRemoved((el) => destroyTree(el));
+  onElRemoved(destroyTree);
 
   onAttributesAdded((el, attrs) => {
     directives(el, attrs).forEach((handle) => handle());
@@ -83,9 +84,23 @@ export const findClosest = (
 export const isRoot = (el: ElementWithXAttributes) =>
   rootSelectors().some((selector) => el.matches(selector));
 
-export const initTree = (el: ElementWithXAttributes, walker = walk) => {
+const initInterceptors: WalkerCallback[] = [];
+
+export const interceptInit = (callback: WalkerCallback) => {
+  initInterceptors.push(callback);
+};
+
+export const initTree = (
+  el: ElementWithXAttributes,
+  walker = walk,
+  intercept?: WalkerCallback
+) => {
   deferHandlingDirectives(() => {
     walker(el, (el, skip) => {
+      intercept?.(el, skip);
+
+      initInterceptors.forEach((i) => i(el, skip));
+
       directives(el, el.attributes).forEach((handle) => handle());
 
       el._x_ignore && skip();
@@ -93,6 +108,9 @@ export const initTree = (el: ElementWithXAttributes, walker = walk) => {
   });
 };
 
-const destroyTree = (root: ElementWithXAttributes) => {
-  walk(root, (el) => cleanupAttributes(el));
+export const destroyTree = (root: ElementWithXAttributes) => {
+  walk(root, (el) => {
+    cleanupAttributes(el);
+    cleanupElement(el);
+  });
 };
