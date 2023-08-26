@@ -86,7 +86,7 @@ const proxyMerger: ProxyHandler<wrappedProxy> = {
     return Reflect.set(
       proxies.objects.find((obj) =>
         Object.prototype.hasOwnProperty.call(obj, name)
-      ) ?? {},
+      ) ?? proxies.objects.at(-1),
       name,
       value
     );
