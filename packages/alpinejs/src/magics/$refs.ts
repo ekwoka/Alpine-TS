@@ -2,7 +2,7 @@ import { magic } from '../magics';
 import { mergeProxies } from '../scope';
 import { ElementWithXAttributes } from '../types';
 
-magic('refs', (el) => {
+magic('refs', (el): Record<string, HTMLElement | undefined> => {
   if (el._x_refs_proxy) return el._x_refs_proxy;
 
   el._x_refs_proxy = mergeProxies(getArrayOfRefObject(el));
@@ -11,7 +11,7 @@ magic('refs', (el) => {
 });
 
 const getArrayOfRefObject = (el: ElementWithXAttributes) => {
-  const refObjects = [];
+  const refObjects: Record<string, HTMLElement>[] = [];
 
   let currentEl = el;
 
@@ -23,3 +23,13 @@ const getArrayOfRefObject = (el: ElementWithXAttributes) => {
 
   return refObjects;
 };
+
+declare module '../magics' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface Magics<T> {
+    /**
+     * Retrieve DOM elements marked with x-ref inside the component.
+     */
+    $refs: Record<string, HTMLElement | undefined>;
+  }
+}

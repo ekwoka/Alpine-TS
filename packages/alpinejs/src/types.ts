@@ -23,8 +23,8 @@ export interface XAttributes {
   _x_attributeCleanups: Record<string, (() => void)[]>;
   _x_ignoreMutationObserver: boolean;
   _x_teleportBack: ElementWithXAttributes;
-  _x_refs_proxy: Record<string, unknown>;
-  _x_refs: unknown;
+  _x_refs_proxy: Record<string, HTMLElement | undefined>;
+  _x_refs?: Record<string, HTMLElement | undefined>;
   _x_keyExpression: string;
   _x_prevKeys: string[];
   _x_forScope: Record<string, unknown>;

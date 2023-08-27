@@ -54,7 +54,7 @@ export const interceptor = <T>(
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   mutateObj: (obj: InterceptorObject) => void = () => {}
 ) => {
-  const obj: InterceptorObject = {
+  const obj: InterceptorObject<T> = {
     initialValue: undefined,
     _x_interceptor: true,
     initialize(data, path, key) {

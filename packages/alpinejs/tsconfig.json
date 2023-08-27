@@ -67,6 +67,7 @@
     "sourceMap": true,
     "module": "es2020",
     "moduleResolution": "node",
+    "noImplicitThis": true,
     "outDir": "dist",
     "target": "ESNext"
   }
