@@ -73,3 +73,5 @@ Alpine.setReactivityEngine({ reactive, effect, release: stop, raw: toRaw });
  */
 export default Alpine;
 export type { Alpine } from './alpine';
+export type { Stores } from './store';
+export type { AlpineComponent } from './data';
