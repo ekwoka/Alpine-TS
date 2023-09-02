@@ -144,4 +144,18 @@ describe('x-bind:object', () => {
     await click('button');
     expect($('button').textContent).toBe('baz');
   });
+  it('preserves the whole of the binding key', async () => {
+    const { $ } = await render(
+      undefined,
+      `
+        <div x-data="{ props: {
+            'demo:value.modifier': 'foo'
+          } }">
+          <button x-bind="props"></button>
+        </div>
+      `
+    );
+    expect($('button').matches('[demo\\:value\\.modifier]')).toBe(true);
+    expect($('button').getAttribute('demo:value.modifier')).toBe('foo');
+  });
 });
