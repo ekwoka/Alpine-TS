@@ -221,7 +221,7 @@ const toParsedDirectives = (
 ) => {
   return ({ name, value }) => {
     const typeMatch = name.match(alpineAttributeRegex());
-    const valueMatch = name.match(/:([a-zA-Z0-9\-:]+)/);
+    const valueMatch = name.match(/:([a-zA-Z0-9\-_:]+)/);
     const modifiers: string[] = name.match(/\.[^.\]]+(?=[^\]]*$)/g) || [];
     const original =
       originalAttributeOverride || transformedAttributeMap[name] || name;
