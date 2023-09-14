@@ -1,10 +1,11 @@
+import type { InferInterceptors } from './interceptor';
 import type { Magics } from './magics';
 
 const Data: Record<string, DataFunction<unknown>> = {};
 
 type DataFunction<T> = (...args: unknown[]) => AlpineComponent<T>;
 
-export const data = <T extends Record<string | symbol, unknown>>(
+export const data = <T extends Record<string | number | symbol, unknown>>(
   name: string,
   callback: DataFunction<T>
 ) => {
@@ -13,7 +14,7 @@ export const data = <T extends Record<string | symbol, unknown>>(
 
 export type AlpineComponent<T> = T &
   DataMethods &
-  ThisType<T & DataMethods & Magics<T>>;
+  ThisType<InferInterceptors<T> & DataMethods & Magics<T>>;
 
 type DataMethods = {
   /**
