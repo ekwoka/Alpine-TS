@@ -31,36 +31,44 @@ export const initInterceptors = (data: Record<string, unknown>) => {
   return recurse(data);
 };
 
-type InterceptorCallback = <T>(
+type InterceptorCallback<T = unknown> = (
   initial: T,
   get: () => T,
   set: (val: T) => void,
   path: string,
   key: string
-) => void;
+) => T;
 
-type InterceptorObject = {
-  initialValue: unknown;
+type InterceptorObject<T = unknown> = {
+  initialValue: T;
   _x_interceptor: true;
-  initialize: (
-    data: Record<string, unknown>,
-    path: string,
-    key: string
-  ) => void;
+  initialize: (data: Record<string, unknown>, path: string, key: string) => T;
 };
 
-export const interceptor = (
-  callback: InterceptorCallback,
+type InferInterceptor<T> = T extends InterceptorObject<infer U>
+  ? U
+  : T extends Record<string | number | symbol, unknown>
+  ? {
+      [K in keyof T]: InferInterceptor<T[K]>;
+    }
+  : T;
+
+export type InferInterceptors<T> = {
+  [K in keyof T]: InferInterceptor<T[K]>;
+};
+
+export const interceptor = <T>(
+  callback: InterceptorCallback<T>,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  mutateObj: (obj: InterceptorObject) => void = () => {}
+  mutateObj: (obj: InterceptorObject<T>) => void = () => {}
 ) => {
-  const obj: InterceptorObject = {
+  const obj: InterceptorObject<T> = {
     initialValue: undefined,
     _x_interceptor: true,
     initialize(data, path, key) {
       return callback(
         this.initialValue,
-        () => get(data, path),
+        () => get<T>(data, path),
         (value) => set(data, path, value),
         path,
         key
@@ -71,12 +79,8 @@ export const interceptor = (
   mutateObj(obj);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (initialValue: any) => {
-    if (
-      typeof initialValue === 'object' &&
-      initialValue !== null &&
-      initialValue._x_interceptor
-    ) {
+  return (initialValue: T) => {
+    if (isInterceptor(initialValue)) {
       // Support nesting interceptors.
       const initialize = obj.initialize.bind(obj);
 
@@ -95,8 +99,13 @@ export const interceptor = (
   };
 };
 
-const get = (obj: Record<string, unknown>, path: string) =>
-  path.split('.').reduce((carry, segment) => carry[segment], obj);
+const isInterceptor = <T>(
+  val: T | InterceptorObject<T>
+): val is InterceptorObject<T> =>
+  Boolean((val as InterceptorObject<T>)?._x_interceptor);
+
+const get = <T>(obj: Record<string, unknown>, path: string): T =>
+  path.split('.').reduce((carry, segment) => carry[segment], obj) as T;
 
 const set = (
   obj: Record<string, unknown | Record<string, unknown>>,

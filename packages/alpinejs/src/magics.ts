@@ -4,6 +4,11 @@ import { onElRemoved } from './mutation';
 import { ElementWithXAttributes, MagicUtilities } from './types';
 import { MaybeFunction } from './utils/typeWrap';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export interface Magics<T> {
+  [key: `$${string}`]: unknown;
+}
+
 const magics: Record<string, MagicFn> = {};
 
 type MagicFn = (

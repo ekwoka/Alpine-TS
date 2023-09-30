@@ -370,7 +370,7 @@ export const performTransition = (
     beforeCancel(callback) {
       this.beforeCancels.push(callback);
     },
-    cancel: once(function () {
+    cancel: once(function (this: { beforeCancels: (() => void)[] }) {
       while (this.beforeCancels.length) {
         this.beforeCancels.shift()();
       }

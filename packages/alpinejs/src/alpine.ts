@@ -1,5 +1,5 @@
 import { bind } from './binds';
-import { clone, skipDuringClone } from './clone';
+import { clone, onlyDuringClone, skipDuringClone } from './clone';
 import { data } from './data';
 import {
   directive,
@@ -20,8 +20,10 @@ import {
   addInitSelector,
   addRootSelector,
   closestRoot,
+  destroyTree,
   findClosest,
   initTree,
+  interceptInit,
   start,
 } from './lifecycle';
 import { magic } from './magics';
@@ -29,6 +31,10 @@ import {
   deferMutations,
   flushAndStopDeferringMutations,
   mutateDom,
+  onAttributeRemoved,
+  onAttributesAdded,
+  startObservingMutations,
+  stopObservingMutations,
 } from './mutation';
 import { nextTick } from './nextTick';
 import { plugin } from './plugin';
@@ -47,7 +53,8 @@ import {
   mergeProxies,
 } from './scope';
 import { store } from './store';
-import { getBinding as bound } from './utils/bind';
+import { walk } from './utils';
+import { getBinding as bound, extractProp } from './utils/bind';
 import { debounce } from './utils/debounce';
 import { setStyles } from './utils/styles';
 import { throttle } from './utils/throttle';
@@ -69,19 +76,27 @@ const Alpine = {
   flushAndStopDeferringMutations,
   dontAutoEvaluateFunctions,
   disableEffectScheduling,
+  startObservingMutations,
+  stopObservingMutations,
   setReactivityEngine,
+  onAttributeRemoved,
+  onAttributesAdded,
   closestDataStack,
   skipDuringClone,
+  onlyDuringClone,
   addRootSelector,
   addInitSelector,
   addScopeToNode,
   deferMutations,
   mapAttributes,
   evaluateLater,
+  interceptInit,
   setEvaluator,
   mergeProxies,
+  extractProp,
   findClosest,
   closestRoot,
+  destroyTree,
   interceptor, // INTERNAL: not public API and is subject to change without major release.
   transition, // INTERNAL
   setStyles, // INTERNAL
@@ -102,6 +117,7 @@ const Alpine = {
   clone,
   bound,
   $data,
+  walk,
   data,
   bind,
 };

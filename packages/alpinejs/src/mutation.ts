@@ -55,17 +55,21 @@ export const cleanupAttributes = (
   });
 };
 
+export const cleanupElement = (el: ElementWithXAttributes) => {
+  while (el._x_cleanups?.length) el._x_cleanups.pop()();
+};
+
 const onMutate = (mutations: MutationRecord[]) => {
   if (isCollecting)
     return (deferredMutations = deferredMutations.concat(mutations));
 
-  let addedNodes: ElementWithXAttributes[] = [];
-  let removedNodes: ElementWithXAttributes[] = [];
-  let addedAttributes = new Map<
+  const addedNodes: ElementWithXAttributes[] = [];
+  const removedNodes: ElementWithXAttributes[] = [];
+  const addedAttributes = new Map<
     ElementWithXAttributes,
     { name: string; value: string }[]
   >();
-  let removedAttributes = new Map<ElementWithXAttributes, string[]>();
+  const removedAttributes = new Map<ElementWithXAttributes, string[]>();
 
   mutations.forEach((mutation) => {
     const el = mutation.target as ElementWithXAttributes;
@@ -160,11 +164,6 @@ const onMutate = (mutations: MutationRecord[]) => {
     delete node._x_ignoreSelf;
     delete node._x_ignore;
   });
-
-  addedNodes = null;
-  removedNodes = null;
-  addedAttributes = null;
-  removedAttributes = null;
 };
 const observer = new MutationObserver(onMutate);
 

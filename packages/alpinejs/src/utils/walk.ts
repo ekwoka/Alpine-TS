@@ -1,12 +1,14 @@
 import { ElementWithXAttributes } from '../types';
 
-export const walk = (
+export type WalkerCallback = (
   el: ElementWithXAttributes,
-  callback: (el: ElementWithXAttributes, skip: () => void) => void
-) => {
+  skip: () => void
+) => void;
+export const walk = (el: ElementWithXAttributes, callback: WalkerCallback) => {
   if (typeof ShadowRoot === 'function' && el instanceof ShadowRoot)
-    return Array.from(el.children).forEach((el) =>
-      walk(el as ElementWithXAttributes, callback)
+    return Array.prototype.forEach.call(
+      el.children,
+      (el: ElementWithXAttributes) => walk(el, callback)
     );
 
   let skip = false;

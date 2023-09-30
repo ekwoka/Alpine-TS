@@ -45,17 +45,20 @@ export const closestDataProxy = (el: ElementWithXAttributes) =>
 function collapseProxies(this: Record<string, unknown>) {
   const keys = Reflect.ownKeys(this);
   const collapsed = keys.reduce((acc, key) => {
-    console.log(key);
     acc[key] = Reflect.get(this, key);
     return acc;
   }, {} as Record<string | symbol | number, unknown>);
   return collapsed;
 }
 
-export const mergeProxies = (objects: Record<string, unknown>[]) => {
+export const mergeProxies = <
+  T extends Record<string | number | symbol, unknown>
+>(
+  objects: T[]
+) => {
   const thisProxy = new Proxy({ objects }, proxyMerger);
 
-  return thisProxy;
+  return thisProxy as unknown as T;
 };
 
 type wrappedProxy = {

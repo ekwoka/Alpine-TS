@@ -38,3 +38,22 @@ magic(
       el._x_effects.delete(effectReference);
     }
 );
+
+declare module '../magics' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface Magics<T> {
+    /**
+     * Fire the given callback when the value in the property is changed.
+     *
+     * @param property the component property
+     * @param callback a callback that will fire when a given property is changed
+     */
+    $watch: <
+      K extends keyof T | string,
+      V extends K extends keyof T ? T[K] : unknown
+    >(
+      property: K,
+      callback: (newValue: V, oldValue: V) => void
+    ) => void;
+  }
+}

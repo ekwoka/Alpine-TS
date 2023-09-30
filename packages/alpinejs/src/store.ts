@@ -1,43 +1,47 @@
 import { initInterceptors } from './interceptor';
 import { reactive } from './reactivity';
 
-let stores: Record<string, Store> = {};
+export interface Stores {
+  [key: string | symbol]: unknown;
+}
+let stores: Stores = {};
 let isReactive = false;
 
-type Store =
-  | Record<string, unknown>
-  | Array<unknown>
-  | number
-  | string
-  | boolean;
-
 type StoreFn = {
-  <T extends Store>(name: string, value: T): void;
-  <T extends Store>(name: string, value: undefined): T;
+  <T extends keyof Stores>(name: T): Stores[T];
+  <T extends keyof Stores>(name: T, value: Stores[T]): void;
 };
 
-export const store: StoreFn = <T extends Store>(name: string, value?: T) => {
+export const store: StoreFn = <T extends keyof Stores>(
+  name: T,
+  value?: Stores[T]
+) => {
   if (!isReactive) {
     stores = reactive(stores);
     isReactive = true;
   }
-
   if (value === undefined) return stores[name];
 
   stores[name] = value;
 
   const reactiveValue = stores[name];
 
-  if (
-    typeof reactiveValue === 'object' &&
-    reactiveValue !== null &&
-    Object.prototype.hasOwnProperty.call(reactiveValue, 'init') &&
-    !Array.isArray(reactiveValue) &&
-    typeof reactiveValue.init === 'function'
-  )
-    reactiveValue.init();
+  if (isInitable(reactiveValue)) reactiveValue.init();
 
   initInterceptors(reactiveValue as Record<string, unknown>);
+};
+
+const isInitable = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any | { init(): void }
+): value is { init: () => void } => {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    !Array.isArray(value) &&
+    Object.prototype.hasOwnProperty.call(value, 'init') &&
+    typeof value.init === 'function'
+  );
 };
 
 export const getStores = () => stores;
