@@ -99,7 +99,6 @@ export const interceptor = <T>(
   };
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isInterceptor = <T>(
   val: T | InterceptorObject<T>
 ): val is InterceptorObject<T> =>

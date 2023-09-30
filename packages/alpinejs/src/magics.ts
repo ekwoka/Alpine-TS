@@ -6,7 +6,7 @@ import { MaybeFunction } from './utils/typeWrap';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface Magics<T> {
-  [key: string]: unknown;
+  [key: `$${string}`]: unknown;
 }
 
 const magics: Record<string, MagicFn> = {};

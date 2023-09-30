@@ -31,15 +31,15 @@ export const store: StoreFn = <T extends keyof Stores>(
   initInterceptors(reactiveValue as Record<string, unknown>);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isInitable = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any | { init(): void }
 ): value is { init: () => void } => {
   return (
     typeof value === 'object' &&
     value !== null &&
-    Object.prototype.hasOwnProperty.call(value, 'init') &&
     !Array.isArray(value) &&
+    Object.prototype.hasOwnProperty.call(value, 'init') &&
     typeof value.init === 'function'
   );
 };
