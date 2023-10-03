@@ -27,7 +27,7 @@ describe('entangle', () => {
         set(v) {
           inner.fizz = v;
         },
-      }
+      },
     );
     expect(outer.foo).toBe('bar');
     expect(inner.fizz).toBe('bar');
@@ -67,7 +67,7 @@ describe('entangle', () => {
         set(v) {
           inner.fizz = v;
         },
-      }
+      },
     );
     expect(outer.foo).toBe('bar');
     expect(inner.fizz).toBe('bar');
@@ -102,7 +102,7 @@ describe('entangle', () => {
             <input x-model="inner" inner>
         </div>
     </div>
-      `
+      `,
     );
     expect($<HTMLInputElement>('[outer]').value).toBe('foo');
     expect($<HTMLInputElement>('[inner]').value).toBe('foo');
@@ -112,5 +112,44 @@ describe('entangle', () => {
     await type('[inner]', 'fizzbuzz');
     expect($<HTMLInputElement>('[outer]').value).toBe('fizzbuzz');
     expect($<HTMLInputElement>('[inner]').value).toBe('fizzbuzz');
+  });
+  it('can handle undefined', async () => {
+    const {
+      Alpine: { nextTick, reactive, entangle },
+    } = await render();
+    const outer = reactive({
+      foo: undefined,
+    });
+    const inner = reactive({
+      fizz: 'buzz',
+    });
+    entangle(
+      {
+        get() {
+          return outer.foo;
+        },
+        set(v) {
+          outer.foo = v;
+        },
+      },
+      {
+        get() {
+          return inner.fizz;
+        },
+        set(v) {
+          inner.fizz = v;
+        },
+      },
+    );
+    expect(outer.foo).toBe(undefined);
+    expect(inner.fizz).toBe(undefined);
+    inner.fizz = 'buzz';
+    await nextTick();
+    expect(outer.foo).toBe('buzz');
+    expect(inner.fizz).toBe('buzz');
+    inner.fizz = undefined;
+    await nextTick();
+    expect(outer.foo).toBe(undefined);
+    expect(inner.fizz).toBe(undefined);
   });
 });
