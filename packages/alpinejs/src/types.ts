@@ -47,7 +47,7 @@ export interface XAttributes {
     hide: () => void
   ) => void;
   _x_teleport: ElementWithXAttributes;
-  _x_transition: Transitions;
+  _x_transition: Partial<Transitions>;
   _x_hidePromise: Promise<() => void>;
   _x_transitioning: {
     beforeCancel: (fn: () => void) => void;

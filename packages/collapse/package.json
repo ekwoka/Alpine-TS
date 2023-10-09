@@ -1,5 +1,5 @@
 {
-  "name": "alpinets",
+  "name": "@alpinets/collapse",
   "version": "0.0.1",
   "description": "The rugged, minimal TypeScript framework",
   "author": "Caleb Porzio",
@@ -20,7 +20,10 @@
   "scripts": {
     "build": "tsc"
   },
-  "dependencies": {
-    "@vue/reactivity": "~3.1.1"
+  "peerDependencies": {
+    "alpinets": "*"
+  },
+  "devDependencies": {
+    "alpinets": "workspace:*"
   }
 }

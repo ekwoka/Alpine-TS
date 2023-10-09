@@ -79,6 +79,12 @@ importers:
         specifier: ~3.1.1
         version: 3.1.1
 
+  packages/collapse:
+    devDependencies:
+      alpinets:
+        specifier: workspace:*
+        version: link:../alpinejs
+
 packages:
 
   /@aashutoshrathi/word-wrap@1.2.6:
@@ -3401,7 +3407,7 @@ packages:
     engines: {node: ^14.13.1 || ^16 || >=18}
     hasBin: true
     peerDependencies:
-      typescript: ^4.3.5 || ^5.0.0
+      typescript: 5.1.6
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -3421,7 +3427,7 @@ packages:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
     engines: {node: '>= 6'}
     peerDependencies:
-      typescript: '>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta'
+      typescript: 5.1.6
     dependencies:
       tslib: 1.14.1
       typescript: 5.1.6
