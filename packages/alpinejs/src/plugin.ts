@@ -5,6 +5,6 @@ export const plugin = (callbacks: PluginParam) =>
     callback(Alpine)
   );
 
-type PluginFn = (Alpine: AlpineType) => void;
+export type PluginCallback = (Alpine: AlpineType) => void;
 
-type PluginParam = PluginFn | PluginFn[];
+type PluginParam = PluginCallback | PluginCallback[];

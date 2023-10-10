@@ -18,17 +18,17 @@ directive(
     const expressionOrMod =
       expression && typeof expression !== 'boolean' ? expression : modifiers;
     cleanup(registerTransitionWithReducedMotion(el, expressionOrMod, value));
-  }
+  },
 );
 
 const prefersReducedMotion = window.matchMedia(
-  '(prefers-reduced-motion: reduce)'
+  '(prefers-reduced-motion: reduce)',
 );
 
 const registerTransitionWithReducedMotion = (
   el: ElementWithXAttributes,
   expressionOrMod: string | string[],
-  stage: string
+  stage: string,
 ): (() => void) => {
   const handler = ({ matches }: MediaQueryListEvent | MediaQueryList) => {
     if (matches) return removeTransitions(el);
@@ -48,7 +48,7 @@ const removeTransitions = (el: ElementWithXAttributes) => {
 const registerTransitionsFromClassString = (
   el: ElementWithXAttributes,
   classString: string,
-  stage: string
+  stage: string,
 ) => {
   registerTransitionObject(el, setClasses, '');
 
@@ -79,7 +79,7 @@ const registerTransitionsFromClassString = (
 const registerTransitionsFromHelper = (
   el: ElementWithXAttributes,
   modifiers: DirectiveData['modifiers'],
-  stage: string
+  stage: string,
 ) => {
   registerTransitionObject(el, setStyles);
 
@@ -92,13 +92,13 @@ const registerTransitionsFromHelper = (
 
   if (modifiers.includes('in') && !doesntSpecify) {
     modifiers = modifiers.filter(
-      (_, index) => index < modifiers.indexOf('out')
+      (_, index) => index < modifiers.indexOf('out'),
     );
   }
 
   if (modifiers.includes('out') && !doesntSpecify) {
     modifiers = modifiers.filter(
-      (_, index) => index > modifiers.indexOf('out')
+      (_, index) => index > modifiers.indexOf('out'),
     );
   }
 
@@ -161,7 +161,7 @@ const registerTransitionsFromHelper = (
 const registerTransitionObject = (
   el: ElementWithXAttributes,
   setFunction: typeof setClasses | typeof setStyles,
-  defaultValue = {}
+  defaultValue = {},
 ) => {
   if (!el._x_transition)
     el._x_transition = {
@@ -180,7 +180,7 @@ const registerTransitionObject = (
             end: this.enter.end,
           },
           before,
-          after
+          after,
         );
       },
 
@@ -195,7 +195,7 @@ const registerTransitionObject = (
             end: this.leave.end,
           },
           before,
-          after
+          after,
         );
       },
     };
@@ -244,11 +244,11 @@ const registerTransitionObject = (
         el._x_transition.out(
           // eslint-disable-next-line @typescript-eslint/no-empty-function
           () => {},
-          () => resolve(hide)
+          () => resolve(hide),
         );
 
         el._x_transitioning.beforeCancel(() =>
-          reject({ isFromCancelledTransition: true })
+          reject({ isFromCancelledTransition: true }),
         );
       })
     : Promise.resolve(hide);
@@ -297,7 +297,7 @@ export const transition = (
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   before = () => {},
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  after = () => {}
+  after = () => {},
 ) => {
   if (el._x_transitioning) el._x_transitioning.cancel();
 
@@ -337,7 +337,7 @@ export const transition = (
 
 export const performTransition = (
   el: ElementWithXAttributes,
-  stages: Record<string, () => void>
+  stages: Record<string, () => void>,
 ) => {
   // All transitions need to be truly "cancellable". Meaning we need to
   // account for interruptions at ALL stages of the transitions and
@@ -395,11 +395,13 @@ export const performTransition = (
       Number(
         getComputedStyle(el)
           .transitionDuration.replace(/,.*/, '')
-          .replace('s', '')
+          .replace('s', ''),
       ) * 1000;
     const delay =
       Number(
-        getComputedStyle(el).transitionDelay.replace(/,.*/, '').replace('s', '')
+        getComputedStyle(el)
+          .transitionDelay.replace(/,.*/, '')
+          .replace('s', ''),
       ) * 1000;
 
     if (duration === 0)
@@ -431,7 +433,7 @@ export const performTransition = (
 export const modifierValue = <T extends string | number>(
   modifiers: DirectiveData['modifiers'],
   key: string,
-  fallback: T
+  fallback: T,
 ): T => {
   // If the modifier isn't present, use the default.
   if (modifiers.indexOf(key) === -1) return fallback;
@@ -458,7 +460,7 @@ export const modifierValue = <T extends string | number>(
   if (
     key === 'origin' &&
     ['top', 'right', 'left', 'center', 'bottom'].includes(
-      modifiers[modifiers.indexOf(key) + 2]
+      modifiers[modifiers.indexOf(key) + 2],
     )
   )
     return [rawValue, modifiers[modifiers.indexOf(key) + 2]].join(' ') as T;

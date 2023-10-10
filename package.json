@@ -33,25 +33,25 @@
   },
   "devDependencies": {
     "@milahu/patch-package": "6.4.14",
-    "@trivago/prettier-plugin-sort-imports": "4.1.1",
-    "@types/node": "20.3.2",
-    "@typescript-eslint/eslint-plugin": "5.60.1",
-    "@typescript-eslint/parser": "5.60.1",
+    "@trivago/prettier-plugin-sort-imports": "4.2.0",
+    "@types/node": "20.8.3",
+    "@typescript-eslint/eslint-plugin": "6.7.4",
+    "@typescript-eslint/parser": "6.7.4",
     "@vitest/coverage-c8": "0.32.2",
-    "esbuild": "0.18.10",
-    "eslint": "8.43.0",
+    "esbuild": "0.19.4",
+    "eslint": "8.51.0",
     "happy-dom": "9.1.9",
     "husky": "8.0.3",
-    "lint-staged": "13.2.3",
+    "lint-staged": "14.0.1",
     "npm-run-all": "4.1.5",
-    "prettier": "2.8.8",
-    "pretty-bytes": "6.1.0",
-    "typescript": "5.1.6",
-    "vite": "4.3.9",
-    "vite-plugin-dts": "2.3.0",
-    "vite-tsconfig-paths": "4.2.0",
-    "vitest": "0.32.2",
-    "vitest-dom": "0.1.0"
+    "prettier": "3.0.3",
+    "pretty-bytes": "6.1.1",
+    "typescript": "5.2.2",
+    "vite": "4.4.11",
+    "vite-plugin-dts": "3.6.0",
+    "vite-tsconfig-paths": "4.2.1",
+    "vitest": "0.34.6",
+    "vitest-dom": "0.1.1"
   },
   "lint-staged": {
     "*.{js,ts,mjs}": [
@@ -75,7 +75,8 @@
   "pnpm": {
     "overrides": {
       "typescript@<5.1.6": "5.1.6",
-      "semver@<7.5.2": ">=7.5.2"
+      "semver@<7.5.2": ">=7.5.2",
+      "happy-dom@>9.1.9": "9.1.9"
     }
   }
 }

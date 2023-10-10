@@ -75,3 +75,5 @@ export default Alpine;
 export type { Alpine } from './alpine';
 export type { Stores } from './store';
 export type { AlpineComponent } from './data';
+export type { PluginCallback } from './plugin';
+export type { DirectiveCallback } from './types';

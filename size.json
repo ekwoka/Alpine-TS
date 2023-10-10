@@ -2,11 +2,11 @@
   "alpinejs": {
     "minified": {
       "pretty": "39.5 kB",
-      "raw": 39500
+      "raw": 39523
     },
     "brotli": {
       "pretty": "13.4 kB",
-      "raw": 13394
+      "raw": 13390
     }
   }
 }
