@@ -37,8 +37,6 @@ describe('mergeProxies', () => {
     expect(proxy.foo).toBe('bar');
     expect(proxy.fizz).toBe('bar');
     proxy.fizz = 'baz';
-    console.log(JSON.stringify(proxy));
-    console.log(objects);
     expect(proxy.foo).toBe('baz');
     expect(proxy.fizz).toBe('baz');
     expect(objects[0].foo).toBe('baz');
