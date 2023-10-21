@@ -1,5 +1,5 @@
 import { bind } from './binds';
-import { clone, onlyDuringClone, skipDuringClone } from './clone';
+import { clone, cloneNode, onlyDuringClone, skipDuringClone } from './clone';
 import { data } from './data';
 import {
   directive,
@@ -59,7 +59,7 @@ import { debounce } from './utils/debounce';
 import { setStyles } from './utils/styles';
 import { throttle } from './utils/throttle';
 
-const Alpine = {
+export const Alpine: Alpine = {
   get reactive() {
     return reactive;
   },
@@ -115,6 +115,7 @@ const Alpine = {
   store,
   start,
   clone,
+  cloneNode,
   bound,
   $data,
   walk,
@@ -124,4 +125,58 @@ const Alpine = {
 
 export default Alpine;
 
-export type Alpine = typeof Alpine;
+export interface Alpine {
+  readonly reactive: typeof reactive;
+  readonly release: typeof release;
+  readonly effect: typeof effect;
+  readonly raw: typeof raw;
+  version: string;
+  flushAndStopDeferringMutations: typeof flushAndStopDeferringMutations;
+  dontAutoEvaluateFunctions: typeof dontAutoEvaluateFunctions;
+  disableEffectScheduling: typeof disableEffectScheduling;
+  startObservingMutations: typeof startObservingMutations;
+  stopObservingMutations: typeof stopObservingMutations;
+  setReactivityEngine: typeof setReactivityEngine;
+  onAttributeRemoved: typeof onAttributeRemoved;
+  onAttributesAdded: typeof onAttributesAdded;
+  closestDataStack: typeof closestDataStack;
+  skipDuringClone: typeof skipDuringClone;
+  onlyDuringClone: typeof onlyDuringClone;
+  addRootSelector: typeof addRootSelector;
+  addInitSelector: typeof addInitSelector;
+  addScopeToNode: typeof addScopeToNode;
+  deferMutations: typeof deferMutations;
+  mapAttributes: typeof mapAttributes;
+  evaluateLater: typeof evaluateLater;
+  interceptInit: typeof interceptInit;
+  setEvaluator: typeof setEvaluator;
+  mergeProxies: typeof mergeProxies;
+  extractProp: typeof extractProp;
+  findClosest: typeof findClosest;
+  closestRoot: typeof closestRoot;
+  destroyTree: typeof destroyTree;
+  interceptor: typeof interceptor; // INTERNAL: not public API and is subject to change without major release.
+  transition: typeof transition; // INTERNAL
+  setStyles: typeof setStyles; // INTERNAL
+  mutateDom: typeof mutateDom;
+  directive: typeof directive;
+  entangle: typeof entangle;
+  throttle: typeof throttle;
+  debounce: typeof debounce;
+  evaluate: typeof evaluate;
+  initTree: typeof initTree;
+  nextTick: typeof nextTick;
+  prefixed: typeof prefixed;
+  prefix: typeof prefix;
+  plugin: typeof plugin;
+  magic: typeof magic;
+  store: typeof store;
+  start: typeof start;
+  clone: typeof clone;
+  cloneNode: typeof cloneNode;
+  bound: typeof bound;
+  $data: typeof $data;
+  walk: typeof walk;
+  data: typeof data;
+  bind: typeof bind;
+}

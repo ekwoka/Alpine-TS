@@ -6,25 +6,17 @@ import { addScopeToNode } from '../scope';
 import { ElementWithXAttributes } from '../types';
 import { warn } from '../utils/warn';
 
-const teleportContainerDuringClone = document.createElement('div');
-
 directive(
   'teleport',
   (
     el: ElementWithXAttributes<HTMLTemplateElement>,
     { modifiers, expression },
-    { cleanup }
+    { cleanup },
   ) => {
     if (el.tagName.toLowerCase() !== 'template')
       warn('x-teleport can only be used on a <template> tag', el);
 
-    const target = skipDuringClone(
-      () => document.querySelector(expression),
-      () => teleportContainerDuringClone
-    )();
-
-    if (!target)
-      warn(`Cannot find x-teleport element for selector: "${expression}"`);
+    const target = getTarget(expression);
 
     const clone = (el.content.cloneNode(true) as Element)
       .firstElementChild as ElementWithXAttributes;
@@ -39,9 +31,9 @@ directive(
         clone.addEventListener(eventName, (e) => {
           e.stopPropagation();
           el.dispatchEvent(
-            new (Object.getPrototypeOf(e).constructor)(e.type, e)
+            new (Object.getPrototypeOf(e).constructor)(e.type, e),
           );
-        })
+        }),
       );
 
     addScopeToNode(clone, {}, el);
@@ -56,7 +48,7 @@ directive(
     });
 
     cleanup(() => clone.remove());
-  }
+  },
 );
 
 const getModifierMethod = (modifiers: string[]) => {
@@ -65,4 +57,16 @@ const getModifierMethod = (modifiers: string[]) => {
     if (modifier === 'prepend' || modifier === 'before') return 'before';
   }
   return 'append';
+};
+
+const teleportContainerDuringClone = document.createElement('div');
+const $ = (expression: string) => document.querySelector(expression);
+const cloneFallback = () => teleportContainerDuringClone;
+const getTarget = (expression: string) => {
+  const target = skipDuringClone($, cloneFallback)(expression);
+
+  if (!target)
+    warn(`Cannot find x-teleport element for selector: "${expression}"`);
+
+  return target;
 };

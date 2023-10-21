@@ -1,6 +1,6 @@
-import { Alpine as AlpineType } from '../../packages/alpinejs/src/alpine';
 import { ElementWithXAttributes } from '../../packages/alpinejs/src/types';
 import { noop } from './noop';
+import type { Alpine } from 'alpinets';
 import {
   CustomEvent,
   Event,
@@ -14,12 +14,12 @@ export const render = async (
   prep:
     | string
     | ((
-        alpine: AlpineType,
-        window: Window & { Alpine: AlpineType }
+        alpine: Alpine,
+        window: Window & { Alpine: Alpine },
       ) => void | Promise<void>) = noop,
-  html = ''
+  html = '',
 ): Promise<RenderReturn> => {
-  const window = new Window() as Window & { Alpine: AlpineType };
+  const window = new Window() as Window & { Alpine: Alpine };
   window.document.body.innerHTML = html;
 
   Object.assign(global, {
@@ -59,7 +59,7 @@ export const render = async (
     keydown: async (
       selector: string,
       key: string,
-      options: IKeyboardEventInit = {}
+      options: IKeyboardEventInit = {},
     ) => {
       const el = window.document.querySelector(selector);
       el.dispatchEvent(
@@ -67,15 +67,15 @@ export const render = async (
           key,
           bubbles: true,
           ...options,
-        })
+        }),
       );
       await window.happyDOM.whenAsyncComplete();
     },
     getData: (selector?: string, key?: string) => {
       const el = Alpine.closestRoot(
         window.document.querySelector(
-          selector ?? '[x-data]'
-        ) as unknown as ElementWithXAttributes
+          selector ?? '[x-data]',
+        ) as unknown as ElementWithXAttributes,
       );
 
       return key ? el?._x_dataStack[0][key] : el?._x_dataStack;
@@ -83,13 +83,13 @@ export const render = async (
     setData: (
       key: string | string[],
       value: unknown | ((data: unknown) => void),
-      selector?: string
+      selector?: string,
     ) => {
       if (typeof key === 'string') key = key.split('.');
       const el = Alpine.closestRoot(
         window.document.querySelector(
-          selector ?? '[x-data]'
-        ) as unknown as ElementWithXAttributes
+          selector ?? '[x-data]',
+        ) as unknown as ElementWithXAttributes,
       );
 
       const data = Alpine.mergeProxies(el._x_dataStack);
@@ -104,7 +104,7 @@ export const render = async (
       el.querySelectorAll('input').forEach(
         (input) =>
           ((input as unknown as HTMLInputElement).value =
-            input.getAttribute('value') || '')
+            input.getAttribute('value') || ''),
       );
       el.dispatchEvent(new Event('reset'));
       return window.happyDOM.whenAsyncComplete();
@@ -113,8 +113,8 @@ export const render = async (
 };
 
 type RenderReturn = {
-  Alpine: AlpineType;
-  window: Window & { Alpine: AlpineType };
+  Alpine: Alpine;
+  window: Window & { Alpine: Alpine };
   $: typeof window.document.querySelector;
   $$: typeof window.document.querySelectorAll;
   happyDOM: Window['happyDOM'];
@@ -123,13 +123,13 @@ type RenderReturn = {
   keydown: (
     selector: string,
     key: string,
-    options?: IKeyboardEventInit
+    options?: IKeyboardEventInit,
   ) => Promise<void>;
   getData: (selector?: string, key?: string) => unknown;
   setData: (
     key: string | string[],
     value: unknown | ((data: unknown) => void),
-    selector?: string
+    selector?: string,
   ) => Promise<void>;
   resetForm: (selector: string) => Promise<void>;
 };

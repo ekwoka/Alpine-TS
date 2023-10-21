@@ -38,6 +38,7 @@
     "@typescript-eslint/eslint-plugin": "6.7.4",
     "@typescript-eslint/parser": "6.7.4",
     "@vitest/coverage-c8": "0.32.2",
+    "alpinets": "workspace:*",
     "esbuild": "0.19.4",
     "eslint": "8.51.0",
     "happy-dom": "9.1.9",

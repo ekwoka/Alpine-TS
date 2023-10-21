@@ -31,6 +31,9 @@ importers:
       '@vitest/coverage-c8':
         specifier: 0.32.2
         version: 0.32.2(vitest@0.34.6)
+      alpinets:
+        specifier: workspace:*
+        version: link:packages/alpinejs
       esbuild:
         specifier: 0.19.4
         version: 0.19.4
@@ -81,6 +84,12 @@ importers:
         version: 3.1.1
 
   packages/collapse:
+    devDependencies:
+      alpinets:
+        specifier: workspace:*
+        version: link:../alpinejs
+
+  packages/morph:
     devDependencies:
       alpinets:
         specifier: workspace:*
