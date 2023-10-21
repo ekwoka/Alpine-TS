@@ -6,7 +6,7 @@ export const scope = (node: ElementWithXAttributes) =>
 export const addScopeToNode = (
   node: ElementWithXAttributes,
   data: Record<string, unknown>,
-  referenceNode?: ElementWithXAttributes
+  referenceNode?: ElementWithXAttributes,
 ) => {
   node._x_dataStack = [data, ...closestDataStack(referenceNode || node)];
 
@@ -20,7 +20,7 @@ export const hasScope = (node: ElementWithXAttributes) => !!node._x_dataStack;
 export const refreshScope = (
   element: ElementWithXAttributes,
   scope: Record<string, unknown>,
-  fromXFor = false
+  fromXFor = false,
 ) => {
   const existingScope =
     (fromXFor && element._x_forScope) || element._x_dataStack[0];
@@ -44,17 +44,20 @@ export const closestDataProxy = (el: ElementWithXAttributes) =>
 
 function collapseProxies(this: Record<string, unknown>) {
   const keys = Reflect.ownKeys(this);
-  const collapsed = keys.reduce((acc, key) => {
-    acc[key] = Reflect.get(this, key);
-    return acc;
-  }, {} as Record<string | symbol | number, unknown>);
+  const collapsed = keys.reduce(
+    (acc, key) => {
+      acc[key] = Reflect.get(this, key);
+      return acc;
+    },
+    {} as Record<string | symbol | number, unknown>,
+  );
   return collapsed;
 }
 
 export const mergeProxies = <
-  T extends Record<string | number | symbol, unknown>
+  T extends Record<string | number | symbol, unknown>,
 >(
-  objects: T[]
+  objects: T[],
 ) => {
   const thisProxy = new Proxy({ objects }, proxyMerger);
 
@@ -72,26 +75,27 @@ const proxyMerger: ProxyHandler<wrappedProxy> = {
   has(proxies, name) {
     if (name == Symbol.unscopables) return false;
     return proxies.objects.some((obj) =>
-      Object.prototype.hasOwnProperty.call(obj, name)
+      Object.prototype.hasOwnProperty.call(obj, name),
     );
   },
   get(proxies, name, thisProxy) {
     if (name == 'toJSON') return collapseProxies;
     return Reflect.get(
       proxies.objects.find((obj) =>
-        Object.prototype.hasOwnProperty.call(obj, name)
+        Object.prototype.hasOwnProperty.call(obj, name),
       ) ?? {},
       name as string,
-      thisProxy
+      thisProxy,
     );
   },
-  set(proxies, name, value) {
-    return Reflect.set(
+  set(proxies, name, value, thisProxy) {
+    const target =
       proxies.objects.find((obj) =>
-        Object.prototype.hasOwnProperty.call(obj, name)
-      ) ?? proxies.objects.at(-1),
-      name,
-      value
-    );
+        Object.prototype.hasOwnProperty.call(obj, name),
+      ) || proxies.objects[proxies.objects.length - 1];
+    const descriptor = Object.getOwnPropertyDescriptor(target, name);
+    if (descriptor?.set && descriptor?.get)
+      return Reflect.set(target, name, value, thisProxy);
+    return Reflect.set(target, name, value);
   },
 };
