@@ -7,7 +7,7 @@ export const on = (
   el: ElementWithXAttributes,
   event: string,
   modifiers: string[],
-  callback: EventHandler
+  callback: EventHandler,
 ) => {
   let listenerTarget: ElementWithXAttributes | Window | Document = el;
 
@@ -23,7 +23,7 @@ export const on = (
   const wrapHandler =
     (
       callback: EventHandler,
-      wrapper: (next: EventHandler, event: Event) => void
+      wrapper: (next: EventHandler, event: Event) => void,
     ): EventHandler =>
     (e) =>
       wrapper(callback, e);
@@ -123,13 +123,13 @@ const isKeyEvent = (event: string): event is 'keydown' | 'keyup' =>
 
 const isListeningForASpecificKeyThatHasntBeenPressed = (
   e: Event,
-  modifiers: string[]
+  modifiers: string[],
 ) => {
   let keyModifiers = modifiers.filter(
     (mod) =>
       !['window', 'document', 'prevent', 'stop', 'once', 'capture'].includes(
-        mod
-      )
+        mod,
+      ),
   );
 
   if (keyModifiers.includes('debounce')) {
@@ -137,10 +137,10 @@ const isListeningForASpecificKeyThatHasntBeenPressed = (
     keyModifiers.splice(
       debounceIndex,
       isNumeric(
-        (keyModifiers[debounceIndex + 1] || 'invalid-wait').split('ms')[0]
+        (keyModifiers[debounceIndex + 1] || 'invalid-wait').split('ms')[0],
       )
         ? 2
-        : 1
+        : 1,
     );
   }
   if (keyModifiers.includes('throttle')) {
@@ -148,10 +148,10 @@ const isListeningForASpecificKeyThatHasntBeenPressed = (
     keyModifiers.splice(
       throttleIndex,
       isNumeric(
-        (keyModifiers[throttleIndex + 1] || 'invalid-wait').split('ms')[0]
+        (keyModifiers[throttleIndex + 1] || 'invalid-wait').split('ms')[0],
       )
         ? 2
-        : 1
+        : 1,
     );
   }
 
@@ -168,11 +168,11 @@ const isListeningForASpecificKeyThatHasntBeenPressed = (
   // The user is listening for key combinations.
   const systemKeyModifiers = ['ctrl', 'shift', 'alt', 'meta', 'cmd', 'super'];
   const selectedSystemKeyModifiers = systemKeyModifiers.filter((modifier) =>
-    keyModifiers.includes(modifier)
+    keyModifiers.includes(modifier),
   );
 
   keyModifiers = keyModifiers.filter(
-    (i) => !selectedSystemKeyModifiers.includes(i)
+    (i) => !selectedSystemKeyModifiers.includes(i),
   );
 
   if (selectedSystemKeyModifiers.length > 0) {
@@ -182,7 +182,7 @@ const isListeningForASpecificKeyThatHasntBeenPressed = (
         if (modifier === 'cmd' || modifier === 'super') modifier = 'meta';
 
         return e[`${modifier}Key`];
-      }
+      },
     );
 
     // If all the modifiers selected are pressed, ...

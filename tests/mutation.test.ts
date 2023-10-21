@@ -14,7 +14,7 @@ describe('Mutations', () => {
 
             <h1 x-text="foo"></h1>
             <h2 x-text="bar"></h2>
-        </div>`
+        </div>`,
     );
     expect($('h1').textContent).toBe('2');
     expect($('h2').textContent).toBe('1');
@@ -39,7 +39,7 @@ describe('Mutations', () => {
 
             <h1 x-text="foo"></h1>
             <h2 x-text="bar"></h2>
-        </div>`
+        </div>`,
     );
     expect($('h1').textContent).toBe('2');
     expect($('h2').textContent).toBe('1');

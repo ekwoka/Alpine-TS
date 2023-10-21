@@ -11,7 +11,7 @@ directive('html', (el, { expression }, { effect, evaluateLater }) => {
         el._x_ignoreSelf = true;
         initTree(el);
         delete el._x_ignoreSelf;
-      })
-    )
+      }),
+    ),
   );
 });

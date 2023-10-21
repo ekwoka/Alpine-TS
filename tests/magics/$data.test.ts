@@ -11,7 +11,7 @@ describe('$data', () => {
             <span x-text="$data.fizz"></span>
           </div>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('bar buzz');
   });

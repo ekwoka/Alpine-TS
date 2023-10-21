@@ -6,7 +6,7 @@ export const setClasses = (
     | string
     | boolean
     | Record<string, boolean>
-    | (() => string | boolean | Record<string, boolean>)
+    | (() => string | boolean | Record<string, boolean>),
 ): (() => void) => {
   if (Array.isArray(value)) return setClassesFromString(el, value.join(' '));
   if (typeof value === 'object' && value !== null)
@@ -24,7 +24,7 @@ const missingClasses = (classString: string, el: ElementWithXAttributes) =>
 
 const setClassesFromString = (
   el: ElementWithXAttributes,
-  classString: string | boolean
+  classString: string | boolean,
 ) => {
   const addClassesAndReturnUndo = (classes: string[]) => {
     el.classList.add(...classes);
@@ -40,18 +40,18 @@ const setClassesFromString = (
 
 const setClassesFromObject = (
   el: ElementWithXAttributes,
-  classObject: Record<string, boolean>
+  classObject: Record<string, boolean>,
 ) => {
   const split = (classString: string) => classString.split(' ').filter(Boolean);
 
   const forAdd = Object.entries(classObject)
     .flatMap<string | false>(([classString, bool]) =>
-      bool ? split(classString) : false
+      bool ? split(classString) : false,
     )
     .filter<string>((val): val is string => Boolean(val));
   const forRemove = Object.entries(classObject)
     .flatMap<string | false>(([classString, bool]) =>
-      !bool ? split(classString) : false
+      !bool ? split(classString) : false,
     )
     .filter<string>((val): val is string => Boolean(val));
 

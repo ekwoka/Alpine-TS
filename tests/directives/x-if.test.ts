@@ -13,7 +13,7 @@ describe('x-if', () => {
             </span>
           </template>
         </div>
-      `
+      `,
     );
     expect($('span')).toBeNull();
     await click('button');
@@ -37,7 +37,7 @@ describe('x-if', () => {
             </div>
           </template>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('1 2 3');
   });
@@ -52,7 +52,7 @@ describe('x-if', () => {
                 </ul>
             </template>
         </div>
-      `
+      `,
     );
     expect($('li').textContent).toBe('bar');
   });
@@ -66,7 +66,7 @@ describe('x-if', () => {
             </template>
             <button @click="user = null"></button>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('Tony');
     await click('button');
@@ -91,7 +91,7 @@ describe('x-if', () => {
               <span id="three" x-text="JSON.stringify(user)"></span>
           </template>
         </div>
-      `
+      `,
     );
     expect($('input').value).toBe('Tony');
     expect($('#one').textContent).toBe('Tony');

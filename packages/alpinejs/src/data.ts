@@ -7,7 +7,7 @@ type DataFunction<T> = (...args: unknown[]) => AlpineComponent<T>;
 
 export const data = <T extends Record<string | number | symbol, unknown>>(
   name: string,
-  callback: DataFunction<T>
+  callback: DataFunction<T>,
 ) => {
   Data[name] = callback;
 };
@@ -29,7 +29,7 @@ type DataMethods = {
 
 export const injectDataProviders = (
   obj: Record<string, unknown>,
-  context: Record<string, unknown>
+  context: Record<string, unknown>,
 ) => {
   Object.entries(Data).forEach(([name, callback]) => {
     Object.defineProperty(obj, name, {

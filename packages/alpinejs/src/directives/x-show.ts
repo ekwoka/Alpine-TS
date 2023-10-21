@@ -22,7 +22,7 @@ directive(
           el.style.setProperty(
             'display',
             'none',
-            modifiers.includes('important') ? 'important' : undefined
+            modifiers.includes('important') ? 'important' : undefined,
           );
         });
       };
@@ -61,7 +61,7 @@ directive(
         } else {
           value ? clickAwayCompatibleShow() : hide();
         }
-      }
+      },
     );
 
     let oldValue: boolean;
@@ -79,7 +79,7 @@ directive(
 
         oldValue = value;
         firstTime = false;
-      })
+      }),
     );
-  }
+  },
 );

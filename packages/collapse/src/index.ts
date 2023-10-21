@@ -58,7 +58,7 @@ export const collapse: PluginCallback = (Alpine) => {
             if (el.getBoundingClientRect().height == full) {
               el.style.overflow = null;
             }
-          }
+          },
         );
       },
 
@@ -82,7 +82,7 @@ export const collapse: PluginCallback = (Alpine) => {
               el.style.display = 'none';
               el.hidden = true;
             }
-          }
+          },
         );
       },
     };
@@ -105,7 +105,7 @@ export const collapse: PluginCallback = (Alpine) => {
 function modifierValue(
   modifiers: string[],
   key: string,
-  fallback: number
+  fallback: number,
 ): number {
   // If the modifier isn't present, use the default.
   if (modifiers.indexOf(key) === -1) return fallback;

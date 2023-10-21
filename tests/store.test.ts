@@ -14,7 +14,7 @@ describe('Alpine Store', () => {
           <span x-text="$store.foo.bar"></span>
           <button @click="$store.foo.bar = 'baz'">change</button>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('bar');
     await click('button');
@@ -33,7 +33,7 @@ describe('Alpine Store', () => {
         <div x-data>
           <span x-text="$store.foo.bar"></span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('baz');
   });
@@ -47,7 +47,7 @@ describe('Alpine Store', () => {
           <span x-text="$store.foo"></span>
           <button @click="$store.foo++">change</button>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('1');
     await click('button');
@@ -63,7 +63,7 @@ describe('Alpine Store', () => {
           <span x-text="$store.foo"></span>
           <button @click="$store.foo = 'baz'">change</button>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('bar');
     await click('button');
@@ -87,7 +87,7 @@ describe('Alpine Store', () => {
           <span x-text="$store.test.count"></span>
           <button @click="$store.test.clickHandler">change</button>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('1');
     await click('button');

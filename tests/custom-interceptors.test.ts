@@ -9,7 +9,7 @@ describe('Custom Interceptors', () => {
           return Alpine.interceptor(
             (_initialValue, _getter, _setter, path, key) => {
               return key + path;
-            }
+            },
           );
         });
       },
@@ -17,7 +17,7 @@ describe('Custom Interceptors', () => {
         <div x-data="{ foo: $magic() }">
           <span x-text="foo"></span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('foofoo');
   });
@@ -28,14 +28,14 @@ describe('Custom Interceptors', () => {
           return Alpine.interceptor(
             (_initialValue, _getter, _setter, path, key) => {
               return key + path;
-            }
+            },
           );
         }),
       `
         <div x-data="{ foo: { bar: { baz: $magic() }}}">
           <span x-text="foo.bar.baz"></span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('bazfoo.bar.baz');
   });
@@ -53,7 +53,7 @@ describe('Custom Interceptors', () => {
         <div x-data="{ foo: $foo }">
             <span x-text="'...'">
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('...');
   });

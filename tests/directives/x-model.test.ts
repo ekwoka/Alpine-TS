@@ -8,7 +8,7 @@ describe('x-model', () => {
         <div x-data="{ foo: 'bar' }">
           <input type="text" x-model="foo">
         </div>
-      `
+      `,
     );
     expect($('input').value).toBe('bar');
   });
@@ -20,7 +20,7 @@ describe('x-model', () => {
           <input type="text" x-model="foo">
           <span x-text="foo"></span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('');
     await type('input', 'bar');
@@ -34,7 +34,7 @@ describe('x-model', () => {
           <input type="text" x-model="foo">
           <button type="button" @click="foo = 'baz'">button</button>
         </div>
-      `
+      `,
     );
     expect($('input').value).toBe('bar');
     await click('button');
@@ -48,7 +48,7 @@ describe('x-model', () => {
           <div x-data="{ foo: 0 }">
             <input type="number" x-model.number="foo">
           </div>
-        `
+        `,
       );
       await type('input', '1');
       expect(getData('div', 'foo')).toBe(1);
@@ -61,7 +61,7 @@ describe('x-model', () => {
               <input id="first" type="number" x-model.number="foo">
               <input id="second" x-model.number="bar">
           </div>
-        `
+        `,
       );
       await type('#first', '');
       expect(getData('div', 'foo')).toBe(null);
@@ -86,7 +86,7 @@ describe('x-model', () => {
           <div x-data="{ foo: '' }">
             <input type="text" x-model.trim="foo">
           </div>
-        `
+        `,
       );
       await type('input', ' bar ');
       expect(getData('div', 'foo')).toBe('bar');
@@ -103,7 +103,7 @@ describe('x-model', () => {
             <span x-text="$root._x_model.get()"></span>
             <button @click="$root._x_model.set('bob')">Set foo to bob</button>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('bar');
     await type('input', 'baz');
@@ -121,7 +121,7 @@ describe('x-model', () => {
           </form>
           <span x-text="foo"></span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('bar');
     await type('input', 'baz');

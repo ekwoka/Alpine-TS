@@ -12,7 +12,7 @@ type BindingFactory = (...args: unknown[]) => Bindings;
 
 export const bind = (
   name: string | ElementWithXAttributes,
-  bindings: Bindings | BindingFactory
+  bindings: Bindings | BindingFactory,
 ) => {
   const getBindings = functionWrap(bindings);
 
@@ -36,7 +36,7 @@ export const injectBindingProviders = (obj: Record<string, unknown>) => {
 
 export const addVirtualBindings = (
   el: ElementWithXAttributes,
-  bindings: Bindings | BindingFactory
+  bindings: Bindings | BindingFactory,
 ) => {
   const getBindings = functionWrap(bindings);
 
@@ -46,7 +46,7 @@ export const addVirtualBindings = (
 export const applyBindingsObject = (
   el: ElementWithXAttributes,
   bindings: Bindings,
-  original?: string
+  original?: string,
 ) => {
   const cleanupRunners = [];
 

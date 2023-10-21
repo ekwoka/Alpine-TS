@@ -9,7 +9,7 @@ describe('$watch', () => {
           init() {
             this.$watch(
               'foo',
-              (val: unknown) => (this.$root.textContent = val)
+              (val: unknown) => (this.$root.textContent = val),
             );
           },
         })),
@@ -17,7 +17,7 @@ describe('$watch', () => {
         <div x-data="x">
           notbar
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('notbar');
     getData()[0].foo = 'baz';
@@ -33,7 +33,7 @@ describe('$watch', () => {
             this.$watch(
               'foo',
               (newVal: unknown, oldVal: unknown) =>
-                (this.$root.textContent = `${oldVal}->${newVal}`)
+                (this.$root.textContent = `${oldVal}->${newVal}`),
             );
           },
         })),
@@ -41,7 +41,7 @@ describe('$watch', () => {
         <div x-data="x">
           notbar
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('notbar');
     getData()[0].foo = 'buzz';
@@ -57,7 +57,7 @@ describe('$watch', () => {
             this.$watch(
               'foo.bar',
               (newVal: unknown, oldVal: unknown) =>
-                (this.$root.textContent = `${oldVal}->${newVal}`)
+                (this.$root.textContent = `${oldVal}->${newVal}`),
             );
           },
         })),
@@ -65,7 +65,7 @@ describe('$watch', () => {
         <div x-data="x">
           notbar
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('notbar');
     getData()[0].foo.bar = 'fizz';
@@ -81,11 +81,11 @@ describe('$watch', () => {
           init() {
             this.$watch(
               'foo',
-              (val: any) => (this.$root.textContent = val.bar)
+              (val: any) => (this.$root.textContent = val.bar),
             );
             this.$watch(
               'fizz',
-              (val: any[]) => (this.$root.textContent = val.toString())
+              (val: any[]) => (this.$root.textContent = val.toString()),
             );
           },
         })),
@@ -93,7 +93,7 @@ describe('$watch', () => {
         <div x-data="x">
           notbar
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('notbar');
 
@@ -102,7 +102,7 @@ describe('$watch', () => {
     await setData('foo', { bar: 'buzz' });
     expect(cleanTextContent($('div').textContent)).toBe('buzz');
     await setData('foo', (foo: Record<string, string>) =>
-      Object.assign(foo, { bar: 'fizz' })
+      Object.assign(foo, { bar: 'fizz' }),
     );
     expect(cleanTextContent($('div').textContent)).toBe('fizz');
     await setData('fizz', (fizz: string[]) => fizz.push('fizz'));
@@ -128,7 +128,7 @@ describe('$watch', () => {
         <div x-data="x">
           notbar
         </div>
-      `
+      `,
     );
     expect(getData(undefined, 'bar')).toBe('');
     await setData('foo.0.0', 'baz');
@@ -156,7 +156,7 @@ describe('$watch', () => {
       `
         <div x-data="x">
         </div>
-      `
+      `,
     );
     expect(getData(undefined, 'c')).toBe(4);
     await setData('a', 3);

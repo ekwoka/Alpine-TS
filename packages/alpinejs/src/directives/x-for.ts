@@ -14,7 +14,7 @@ directive(
   (
     el: ElementWithXAttributes<HTMLTemplateElement>,
     { expression },
-    { effect, cleanup }
+    { effect, cleanup },
   ) => {
     const iteratorNames = parseForExpression(expression);
 
@@ -22,7 +22,7 @@ directive(
     const evaluateKey = evaluateLater<string>(
       el,
       // the x-bind:key expression is stored for our use instead of evaluated.
-      el._x_keyExpression || 'index'
+      el._x_keyExpression || 'index',
     );
 
     el._x_prevKeys = [];
@@ -36,14 +36,14 @@ directive(
       delete el._x_prevKeys;
       delete el._x_lookup;
     });
-  }
+  },
 );
 
 const loop = (
   templateEl: ElementWithXAttributes<HTMLTemplateElement>,
   iteratorNames: IteratorNames,
   evaluateItems: ReturnType<typeof evaluateLater<unknown[]>>,
-  evaluateKey: ReturnType<typeof evaluateLater<string>>
+  evaluateKey: ReturnType<typeof evaluateLater<string>>,
 ) => {
   const isObject = (i: unknown): i is Record<string, unknown> =>
     typeof i === 'object' && !Array.isArray(i);
@@ -73,7 +73,7 @@ const loop = (
           iteratorNames,
           value,
           key,
-          items as Record<string, unknown>[]
+          items as Record<string, unknown>[],
         );
 
         evaluateKey((value) => keys.push(value), {
@@ -88,7 +88,7 @@ const loop = (
           iteratorNames,
           item,
           index,
-          items as unknown[]
+          items as unknown[],
         );
 
         evaluateKey((value) => keys.push(value), {
@@ -207,7 +207,7 @@ const loop = (
       if (typeof key === 'object') {
         warn(
           'x-for key cannot be an object, it must be a string or an integer',
-          templateEl
+          templateEl,
         );
       }
 
@@ -218,7 +218,7 @@ const loop = (
     // data it depends on in case the data has changed in an
     // "unobservable" way.
     sames.forEach((key) =>
-      refreshScope(lookup[key], scopes[keys.indexOf(key)], true)
+      refreshScope(lookup[key], scopes[keys.indexOf(key)], true),
     );
 
     // Now we'll log the keys (and the order they're in) for comparing
@@ -233,7 +233,7 @@ const getIterationScopeVariables = (
   iteratorNames: IteratorNames,
   item: unknown,
   index: string | number,
-  items: Record<string, unknown> | unknown[]
+  items: Record<string, unknown> | unknown[],
 ): Scope => {
   // We must create a new object, so each iteration has a new scope
   const scopeVariables: Record<string, unknown> = {};

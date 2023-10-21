@@ -14,7 +14,7 @@ describe('x-modelable', () => {
                 <button @click="inner = 'lob'" inner>change outer</button>
             </div>
         </div>
-      `
+      `,
     );
     expect($('h1').textContent).toBe('foo');
     expect($('h2').textContent).toBe('foo');
@@ -40,7 +40,7 @@ describe('x-modelable', () => {
                 <button @click="inner = 'lob'" inner>change outer</button>
             </div>
         </div>
-    `
+    `,
     );
     expect($('h1').textContent).toBe('foo');
     expect($('h2').textContent).toBe('foo');
@@ -62,7 +62,7 @@ describe('x-modelable', () => {
                 <button @click="$dispatch('input', 'baz')"></button>
             </div>
         </div>
-    `
+    `,
     );
     expect($('h1').textContent).toBe('foo');
     expect($('h2').textContent).toBe('foo');

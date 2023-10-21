@@ -11,7 +11,7 @@ describe('x-show', () => {
             </h1>
             <button @click="show = false">hide</button>
         </div>
-      `
+      `,
     );
     expect($('h1').style.display).toBe('');
     await click('button');
@@ -29,7 +29,7 @@ describe('x-show', () => {
             <h3 x-show="show">foo</h3>
             <h4 x-show="!show" style="display: none;">foo</h4>
         </div>
-      `
+      `,
     );
     expect($('h1').style.display).toBe('');
     expect($('h2').style.display).toBe('none');
@@ -46,7 +46,7 @@ describe('x-show', () => {
             </h1>
             <button @click="show = !show">hide</button>
         </div>
-      `
+      `,
     );
     expect($('h1').style.display).toBe('');
     expect($('h1').style.color).toBe('red');
@@ -72,7 +72,7 @@ describe('x-show', () => {
 
             <button x-on:click="show = false"></button>
         </div>
-      `
+      `,
     );
     expect($('h1').style.display).toBe('');
     await click('button');
@@ -96,28 +96,28 @@ describe('x-show', () => {
             </ul>
             <button @click="show = false">hide</button>
         </div>
-      `
+      `,
     );
     expect(($('li[id=0]') as HTMLLIElement).style.display).toBe('');
     expect(($('li[id=0]') as HTMLLIElement).getAttribute('style')).toBe(
-      'flex-direction: column;'
+      'flex-direction: column;',
     );
     expect(($('li[id=1]') as HTMLLIElement).style.display).toBe('');
     expect(($('li[id=1]') as HTMLLIElement).style.flexDirection).toBe('column');
     expect(($('li[id=1]') as HTMLLIElement).getAttribute('style')).toBe(
-      'flex-direction: column;'
+      'flex-direction: column;',
     );
     await click('li[id=0] button');
 
     expect(($('li[id=0]') as HTMLLIElement).style.display).toBe('none');
     expect(($('li[id=0]') as HTMLLIElement).style.flexDirection).toBe('column');
     expect(($('li[id=0]') as HTMLLIElement).getAttribute('style')).toBe(
-      'flex-direction: column; display: none;'
+      'flex-direction: column; display: none;',
     );
     expect(($('li[id=1]') as HTMLLIElement).style.display).toBe('');
     expect(($('li[id=1]') as HTMLLIElement).style.flexDirection).toBe('column');
     expect(($('li[id=1]') as HTMLLIElement).getAttribute('style')).toBe(
-      'flex-direction: column;'
+      'flex-direction: column;',
     );
   });
   it('takes precedence over style bindings', async () => {
@@ -131,7 +131,7 @@ describe('x-show', () => {
             <h2 x-show="show" x-bind:style="{ display: 'flex'}">foo</h2>
             <button @click="show = !show">hide</button>
         </div>
-      `
+      `,
     );
     expect($('h1').style.display).toBe('flex');
     expect($('h2').style.display).toBe('flex');
@@ -159,7 +159,7 @@ describe('x-show', () => {
           <button id="enable" x-show="!isEnabled" @click="isEnabled = true"></button>
           <button id="disable" x-show="isEnabled" @click="isEnabled = false"></button>
         </div>
-      `
+      `,
     );
     expect(($('#enable') as HTMLButtonElement).style.display).toBe('');
     expect(($('#disable') as HTMLButtonElement).style.display).toBe('none');
@@ -185,7 +185,7 @@ describe('x-show modifiers', () => {
 
             <button x-on:click="show = false"></button>
         </div>
-      `
+      `,
     );
     expect($('h1').style.display).toBe('');
     await click('button');
@@ -201,7 +201,7 @@ describe('x-show modifiers', () => {
         <div x-data="{ show: true }">
           <button x-show.important="show" @click="show = false"></button>
         </div>
-      `
+      `,
     );
     expect($('button').style.display).toBe('');
     await click('button');

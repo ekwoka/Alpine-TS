@@ -14,7 +14,7 @@ describe('$nextTick', () => {
         <div x-data="x">
           <button @click="update">bar</button>
         </div>
-      `
+      `,
     );
     expect($('button').textContent).toBe('bar');
     click('button');
@@ -32,7 +32,7 @@ describe('$nextTick', () => {
           update() {
             this.items = [4, 5, 6];
             this.$nextTick(
-              () => (this.check = this.$root.querySelectorAll('span').length)
+              () => (this.check = this.$root.querySelectorAll('span').length),
             );
           },
         })),
@@ -43,7 +43,7 @@ describe('$nextTick', () => {
             <span x-text="item"></span>
           </template>
         </div>
-      `
+      `,
     );
     expect($('button').textContent).toBe('2');
     await click('button');
@@ -59,7 +59,7 @@ describe('$nextTick', () => {
           init() {
             this.display = (
               window.document.querySelector(
-                'h1'
+                'h1',
               ) as unknown as HTMLHeadingElement
             ).style.display;
           },
@@ -73,7 +73,7 @@ describe('$nextTick', () => {
             <h1 x-transition.duration.50 x-show="show"></h1>
             <button @click="toggle" x-text="display"></button>
           </div>
-        `
+        `,
     );
     expect($('button').textContent).toBe('');
     await click('button');

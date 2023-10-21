@@ -25,7 +25,7 @@ export const directive = (name: string, callback: DirectiveCallback) => {
       if (!directiveHandlers[directive]) {
         console.warn(
           'Cannot find directive `${directive}`. ' +
-            '`${name}` will use the default order of execution'
+            '`${name}` will use the default order of execution',
         );
         return;
       }
@@ -33,7 +33,7 @@ export const directive = (name: string, callback: DirectiveCallback) => {
       directiveOrder.splice(
         pos >= 0 ? pos : directiveOrder.indexOf('DEFAULT'),
         0,
-        name
+        name,
       );
     },
   };
@@ -44,13 +44,13 @@ export const directives = (
   attributes:
     | Array<{ name: string; value: string | (() => unknown) }>
     | NamedNodeMap,
-  originalAttributeOverride?: string
+  originalAttributeOverride?: string,
 ) => {
   attributes = Array.from(attributes);
 
   if (el._x_virtualDirectives) {
     let vAttributes = Object.entries(el._x_virtualDirectives).map(
-      ([name, value]) => ({ name, value })
+      ([name, value]) => ({ name, value }),
     );
 
     const staticAttributes = attributesOnly(vAttributes);
@@ -75,8 +75,8 @@ export const directives = (
   const directives = attributes
     .map(
       toTransformedAttributes(
-        (newName, oldName) => (transformedAttributeMap[newName] = oldName)
-      )
+        (newName, oldName) => (transformedAttributeMap[newName] = oldName),
+      ),
     )
     .filter(outNonAlpineAttributes)
     .map(toParsedDirectives(transformedAttributeMap, originalAttributeOverride))
@@ -124,7 +124,7 @@ export function deferHandlingDirectives(callback) {
 }
 
 export const getElementBoundUtilities = (
-  el: ElementWithXAttributes
+  el: ElementWithXAttributes,
 ): [Utilities, () => void] => {
   const cleanups: (() => void)[] = [];
 
@@ -186,12 +186,12 @@ export const into = <T>(i: T): T => i;
 const toTransformedAttributes =
   (
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    callback: (newName: string, oldName: string) => void = () => {}
+    callback: (newName: string, oldName: string) => void = () => {},
   ) =>
   ({ name, value }: Attribute): Attribute => {
     const { name: newName, value: newValue } = attributeTransformers.reduce(
       (carry, transform) => transform(carry),
-      { name, value }
+      { name, value },
     );
 
     if (newName !== name) callback(newName, name);
@@ -217,7 +217,7 @@ const alpineAttributeRegex = () => new RegExp(`^${prefixAsString}([^:^.]+)\\b`);
 
 const toParsedDirectives = (
   transformedAttributeMap,
-  originalAttributeOverride
+  originalAttributeOverride,
 ) => {
   return ({ name, value }) => {
     const typeMatch = name.match(alpineAttributeRegex());

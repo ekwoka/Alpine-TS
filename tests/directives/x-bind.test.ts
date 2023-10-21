@@ -8,7 +8,7 @@ describe('x-bind', () => {
       <div x-data="{ foo: 'bar' }">
         <span x-bind:foo="foo"></span>
       </div>
-    `
+    `,
     );
     expect($('span').getAttribute('foo')).toBe('bar');
   });
@@ -19,7 +19,7 @@ describe('x-bind', () => {
       <div x-data="{ foo: 'bar' }">
         <span :foo="foo"></span>
       </div>
-    `
+    `,
     );
     expect($('span').getAttribute('foo')).toBe('bar');
   });
@@ -30,7 +30,7 @@ describe('x-bind', () => {
       <div x-data="{ foo: {} }">
         <span x-bind:foo="foo.bar"></span>
       </div>
-    `
+    `,
     );
     expect($('span').getAttribute('foo')).toBe('');
   });
@@ -41,7 +41,7 @@ describe('x-bind', () => {
       <div x-data>
         <span class="bar" :class="'foo'"></span>
       </div>
-    `
+    `,
     );
     expect($('span').classList.contains('bar')).toBe(true);
     expect($('span').classList.contains('foo')).toBe(true);
@@ -53,7 +53,7 @@ describe('x-bind', () => {
       <div x-data>
         <span :aria-pressed="true" :aria-checked="false"></span>
       </div>
-    `
+    `,
     );
     expect($('span').getAttribute('aria-pressed')).toBe('true');
     expect($('span').getAttribute('aria-checked')).toBe('false');
@@ -71,11 +71,11 @@ describe('x-bind', () => {
             <span visible="true" x-bind:visible="false">false</span>
             <span visible="true" x-bind:visible="undefined">undefined</span>
       </div>
-    `
+    `,
     );
     $$('a').forEach((a) => expect(a.getAttribute('href')).toBe(null));
     $$('span').forEach((span) =>
-      expect(span.getAttribute('visible')).toBe(null)
+      expect(span.getAttribute('visible')).toBe(null),
     );
   });
   it('does not remove non-boolean on empty string', async () => {
@@ -85,7 +85,7 @@ describe('x-bind', () => {
         <div x-data>
               <a href="#hello" x-bind:href="''">empty string</a>
         </div>
-      `
+      `,
     );
     expect($('a').getAttribute('href')).toBe('');
   });
@@ -97,10 +97,10 @@ describe('x-bind', () => {
         <input type="checkbox" x-bind:checked="true" />
         <input type="checkbox" x-bind:checked="false" />
       </div>
-    `
+    `,
     );
     $$('input').forEach((input, idx) =>
-      expect(input.getAttribute('checked')).toBe(idx ? null : 'checked')
+      expect(input.getAttribute('checked')).toBe(idx ? null : 'checked'),
     );
   });
   it('does not remove booleans on empty string', async () => {
@@ -110,7 +110,7 @@ describe('x-bind', () => {
         <div x-data>
               <input type="checkbox" x-bind:checked="''" />
         </div>
-      `
+      `,
     );
     expect($('input').getAttribute('checked')).toBe('checked');
   });
@@ -121,7 +121,7 @@ describe('x-bind', () => {
         <div x-data>
               <input type="checkbox" :value="'test'" />
         </div>
-      `
+      `,
     );
     expect($('input').getAttribute('checked')).toBe(null);
   });
@@ -132,7 +132,7 @@ describe('x-bind', () => {
         <div x-data>
               <input type="radio" :value="'test'" />
         </div>
-      `
+      `,
     );
     expect($('input').getAttribute('checked')).toBe(null);
   });
@@ -149,17 +149,17 @@ describe('x-bind', () => {
           <input type="radio" x-bind:value="value" />
         </template>
       </div>
-    `
+    `,
     );
     $$('input').forEach((input, idx) => {
       const value = values[idx % values.length];
       expect(input.value).toBe(
         idx < values.length && typeof value === 'boolean'
           ? 'on'
-          : value.toString()
+          : value.toString(),
       );
       expect(input.checked).toBe(
-        idx < values.length && typeof value === 'boolean' && value
+        idx < values.length && typeof value === 'boolean' && value,
       );
     });
   });
@@ -173,7 +173,7 @@ describe('x-bind', () => {
           <input id="boolean" type="checkbox" :value="true" />
           <input id="null" type="checkbox" :value="null" />
         </div>
-      `
+      `,
     );
     const inputs = $$('input');
     expect(inputs[0].value).toBe('1');
@@ -188,7 +188,7 @@ describe('x-bind', () => {
       <div x-data>
         <span :x1="1"></span>
       </div>
-    `
+    `,
     );
     expect($('span').getAttribute('x1')).toBe('1');
   });
@@ -202,7 +202,7 @@ describe('x-bind modifiers', () => {
       <div x-data>
         <svg x-bind:view-box.camel="'0 0 69 420'"></svg>
       </div>
-    `
+    `,
     );
     expect($('svg').getAttribute('viewBox')).toBe('0 0 69 420');
   });
@@ -219,7 +219,7 @@ describe('Alpine.bound', () => {
           <h3 foo></h3>
           <h4 :disabled="true"></h4>
         </div>
-      `
+      `,
     );
     expect(Alpine.bound($('h1'), 'value')).toEqual('foo');
     expect(Alpine.bound($('h2'), 'value')).toEqual('bar');

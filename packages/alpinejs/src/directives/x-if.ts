@@ -12,7 +12,7 @@ directive(
   (
     templateEl: ElementWithXAttributes<HTMLTemplateElement>,
     { expression },
-    { effect, cleanup }
+    { effect, cleanup },
   ) => {
     const evaluate = evaluateLater(templateEl, expression);
 
@@ -59,5 +59,5 @@ directive(
     effect(() => evaluate((value) => (value ? show() : hide())));
 
     cleanup(() => templateEl._x_undoIf && templateEl._x_undoIf());
-  }
+  },
 );

@@ -20,7 +20,7 @@ mapAttributes(startingWith(':', into(prefix('bind:'))));
 const handler: DirectiveCallback & { inline: DirectiveCallback } = (
   el,
   { value, modifiers, expression, original },
-  { effect }
+  { effect },
 ) => {
   if (!value) {
     const bindingProviders = {};
@@ -32,7 +32,7 @@ const handler: DirectiveCallback & { inline: DirectiveCallback } = (
       (bindings) => {
         applyBindingsObject(el, bindings, original);
       },
-      { scope: bindingProviders }
+      { scope: bindingProviders },
     );
 
     return;
@@ -56,7 +56,7 @@ const handler: DirectiveCallback & { inline: DirectiveCallback } = (
       }
 
       mutateDom(() => bind(el, value, result, modifiers));
-    })
+    }),
   );
 };
 

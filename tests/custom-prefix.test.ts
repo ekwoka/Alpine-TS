@@ -11,7 +11,7 @@ describe('Custom Prefix', () => {
       <div data-x-data="{ foo: 'bar' }">
         <span data-x-text="foo"></span>
       </div>
-    `
+    `,
     );
     expect($('span').textContent).toBe('bar');
   });

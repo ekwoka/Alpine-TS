@@ -6,7 +6,7 @@ describe('Custom Data Providers', () => {
   it('works', async () => {
     const { window, $ } = await render(
       (Alpine: typeof AlpineT) => Alpine.data('foo', () => ({ foo: 'bar' })),
-      `<div x-data="foo" x-text="foo"></div>`
+      `<div x-data="foo" x-text="foo"></div>`,
     );
     expect(window.Alpine).toBeDefined();
     expect($('div').textContent).toBe('bar');
@@ -22,7 +22,7 @@ describe('Custom Data Providers', () => {
       <div x-data="test">
         <span x-text="foo"></span>
       </div>
-    `
+    `,
     );
     expect($('span').textContent).toBe('bar');
   });
@@ -39,7 +39,7 @@ describe('Custom Data Providers', () => {
           <h1 x-text="foo"></h1>
           <h2 x-text="bar"></h2>
       </div>
-    `
+    `,
     );
     expect($('h1').textContent).toBe('baz');
     expect($('h2').textContent).toBe('bob');
@@ -60,7 +60,7 @@ describe('Custom Data Providers', () => {
           <h1 x-text="foo"></h1>
           <h2 x-text="bar"></h2>
         </div>
-        `
+        `,
     );
     expect($('h1').textContent).toBe('baz');
     expect($('h2').textContent).toBe('bob');
@@ -78,7 +78,7 @@ describe('Custom Data Providers', () => {
       },
       `<div x-data="test">
             <span x-text="foo"></span>
-        </div>`
+        </div>`,
     );
     expect($('span').textContent).toBe('baz');
   });
@@ -100,7 +100,7 @@ describe('Custom Data Providers', () => {
 
             <button>click me</button>
         </div>
-            `
+            `,
     );
     expect($('span').textContent).toBe('bar');
     $('button').click();
@@ -123,7 +123,7 @@ describe('Custom Data Providers', () => {
       `
     <div x-data="parent">
             <p x-data="child"></p>
-        </div>`
+        </div>`,
     );
     expect($('p').textContent).toBe('bar');
   });
@@ -144,7 +144,7 @@ describe('Custom Data Providers', () => {
             <button x-on:click="test()"></button>
         </div>
         <span></span>
-            `
+            `,
     );
     expect($('span').textContent).toBe('');
     $('button').click();
@@ -167,7 +167,7 @@ describe('Custom Data Providers', () => {
       `<div x-data="test">
             <button x-on:click="test()"></button>
         </div>
-        <span>baz</span>`
+        <span>baz</span>`,
     );
     expect($('span').textContent).toBe('baz');
     $('button').click();

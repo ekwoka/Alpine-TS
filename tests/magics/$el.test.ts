@@ -8,7 +8,7 @@ describe('$el', () => {
         <div x-data>
           <button @click="$el.textContent = 'buzz'">fizz</span>
         </div>
-      `
+      `,
     );
     expect($('button').textContent).toBe('fizz');
     await click('button');

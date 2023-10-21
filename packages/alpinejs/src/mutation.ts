@@ -32,7 +32,7 @@ export const onAttributesAdded = (callback: AttrMutationCallback) =>
 export const onAttributeRemoved = (
   el: ElementWithXAttributes,
   name: string,
-  callback: () => void
+  callback: () => void,
 ) => {
   if (!el._x_attributeCleanups) el._x_attributeCleanups = {};
   if (!el._x_attributeCleanups[name]) el._x_attributeCleanups[name] = [];
@@ -42,7 +42,7 @@ export const onAttributeRemoved = (
 
 export const cleanupAttributes = (
   el: ElementWithXAttributes,
-  names?: string[]
+  names?: string[],
 ) => {
   if (!el._x_attributeCleanups) return;
 
@@ -78,12 +78,13 @@ const onMutate = (mutations: MutationRecord[]) => {
     if (mutation.type === 'childList') {
       mutation.addedNodes.forEach(
         (node) =>
-          node.nodeType === 1 && addedNodes.push(node as ElementWithXAttributes)
+          node.nodeType === 1 &&
+          addedNodes.push(node as ElementWithXAttributes),
       );
       mutation.removedNodes.forEach(
         (node) =>
           node.nodeType === 1 &&
-          removedNodes.push(node as ElementWithXAttributes)
+          removedNodes.push(node as ElementWithXAttributes),
       );
     }
 
@@ -118,7 +119,7 @@ const onMutate = (mutations: MutationRecord[]) => {
   removedAttributes.forEach((attrs, el) => cleanupAttributes(el, attrs));
 
   addedAttributes.forEach((attrs, el) =>
-    onAttributeAddeds.forEach((i) => i(el, attrs))
+    onAttributeAddeds.forEach((i) => i(el, attrs)),
   );
 
   removedNodes.forEach((node) => {

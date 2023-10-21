@@ -15,7 +15,7 @@ describe('Alpine.plugin', () => {
     const callbacks = Array.from({ length: 3 }, () => vi.fn());
     Alpine.plugin(callbacks);
     callbacks.forEach((callback) =>
-      expect(callback).toHaveBeenCalledWith(Alpine)
+      expect(callback).toHaveBeenCalledWith(Alpine),
     );
   });
 });

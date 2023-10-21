@@ -8,7 +8,7 @@ describe('x-data', () => {
       <div x-data>
         <span x-text="'foo'"></span>
       </div>
-    `
+    `,
     );
     expect($('span').textContent).toBe('foo');
   });
@@ -19,7 +19,7 @@ describe('x-data', () => {
       <div x-data="true">
         <span x-text="'foo'"></span>
       </div>
-    `
+    `,
     );
     expect($('span').textContent).toBe('foo');
   });
@@ -32,7 +32,7 @@ describe('x-data', () => {
           <span x-text="foo + fizz"></span>
         </div>
       </div>
-    `
+    `,
     );
     expect($('span').textContent).toBe('barbuzz');
   });
@@ -45,7 +45,7 @@ describe('x-data', () => {
           <span x-text="foo"></span>
         </div>
       </div>
-    `
+    `,
     );
     expect($('span').textContent).toBe('baz');
   });
@@ -65,7 +65,7 @@ describe('x-data', () => {
         <div x-data="window.sampleData">
           <span x-text="fizz"></span>
         </div>
-      `
+      `,
     );
     expect(getData('div', 'fizz')).toBe('bar');
     expect($('span').textContent).toBe('bar');
@@ -77,7 +77,7 @@ describe('x-data', () => {
       <div x-data="{...$el.dataset}" data-foo="bar">
         <span x-text="foo"></span>
       </div>
-    `
+    `,
     );
     expect($('span').textContent).toBe('bar');
   });
@@ -89,7 +89,7 @@ describe('x-data', () => {
         <span x-text="fizz"></span>
         <button @click="makefizz"></button>
       </div>
-    `
+    `,
     );
     expect($('span').textContent).toBe('bar');
     await click('button');
@@ -100,14 +100,14 @@ describe('x-data', () => {
       (_, window) => {
         window.document.firstElementChild.setAttribute(
           'x-data',
-          '{ foo: "bar" }'
+          '{ foo: "bar" }',
         );
       },
       `
       <div>
         <span x-text="foo"></span>
       </div>
-    `
+    `,
     );
     expect($('span').textContent).toBe('bar');
   });
@@ -121,7 +121,7 @@ describe('x-data', () => {
           <button @click="makeFizz"></button>
         </div>
       </div>
-    `
+    `,
     );
     expect($('span').textContent).toBe('bar');
     await click('button');

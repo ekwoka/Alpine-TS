@@ -13,7 +13,7 @@ describe('Custom Directives', () => {
         <div x-data>
           <span x-foo:bar.baz="bob"></span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('barbazbob');
   });
@@ -34,7 +34,7 @@ describe('Custom Directives', () => {
             effect(() => {
               incCount();
             });
-          }
+          },
         );
       },
       `
@@ -45,7 +45,7 @@ describe('Custom Directives', () => {
           <button @click="count++" id="change">change</button>
           <button @click="$refs.foo.remove()" id="remove">remove</button>
         </div>
-      `
+      `,
     );
     expect($('h1').textContent).toBe('1');
     await click('#change');
@@ -66,7 +66,7 @@ describe('Custom Directives', () => {
         <div x-data>
           <span x-foo x-bind:foo="foo"></span>
         </div>
-      `
+      `,
     );
     expect($('span').getAttribute('foo')).toBe('bar');
   });

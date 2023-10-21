@@ -46,7 +46,7 @@ directive('modelable', (el, { expression }, { cleanup, evaluateLater }) => {
         set(value) {
           innerSet(value);
         },
-      }
+      },
     );
 
     cleanup(releaseEntanglement);

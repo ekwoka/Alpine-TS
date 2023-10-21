@@ -13,7 +13,7 @@ describe('x-teleport', () => {
         </div>
 
         <section id="target"></section>
-      `
+      `,
     );
     expect($('section').textContent).toBe('1');
     expect($('section').firstElementChild.tagName).toBe('SPAN');
@@ -35,12 +35,12 @@ describe('x-teleport', () => {
         </div>
 
         <section id="target"></section>
-      `
+      `,
     );
     expect($('section').textContent).toBe('12');
     expect($('section').firstElementChild.tagName).toBe('H1');
     expect($('section').firstElementChild.nextElementSibling.tagName).toBe(
-      'H2'
+      'H2',
     );
     await click('button');
     expect($('section').textContent).toBe('23');
@@ -56,7 +56,7 @@ describe('x-teleport', () => {
         </div>
 
         <section id="target"></section>
-      `
+      `,
     );
     expect($('section').textContent).toBe('1');
     await click('button');
@@ -73,7 +73,7 @@ describe('x-teleport', () => {
         </div>
 
         <section id="target"></section>
-      `
+      `,
     );
     expect($('section').textContent).toBe('1');
     expect($('button')).toBeDefined();
@@ -92,7 +92,7 @@ describe('x-teleport', () => {
           </div>
 
           <section id="target"></section>
-        `
+        `,
     );
     expect($('section').textContent).toBe('1');
     await click('button');
@@ -110,7 +110,7 @@ describe('x-teleport', () => {
           </div>
 
           <section id="target"></section>
-        `
+        `,
     );
     expect($('section').textContent).toBe('fizzbussin');
   });
@@ -126,7 +126,7 @@ describe('x-teleport', () => {
           </div>
 
           <section id="target"></section>
-        `
+        `,
     );
     expect($('h1').textContent).toBe($('h2').textContent);
   });
@@ -145,7 +145,7 @@ describe('x-teleport modifiers', () => {
         </div>
 
         <section id="target"></section>
-      `
+      `,
     );
 
     expect($('section').textContent).toBe('');
@@ -166,7 +166,7 @@ describe('x-teleport modifiers', () => {
         </div>
 
         <section id="target"></section>
-      `
+      `,
     );
 
     expect($('section').textContent).toBe('');
@@ -187,7 +187,7 @@ describe('x-teleport modifiers', () => {
         </div>
 
         <section id="target"></section>
-      `
+      `,
     );
 
     expect($('section').textContent).toBe('');
@@ -208,7 +208,7 @@ describe('x-teleport modifiers', () => {
         </div>
 
         <section id="target"></section>
-      `
+      `,
     );
 
     expect($('section').textContent).toBe('');
