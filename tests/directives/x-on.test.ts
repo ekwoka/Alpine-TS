@@ -536,6 +536,20 @@ describe('event name behaviors', () => {
     await click('button');
     expect($('[x-text]').textContent).toBe('1');
   });
+  it('handles underscored events', async () => {
+    const { $, click } = await render(
+      undefined,
+      `
+        <div x-data="{ count: 0 }" @custom_event="count++">
+          <button @click="$dispatch('custom_event')"></button>
+          <span x-text="count.toString()"></span>
+        </div>
+      `
+    );
+    expect($('[x-text]').textContent).toBe('0');
+    await click('button');
+    expect($('[x-text]').textContent).toBe('1');
+  });
   describe('.camel', () => {
     it('converts event names to camelcase', async () => {
       const { $, click } = await render(
