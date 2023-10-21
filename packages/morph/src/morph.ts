@@ -7,8 +7,6 @@ export const morph = (
   to: string | Element,
   options: Partial<MorphOptions> = {},
 ) => {
-  monkeyPatchDomSetAttributeToAllowAtSymbols();
-
   // We're defining these globals and methods inside this function (instead of outside)
   // because it's an async function and if run twice, they would overwrite
   // each other.
@@ -26,7 +24,7 @@ export const morph = (
     added = noop,
   } = options;
 
-  function patch(from: ElementWithXAttributes, to: ElementWithXAttributes) {
+  const patch = (from: ElementWithXAttributes, to: ElementWithXAttributes) => {
     if (differentElementNamesTypesOrKeys(from, to)) {
       return swapElements(from, to);
     }
@@ -56,20 +54,20 @@ export const morph = (
     updated(from, to);
 
     patchChildren(from, to);
-  }
+  };
 
-  function differentElementNamesTypesOrKeys(from, to) {
+  const differentElementNamesTypesOrKeys = (from: Element, to: Element) => {
     return (
       from.nodeType != to.nodeType ||
       from.nodeName != to.nodeName ||
       getKey(from) != getKey(to)
     );
-  }
+  };
 
-  function swapElements(
+  const swapElements = (
     from: ElementWithXAttributes,
     to: ElementWithXAttributes,
-  ) {
+  ) => {
     if (shouldSkip(removing, from)) return;
 
     const toCloned = to.cloneNode(true);
@@ -80,65 +78,46 @@ export const morph = (
 
     removed(from);
     added(toCloned);
-  }
+  };
 
-  function patchNodeValue(from, to) {
+  const patchNodeValue = (from: Node, to: Node) => {
     const value = to.nodeValue;
 
     if (from.nodeValue !== value) {
       // Change text node...
       from.nodeValue = value;
     }
-  }
+  };
 
-  function patchAttributes(
+  const patchAttributes = (
     from: ElementWithXAttributes,
     to: ElementWithXAttributes,
-  ) {
+  ) => {
     if (from._x_transitioning) return;
 
-    if (from._x_isShown && !to._x_isShown) {
+    if (from._x_isShown != !to._x_isShown && (to._x_isShown || from._x_isShown))
       return;
-    }
-    if (!from._x_isShown && to._x_isShown) {
-      return;
-    }
 
-    const domAttributes = Array.from(from.attributes);
-    const toAttributes = Array.from(to.attributes);
+    for (const attr of [...from.attributes]) // spread to make a static copy of the nodemap
+      if (!to.hasAttribute(attr.name)) from.removeAttribute(attr.name);
 
-    for (let i = domAttributes.length - 1; i >= 0; i--) {
-      const name = domAttributes[i].name;
+    for (const attr of to.attributes)
+      if (from.getAttribute(attr.name) !== attr.value)
+        from.setAttribute(attr.name, attr.value);
+  };
 
-      if (!to.hasAttribute(name)) {
-        // Remove attribute...
-        from.removeAttribute(name);
-      }
-    }
-
-    for (let i = toAttributes.length - 1; i >= 0; i--) {
-      const name = toAttributes[i].name;
-      const value = toAttributes[i].value;
-
-      if (from.getAttribute(name) !== value) {
-        from.setAttribute(name, value);
-      }
-    }
-  }
-
-  function patchChildren(
+  const patchChildren = (
     from: ElementWithXAttributes | Block,
     to: ElementWithXAttributes | Block,
-  ) {
+  ) => {
     const fromKeys = keyToMap(from.children);
-    const fromKeyHoldovers = {};
+    const fromKeyHoldovers = {} as Record<string, Node>;
 
-    let currentTo = getFirstNode(to);
-    let currentFrom = getFirstNode(from);
+    let currentTo: Node = getFirstNode(to);
+    let currentFrom: Node = getFirstNode(from);
 
     while (currentTo) {
       const toKey = getKey(currentTo);
-      let fromKey = getKey(currentFrom);
 
       // Add new elements...
       if (!currentFrom) {
@@ -151,11 +130,8 @@ export const morph = (
           currentFrom = holdover;
         } else {
           if (!shouldSkip(adding, currentTo)) {
-            // Add element...
             const clone = currentTo.cloneNode(true);
-
             from.appendChild(clone);
-
             added(clone);
           }
 
@@ -165,68 +141,11 @@ export const morph = (
         }
       }
 
-      // Handle conditional markers (presumably added by backends like Livewire)...
-      const isIf = (node: Node) =>
-        node && node.nodeType === 8 && node.textContent === ' __BLOCK__ ';
-      const isEnd = (node: Node) =>
-        node && node.nodeType === 8 && node.textContent === ' __ENDBLOCK__ ';
+      let fromKey = getKey(currentFrom);
 
       if (isIf(currentTo) && isIf(currentFrom)) {
-        let nestedIfCount = 0;
-
-        const fromBlockStart = currentFrom;
-
-        while (currentFrom) {
-          const next = getNextSibling(
-            from,
-            currentFrom as ElementWithXAttributes,
-          );
-
-          if (isIf(next)) {
-            nestedIfCount++;
-          } else if (isEnd(next) && nestedIfCount > 0) {
-            nestedIfCount--;
-          } else if (isEnd(next) && nestedIfCount === 0) {
-            currentFrom = next;
-
-            break;
-          }
-
-          currentFrom = next;
-        }
-
-        const fromBlockEnd = currentFrom;
-
-        nestedIfCount = 0;
-
-        const toBlockStart = currentTo;
-
-        while (currentTo) {
-          const next = getNextSibling(to, currentTo as ElementWithXAttributes);
-
-          if (isIf(next)) {
-            nestedIfCount++;
-          } else if (isEnd(next) && nestedIfCount > 0) {
-            nestedIfCount--;
-          } else if (isEnd(next) && nestedIfCount === 0) {
-            currentTo = next;
-
-            break;
-          }
-
-          currentTo = next;
-        }
-
-        const toBlockEnd = currentTo;
-
-        const fromBlock = new Block(
-          fromBlockStart as Element,
-          fromBlockEnd as Element,
-        );
-        const toBlock = new Block(
-          toBlockStart as Element,
-          toBlockEnd as Element,
-        );
+        const fromBlock = new Block(...getBlockBookends(from, currentFrom));
+        const toBlock = new Block(...getBlockBookends(to, currentTo));
 
         patchChildren(fromBlock, toBlock);
 
@@ -239,35 +158,31 @@ export const morph = (
         lookahead &&
         !currentFrom.isEqualNode(currentTo)
       ) {
-        let nextToElementSibling = getNextSibling(to, currentTo);
-
-        let found = false;
-
-        while (!found && nextToElementSibling) {
+        for (
+          let nextSibling = getNextSibling(to, currentTo);
+          nextSibling;
+          nextSibling = getNextSibling(to, nextSibling)
+        ) {
           if (
-            nextToElementSibling.nodeType === 1 &&
-            currentFrom.isEqualNode(nextToElementSibling)
-          ) {
-            found = true; // This ";" needs to be here...
-
-            currentFrom = addNodeBefore(from, currentTo, currentFrom);
-
-            fromKey = getKey(currentFrom);
-          }
-
-          nextToElementSibling = getNextSibling(to, nextToElementSibling);
+            nextSibling.nodeType !== 1 ||
+            !currentFrom.isEqualNode(nextSibling)
+          )
+            continue;
+          currentFrom = addNodeBefore(from, currentTo, currentFrom);
+          fromKey = getKey(currentFrom);
+          break;
         }
       }
 
       if (toKey !== fromKey) {
         if (!toKey && fromKey) {
           // No "to" key...
-          fromKeyHoldovers[fromKey] = currentFrom; // This ";" needs to be here...
+          fromKeyHoldovers[fromKey] = currentFrom;
+          const nextTo = getNextSibling(to, currentTo);
           currentFrom = addNodeBefore(from, currentTo, currentFrom);
-          fromKeyHoldovers[fromKey].remove();
+          (fromKeyHoldovers[fromKey] as Element).remove();
           currentFrom = getNextSibling(from, currentFrom);
-          currentTo = getNextSibling(to, currentTo);
-
+          currentTo = nextTo;
           continue;
         }
 
@@ -289,12 +204,12 @@ export const morph = (
             currentFrom = fromKeyNode;
           } else {
             // Swap elements with keys...
-            fromKeyHoldovers[fromKey] = currentFrom; // This ";" needs to be here...
+            fromKeyHoldovers[fromKey] = currentFrom;
+            const nextTo = getNextSibling(to, currentTo);
             currentFrom = addNodeBefore(from, currentTo, currentFrom);
-            fromKeyHoldovers[fromKey].remove();
+            (fromKeyHoldovers[fromKey] as Element).remove();
             currentFrom = getNextSibling(from, currentFrom);
-            currentTo = getNextSibling(to, currentTo);
-
+            currentTo = nextTo;
             continue;
           }
         }
@@ -334,31 +249,29 @@ export const morph = (
 
       removed(domForRemoval);
     }
-  }
+  };
 
-  function getKey(el) {
+  const getKey = (el: Node | undefined) => {
     return el && el.nodeType === 1 && key(el);
-  }
+  };
 
-  function keyToMap(els) {
-    const map = {};
+  const keyToMap = (els: Iterable<Node>) => {
+    const map = {} as Record<string, ChildNode>;
 
     for (const el of els) {
       const theKey = getKey(el);
 
-      if (theKey) {
-        map[theKey] = el;
-      }
+      if (theKey) map[theKey] = el;
     }
 
     return map;
-  }
+  };
 
-  function addNodeBefore(parent, node, beforeMe) {
+  const addNodeBefore = (parent: Node | Block, node: Node, beforeMe: Node) => {
     if (!shouldSkip(adding, node)) {
       const clone = node.cloneNode(true);
 
-      parent.insertBefore(clone, beforeMe);
+      parent.insertBefore(clone, beforeMe as Element);
 
       added(clone);
 
@@ -366,7 +279,7 @@ export const morph = (
     }
 
     return node;
-  }
+  };
 
   if (!(from as ElementWithXAttributes)._x_dataStack) {
     // Just in case a part of this template uses Alpine scope from somewhere
@@ -471,7 +384,7 @@ const getNextSibling = (parent: Node | Block, reference: Node) =>
     ? parent.nextNode(reference)
     : reference.nextSibling);
 
-function monkeyPatchDomSetAttributeToAllowAtSymbols() {
+export const monkeyPatchDomSetAttributeToAllowAtSymbols = () => {
   if (patched) return;
 
   patched = true;
@@ -490,7 +403,7 @@ function monkeyPatchDomSetAttributeToAllowAtSymbols() {
 
     this.setAttributeNode(attr);
   };
-}
+};
 
 type MorphOptions = {
   /**
@@ -545,4 +458,25 @@ type MorphOptions = {
    * @default true
    */
   lookahead: boolean;
+};
+
+// Handle conditional markers (presumably added by backends like Livewire)...
+const isIf = (node: Node) =>
+  node && node.nodeType === 8 && node.textContent === ' __BLOCK__ ';
+const isEnd = (node: Node) =>
+  node && node.nodeType === 8 && node.textContent === ' __ENDBLOCK__ ';
+
+const getBlockBookends = (
+  parent: Node | Block,
+  reference: Node,
+): [Element, Element] => {
+  let ifCount = 1;
+
+  const fromBlockStart = reference;
+
+  while (ifCount && reference) {
+    reference = getNextSibling(parent, reference);
+    ifCount = ifCount + Number(isIf(reference)) - Number(isEnd(reference));
+  }
+  return [fromBlockStart, reference] as [Element, Element];
 };
