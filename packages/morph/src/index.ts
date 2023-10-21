@@ -1,6 +1,12 @@
 import { morph } from './morph';
-import type { Alpine as AlpineType, PluginCallback } from 'alpinets';
+import type { PluginCallback } from 'alpinets';
 
 export const morphPlugin: PluginCallback = (Alpine) => {
-  (Alpine as AlpineType & { morph: typeof morph }).morph = morph;
+  Alpine.morph = morph;
 };
+
+declare module 'alpinets' {
+  interface AlpineExtras {
+    morph: typeof morph;
+  }
+}

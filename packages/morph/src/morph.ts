@@ -1,4 +1,3 @@
-import Alpine from 'alpinets';
 import { ElementWithXAttributes } from 'alpinets/dist/types';
 
 const defaultGetKey = (el: Element) => el.getAttribute('key');
@@ -6,14 +5,16 @@ const noop = () => {};
 export const morph = (
   from: Element,
   to: string | Element,
-  options: Partial<MorphOptions>,
+  options: Partial<MorphOptions> = {},
 ) => {
   monkeyPatchDomSetAttributeToAllowAtSymbols();
 
   // We're defining these globals and methods inside this function (instead of outside)
   // because it's an async function and if run twice, they would overwrite
   // each other.
-  const toEl = typeof to === 'string' ? createElement(to) : to;
+  const toEl = (
+    typeof to === 'string' ? createElement(to) : to
+  ) as ElementWithXAttributes;
   const {
     key = defaultGetKey,
     lookahead = false,
@@ -367,17 +368,17 @@ export const morph = (
     return node;
   }
 
-  if (!from._x_dataStack) {
+  if (!(from as ElementWithXAttributes)._x_dataStack) {
     // Just in case a part of this template uses Alpine scope from somewhere
     // higher in the DOM tree, we'll find that state and replace it on the root
     // element so everything is synced up accurately.
-    toEl._x_dataStack = Alpine.closestDataStack(from);
+    toEl._x_dataStack = Alpine.closestDataStack(from as ElementWithXAttributes);
 
     // We will kick off a clone on the root element.
-    toEl._x_dataStack && Alpine.cloneNode(from, toEl);
+    toEl._x_dataStack && Alpine.cloneNode(from as ElementWithXAttributes, toEl);
   }
 
-  patch(from, toEl);
+  patch(from as ElementWithXAttributes, toEl);
 
   return from;
 };
@@ -462,21 +463,13 @@ class Block {
   }
 }
 
-const getFirstNode = (parent: Node | Block) => {
-  return parent.firstChild;
-};
+const getFirstNode = (parent: Node | Block) => parent.firstChild;
 
-const getNextSibling = (parent: Node | Block, reference: Node | Block) => {
-  if (reference._x_teleport) {
-    return reference._x_teleport;
-  } else if (reference.teleportBack) {
-    return reference.teleportBack;
-  }
-
-  return parent instanceof Block
+const getNextSibling = (parent: Node | Block, reference: Node) =>
+  (reference as ElementWithXAttributes)._x_teleport ??
+  (parent instanceof Block
     ? parent.nextNode(reference)
-    : reference.nextSibling;
-};
+    : reference.nextSibling);
 
 function monkeyPatchDomSetAttributeToAllowAtSymbols() {
   if (patched) return;

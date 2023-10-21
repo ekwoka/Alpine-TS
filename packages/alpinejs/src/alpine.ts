@@ -1,5 +1,5 @@
 import { bind } from './binds';
-import { clone, onlyDuringClone, skipDuringClone } from './clone';
+import { clone, cloneNode, onlyDuringClone, skipDuringClone } from './clone';
 import { data } from './data';
 import {
   directive,
@@ -115,6 +115,7 @@ const Alpine = {
   store,
   start,
   clone,
+  cloneNode,
   bound,
   $data,
   walk,
@@ -124,4 +125,6 @@ const Alpine = {
 
 export default Alpine;
 
-export type Alpine = typeof Alpine;
+interface AlpineExtras {}
+
+export type Alpine = typeof Alpine & AlpineExtras;

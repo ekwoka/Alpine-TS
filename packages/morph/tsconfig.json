@@ -59,7 +59,8 @@
     "src/magics/$watch.ts",
     "src/magics/$store.ts",
     "src/magics/$root.ts",
-    "src/entangle.ts"
+    "src/entangle.ts",
+    "src/morph.ts"
   ],
   "compilerOptions": {
     "declaration": true,
