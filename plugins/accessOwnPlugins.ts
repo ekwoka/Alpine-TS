@@ -1,4 +1,3 @@
-import { resolve } from 'node:path';
 import type { PluginOption } from 'vite';
 
 export const accessOwnSources = () => {
@@ -12,7 +11,7 @@ export const accessOwnSources = () => {
         !id.endsWith('src')
       ) {
         return {
-          id: resolve(`./packages/${id.replace(/@?timberts\//, '')}/src`),
+          id: `${id}/src`,
           external: false,
         };
       }
