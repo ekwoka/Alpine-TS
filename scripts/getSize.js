@@ -1,11 +1,11 @@
 import { build } from 'esbuild';
-import { writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { readFile, writeFile } from 'node:fs/promises';
 import { brotliCompressSync } from 'node:zlib';
 import prettyBytes from 'pretty-bytes';
 
-const packages = ['alpinejs'];
+const packages = ['alpinejs', 'collapse', 'morph'];
 
+const oldValues = JSON.parse(await readFile('size.json', 'utf8'));
 const bundleCode = async (pkg) => {
   const { outputFiles } = await build({
     entryPoints: [`./packages/${pkg}/src/index.js`],
@@ -18,11 +18,18 @@ const bundleCode = async (pkg) => {
     platform: 'browser',
     minify: true,
     plugins: [],
+    define: {
+      'import.meta.vitest': 'false',
+      'import.meta.DEBUG': 'false',
+    },
     mainFields: ['module', 'main'],
   });
-  console.log(getSizes(outputFiles[0].contents));
+
   const { minified, brotli } = getSizes(outputFiles[0].contents);
-  console.log(`${pkg}: Bundle: ${minified.pretty}, Brotli: ${brotli.pretty}`);
+  const oldPkg = oldValues[pkg];
+  console.log(`${pkg}:
+  Bundle: ${makeMessage(oldPkg?.minified, minified)},
+  Brotli: ${makeMessage(oldPkg?.brotli, brotli)}\n`);
   return {
     minified,
     brotli,
@@ -43,8 +50,17 @@ const getSizes = (code) => {
   return { minified: sizeInfo(minifiedSize), brotli: sizeInfo(brotliSize) };
 };
 
+const makeMessage = (old, current) => {
+  if (!old) return `NEW -> ${current.pretty}`;
+  const diff = current.raw - old.raw;
+  if (diff === 0) return 'NO CHANGE';
+  return `${old.pretty} -> ${current.pretty} (${
+    diff > 0 ? '+' : '-'
+  }${prettyBytes(Math.abs(diff))})`;
+};
+
 const bundleData = await Promise.all(
   packages.map(async (pkg) => [pkg, await bundleCode(pkg)]),
 );
 const content = JSON.stringify(Object.fromEntries(bundleData), null, 2);
-await writeFile(join('size.json'), content, 'utf8');
+await writeFile('size.json', content, 'utf8');

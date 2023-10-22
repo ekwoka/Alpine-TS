@@ -32,7 +32,7 @@ describe('Collapse Plugin', () => {
     await sleep(500);
     expect(getComputedStyle($('h1') as unknown as IElement).height).toBe('0px');
     expect($('h1').getAttribute('style')).toBe(
-      'display: none; height: 0px; overflow: hidden;',
+      'height: 0px; overflow: hidden; display: none;',
     );
   });
 

@@ -61,14 +61,18 @@
     "src/magics/$root.ts",
     "src/entangle.ts"
   ],
+  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"],
   "compilerOptions": {
+    "types": ["vitest/importMeta", "vitest/globals"],
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "module": "es2020",
+    "esModuleInterop": true,
+    "module": "es2022",
     "moduleResolution": "node",
-    "noImplicitThis": true,
     "outDir": "dist",
-    "target": "ESNext"
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "esNext"
   }
 }

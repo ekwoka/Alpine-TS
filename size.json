@@ -8,5 +8,25 @@
       "pretty": "13.5 kB",
       "raw": 13519
     }
+  },
+  "collapse": {
+    "minified": {
+      "pretty": "1.26 kB",
+      "raw": 1256
+    },
+    "brotli": {
+      "pretty": "517 B",
+      "raw": 517
+    }
+  },
+  "morph": {
+    "minified": {
+      "pretty": "3.14 kB",
+      "raw": 3143
+    },
+    "brotli": {
+      "pretty": "1.32 kB",
+      "raw": 1321
+    }
   }
 }

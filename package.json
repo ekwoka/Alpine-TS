@@ -18,10 +18,11 @@
     "packages/alpinejs/src"
   ],
   "scripts": {
-    "build": "cd packages/alpinejs && pnpm run build",
+    "build": "pnpm run -r build",
+    "doctor": "run-s lint test:run build size",
     "lint": "run-s lint:*",
-    "lint:eslint": "eslint --fix .",
-    "lint:prettier": "prettier --write .",
+    "lint:eslint": "eslint --fix ./**/src/*",
+    "lint:prettier": "prettier --write ./**/src/*",
     "lint:staged": "lint-staged",
     "precommit": "run-s lint:staged build size",
     "prepare": "husky install",
