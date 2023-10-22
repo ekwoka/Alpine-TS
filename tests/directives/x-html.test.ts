@@ -10,7 +10,7 @@ describe('x-html', () => {
         <div x-data="html">
           <span x-html="foo"></span>
         </div>
-      `
+      `,
     );
     expect($('b').innerHTML).toBe('bar');
   });
@@ -29,7 +29,7 @@ describe('x-html', () => {
           <span x-html="foo"></span>
           <button @click="change"></button>
         </div>
-      `
+      `,
     );
     expect($('b').innerHTML).toBe('bar');
     await click('button');
@@ -47,7 +47,7 @@ describe('x-html', () => {
         <div x-data="html">
           <span x-html="foo"></span>
         </div>
-      `
+      `,
     );
     expect($('b').textContent).toBe('baz');
   });
@@ -68,7 +68,7 @@ describe('x-html', () => {
           </template>
           <div x-html="foo"></div>
         </div>
-      `
+      `,
     );
     expect($('[x-html]').firstElementChild.tagName).toBe('B');
     expect($('h1')).toBeNull();

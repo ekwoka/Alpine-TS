@@ -8,7 +8,7 @@ describe('x-text', () => {
       <div x-data="{ foo: 'bar' }">
         <span x-text="foo"></span>
       </div>
-    `
+    `,
     );
     expect($('span').textContent).toBe('bar');
   });
@@ -20,7 +20,7 @@ describe('x-text', () => {
         <span x-text="foo"></span>
         <button @click="foo = 'buzz'"></button>
       </div>
-    `
+    `,
     );
     expect($('span').textContent).toBe('bar');
     await click('button');
@@ -35,7 +35,7 @@ describe('x-text', () => {
           <text x-text="foo"></text>
         </svg>
       </div>
-    `
+    `,
     );
     expect($('text').textContent).toBe('bar');
   });

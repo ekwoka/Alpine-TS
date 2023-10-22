@@ -27,7 +27,7 @@ describe('Clone', () => {
 
           <span x-text="foo"></span>
       </div>
-    `
+    `,
     );
     await click('#original h1');
     expect($('#original span').textContent).toBe('baz');
@@ -54,7 +54,7 @@ describe('Clone', () => {
         <div x-data="{ count: 0 }" x-init="count++" id="copy" x-ignore>
             <span x-text="count"></span>
         </div>
-    `
+    `,
     );
     expect($('#original span').textContent).toBe('1');
     expect($('#copy span').textContent).toBe('');
@@ -82,7 +82,7 @@ describe('Clone', () => {
             <h1 @click="count++">inc</h1>
             <span x-text="count"></span>
         </div>
-    `
+    `,
     );
     expect($('#original span').textContent).toBe('1');
     expect($('#copy span').textContent).toBe('');

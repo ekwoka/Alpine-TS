@@ -22,7 +22,7 @@ describe('x-transition', () => {
           thing
         </span>
       </div>
-    `
+    `,
     );
     expect($('span').classList.length).toBe(0);
     click('button');
@@ -34,7 +34,7 @@ describe('x-transition', () => {
         'enter-start',
         'transition',
         'duration-100',
-      ])
+      ]),
     );
     await Alpine.nextTick();
     expect([...$('span').classList.values()]).toEqual(
@@ -43,7 +43,7 @@ describe('x-transition', () => {
         'enter-end',
         'transition',
         'duration-100',
-      ])
+      ]),
     );
     await new Promise((res) => setTimeout(res, 110));
     expect([...$('span').classList.values()]).toEqual([]);
@@ -68,7 +68,7 @@ describe('x-transition', () => {
           thing
         </span>
       </div>
-    `
+    `,
     );
     expect($('span').classList.length).toBe(0);
     click('button');
@@ -79,7 +79,7 @@ describe('x-transition', () => {
         'leave-start',
         'transition',
         'duration-100',
-      ])
+      ]),
     );
     await Alpine.nextTick();
     expect([...$('span').classList.values()]).toEqual(
@@ -88,7 +88,7 @@ describe('x-transition', () => {
         'leave-end',
         'transition',
         'duration-100',
-      ])
+      ]),
     );
     await new Promise((res) => setTimeout(res, 110));
     expect([...$('span').classList.values()]).toEqual([]);
@@ -113,12 +113,12 @@ describe('x-transition', () => {
             </h1>
           </span>
         </div>
-      `
+      `,
     );
     click('button');
     await new Promise<void>((res) => queueMicrotask(() => setTimeout(res, 0)));
     let computedStyles = window.getComputedStyle(
-      $('h1') as unknown as IElement
+      $('h1') as unknown as IElement,
     );
     expect(computedStyles.display).not.toBe('none');
     expect(computedStyles.opacity).not.toBe('1');
@@ -148,19 +148,19 @@ describe('x-transition in x-bind', () => {
       <div x-data="x">
         <button x-bind="bindingString"></button>
       </div>
-    `
+    `,
     );
     expect(
-      window.getComputedStyle($('button') as unknown as IElement).display
+      window.getComputedStyle($('button') as unknown as IElement).display,
     ).toBe('inline-block');
     click('button');
     await new Promise((res) => setTimeout(res, 50));
     expect(
-      window.getComputedStyle($('button') as unknown as IElement).display
+      window.getComputedStyle($('button') as unknown as IElement).display,
     ).toBe('inline-block');
     await new Promise((res) => setTimeout(res, 60));
     expect(
-      window.getComputedStyle($('button') as unknown as IElement).display
+      window.getComputedStyle($('button') as unknown as IElement).display,
     ).toBe('none');
   });
   it('can bind with boolean true', async () => {
@@ -182,19 +182,19 @@ describe('x-transition in x-bind', () => {
       <div x-data="x">
         <button x-bind="bindingTrue"></button>
       </div>
-    `
+    `,
     );
     expect(
-      window.getComputedStyle($('button') as unknown as IElement).display
+      window.getComputedStyle($('button') as unknown as IElement).display,
     ).toBe('inline-block');
     click('button');
     await new Promise((res) => setTimeout(res, 50));
     expect(
-      window.getComputedStyle($('button') as unknown as IElement).display
+      window.getComputedStyle($('button') as unknown as IElement).display,
     ).toBe('inline-block');
     await new Promise((res) => setTimeout(res, 60));
     expect(
-      window.getComputedStyle($('button') as unknown as IElement).display
+      window.getComputedStyle($('button') as unknown as IElement).display,
     ).toBe('none');
   });
   it('can skip binding with boolean false', async () => {
@@ -216,15 +216,15 @@ describe('x-transition in x-bind', () => {
       <div x-data="x">
         <button x-bind="bindingFalse"></button>
       </div>
-    `
+    `,
     );
     expect(
-      window.getComputedStyle($('button') as unknown as IElement).display
+      window.getComputedStyle($('button') as unknown as IElement).display,
     ).toBe('inline-block');
     click('button');
     await new Promise((res) => setTimeout(res, 50));
     expect(
-      window.getComputedStyle($('button') as unknown as IElement).display
+      window.getComputedStyle($('button') as unknown as IElement).display,
     ).toBe('none');
   });
 });

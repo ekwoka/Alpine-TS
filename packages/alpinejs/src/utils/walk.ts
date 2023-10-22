@@ -2,13 +2,13 @@ import { ElementWithXAttributes } from '../types';
 
 export type WalkerCallback = (
   el: ElementWithXAttributes,
-  skip: () => void
+  skip: () => void,
 ) => void;
 export const walk = (el: ElementWithXAttributes, callback: WalkerCallback) => {
   if (typeof ShadowRoot === 'function' && el instanceof ShadowRoot)
     return Array.prototype.forEach.call(
       el.children,
-      (el: ElementWithXAttributes) => walk(el, callback)
+      (el: ElementWithXAttributes) => walk(el, callback),
     );
 
   let skip = false;

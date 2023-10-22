@@ -13,7 +13,7 @@ directive(
   (
     el: ElementWithXAttributes<HTMLInputElement>,
     { modifiers, expression },
-    { effect, cleanup }
+    { effect, cleanup },
   ) => {
     const scopeTarget = modifiers.includes('parent')
       ? (el.parentNode as ElementWithXAttributes)
@@ -99,7 +99,7 @@ directive(
         ? // eslint-disable-next-line @typescript-eslint/no-empty-function
           () => {}
         : on(el.form, 'reset', [], () =>
-            nextTick(() => el._x_model && el._x_model.set(el.value))
+            nextTick(() => el._x_model && el._x_model.set(el.value)),
           );
       cleanup(removeResetListener);
     }
@@ -146,14 +146,14 @@ directive(
 
       el._x_forceModelUpdate(value);
     });
-  }
+  },
 );
 
 const getInputValue = (
   el: ElementWithXAttributes<HTMLInputElement | HTMLSelectElement>,
   modifiers: string[],
   event: Event,
-  currentValue: unknown | unknown[]
+  currentValue: unknown | unknown[],
 ) => {
   return mutateDom(() => {
     // Check for event.detail due to an issue where IE11 handles other events as a CustomEvent.
@@ -181,7 +181,7 @@ const getInputValue = (
             return safeParseNumber(rawValue);
           })
         : Array.from(el.selectedOptions).map(
-            (option) => option.value || option.text
+            (option) => option.value || option.text,
           );
     } else {
       const rawValue = el.value;
@@ -201,11 +201,11 @@ const safeParseNumber = (rawValue: string) => {
 };
 
 const isCheckbox = (
-  el: HTMLInputElement | HTMLSelectElement
+  el: HTMLInputElement | HTMLSelectElement,
 ): el is HTMLInputElement => el.type === 'checkbox';
 
 const isSelect = (
-  el: HTMLInputElement | HTMLSelectElement
+  el: HTMLInputElement | HTMLSelectElement,
 ): el is HTMLSelectElement => el.tagName.toLowerCase() === 'select';
 
 const isGetterSetter = (value: unknown | GetterSetter): value is GetterSetter =>

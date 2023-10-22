@@ -11,5 +11,5 @@ directive(
       return !!expression.trim() && evaluate(expression, {}, false);
 
     return evaluate(expression, {}, false);
-  })
+  }),
 );

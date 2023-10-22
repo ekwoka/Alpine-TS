@@ -8,7 +8,7 @@ describe('$dispatch', () => {
         <div x-data="{ foo: 'bar' }" x-on:dispatched-event="foo = $event.detail">
           <button @click="$dispatch('dispatched-event', 'baz')" x-text="foo">click</button>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('bar');
     await click('button');

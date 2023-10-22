@@ -9,7 +9,7 @@ describe('$id', () => {
           <h1 :id="$id('foo')"></h1>
           <h2 :id="$id('foo')"></h2>
         </div>
-      `
+      `,
     );
     expect($('h1').id).not.toBe($('h2').id);
   });
@@ -21,7 +21,7 @@ describe('$id', () => {
           <h1 :id="$id('foo')"></h1>
           <h2 :id="$id('foo')"></h2>
         </div>
-      `
+      `,
     );
     expect($('h1').id).toBe($('h2').id);
   });
@@ -33,7 +33,7 @@ describe('$id', () => {
           <h1 :id="$id('foo', 1)"></h1>
           <h2 :id="$id('foo', 2)"></h2>
         </div>
-      `
+      `,
     );
     expect($('h1').id).not.toBe($('h2').id);
   });
@@ -45,7 +45,7 @@ describe('$id', () => {
           <h1 x-data :id="$id('foo')"></h1>
           <h2 x-data :id="$id('foo')"></h2>
         </div>
-      `
+      `,
     );
     expect($('h1').id).toBe($('h2').id);
   });
@@ -57,7 +57,7 @@ describe('$id', () => {
           <h1 :id="$id('fizz')"></h1>
           <h2 :id="$id('buzz')"></h2>
         </div>
-      `
+      `,
     );
     expect($('h1').id.split('-')[1]).toBe($('h2').id.split('-')[1]);
   });
@@ -75,7 +75,7 @@ describe('$id', () => {
           <h5 :id="$id('foo')"></h5>
           <h6 :id="$id('bar')"></h6>
         </div>
-      `
+      `,
     );
     expect($('h1').id).not.toBe($('h3').id);
     expect($('h2').id).toBe($('h4').id);

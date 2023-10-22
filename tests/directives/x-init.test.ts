@@ -8,7 +8,7 @@ describe('x-init', () => {
         <div x-data="{ foo: 'bar' }" x-init="foo = 'baz'">
           <span x-text="foo"></span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('baz');
   });
@@ -17,7 +17,7 @@ describe('x-init', () => {
       undefined,
       `
         <div x-init="$el.textContent = 'baz'"></div>
-      `
+      `,
     );
     expect($('div').textContent).toBe('baz');
   });
@@ -28,7 +28,7 @@ describe('x-init', () => {
         <div x-data="{ foo: 'bar' }" x-init="$refs.foo.textContent = 'fizz'">
           <span x-text="foo" x-ref="foo"></span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('bar');
   });
@@ -39,7 +39,7 @@ describe('x-init', () => {
         <div x-data="{ foo: 'bar' }" x-init="$nextTick(function(){$refs.foo.textContent='fizz'})">
           <span x-text="foo" x-ref="foo"></span>
         </div>
-      `
+      `,
     );
     await happyDOM.whenAsyncComplete();
     expect($('span').textContent).toBe('fizz');
@@ -51,7 +51,7 @@ describe('x-init', () => {
         <div x-data="{ foo: 'bar' }" x-init=" ">
           <span x-text="foo"></span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('bar');
   });
@@ -62,7 +62,7 @@ describe('x-init', () => {
         <div x-init="$el.dataset.inited = true">
           <span x-data="{ fizz: 'fizz' }" x-text="fizz" x-init="$el.textContent += 'buzz'"></span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('fizz');
   });

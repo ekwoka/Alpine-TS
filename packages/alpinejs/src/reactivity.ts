@@ -43,7 +43,7 @@ export const setReactivityEngine = (engine: {
 export const overrideEffect = (override: typeof Veffect) => (effect = override);
 
 export const elementBoundEffect = (
-  el: ElementWithXAttributes
+  el: ElementWithXAttributes,
 ): ElementBoundEffects => {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   let cleanup = () => {};
@@ -81,7 +81,7 @@ export const elementBoundEffect = (
 
 type ElementBoundEffects = [
   <T>(callback: () => T) => ReactiveEffect<T>,
-  () => void
+  () => void,
 ];
 
 export { release, reactive, effect, raw };

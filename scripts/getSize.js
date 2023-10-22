@@ -44,7 +44,7 @@ const getSizes = (code) => {
 };
 
 const bundleData = await Promise.all(
-  packages.map(async (pkg) => [pkg, await bundleCode(pkg)])
+  packages.map(async (pkg) => [pkg, await bundleCode(pkg)]),
 );
 const content = JSON.stringify(Object.fromEntries(bundleData), null, 2);
 await writeFile(join('size.json'), content, 'utf8');

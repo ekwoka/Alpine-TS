@@ -13,7 +13,7 @@ describe('Custom Magics', () => {
       <div x-data>
         <span x-text="$foo.bar"></span>
       </div>
-    `
+    `,
     );
     expect($('span').textContent).toBe('baz');
   });
@@ -32,7 +32,7 @@ describe('Custom Magics', () => {
           clickme
         </button>
       </div>
-    `
+    `,
     );
     await click('button');
     expect($('button').textContent).toBe('false');

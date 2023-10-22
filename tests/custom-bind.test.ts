@@ -16,7 +16,7 @@ describe('Custom Bindings', () => {
       <div x-data>
         <span x-bind="Foo"></span>
       </div>
-    `
+    `,
     );
     expect($('span').textContent).toBe('bar');
   });
@@ -35,13 +35,13 @@ describe('Custom Bindings', () => {
     const { $ } = await render((Alpine, window) => {
       Alpine.bind(
         window.document.querySelector(
-          '#one'
+          '#one',
         ) as unknown as ElementWithXAttributes,
         () => ({
           'x-text'() {
             return 'foo';
           },
-        })
+        }),
       );
     }, `<div x-data id="one"></div>`);
     expect($('div').textContent).toBe('foo');

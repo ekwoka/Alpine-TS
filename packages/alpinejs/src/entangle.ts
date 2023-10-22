@@ -2,38 +2,30 @@ import { effect, release } from './reactivity';
 
 export const entangle = <T>(
   { get: outerGet, set: outerSet }: Entangler<T>,
-  { get: innerGet, set: innerSet }: Entangler<T>
+  { get: innerGet, set: innerSet }: Entangler<T>,
 ) => {
   let firstRun = true;
-  let outerHash: string, outerHashLatest: string;
+  let previousHash: string | undefined;
 
   const reference = effect(() => {
-    let outer: T, inner: T;
+    const outer = outerGet();
+    const inner = innerGet();
     if (firstRun) {
-      outer = outerGet();
-      innerSet(outer);
-      inner = innerGet();
+      innerSet(cloneIfObject(outer));
       firstRun = false;
+      previousHash = JSON.stringify(outer);
     } else {
-      outer = outerGet();
-      inner = innerGet();
-
-      outerHashLatest = JSON.stringify(outer);
-
-      if (outerHashLatest !== outerHash) {
-        // If outer changed...
-        inner = innerGet();
-        innerSet(outer);
-        inner = outer; // Assign inner to outer so that it can be serialized for diffing...
+      const latestHash = JSON.stringify(outer);
+      if (latestHash !== previousHash) {
+        innerSet(cloneIfObject(outer));
+        previousHash = latestHash;
       } else {
-        // If inner changed...
-        outerSet(inner);
-        outer = inner; // Assign outer to inner so that it can be serialized for diffing...
+        outerSet(cloneIfObject(inner));
+        previousHash = JSON.stringify(inner);
       }
     }
-
-    // Re serialize values...
-    outerHash = JSON.stringify(outer);
+    JSON.stringify(innerGet());
+    JSON.stringify(outerGet());
   });
 
   return () => {
@@ -44,4 +36,8 @@ export const entangle = <T>(
 type Entangler<T> = {
   get: () => T;
   set: (value: T) => void;
+};
+
+const cloneIfObject = (value: unknown) => {
+  return typeof value === 'object' ? JSON.parse(JSON.stringify(value)) : value;
 };

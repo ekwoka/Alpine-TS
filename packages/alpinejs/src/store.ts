@@ -14,7 +14,7 @@ type StoreFn = {
 
 export const store: StoreFn = <T extends keyof Stores>(
   name: T,
-  value?: Stores[T]
+  value?: Stores[T],
 ) => {
   if (!isReactive) {
     stores = reactive(stores);
@@ -33,7 +33,7 @@ export const store: StoreFn = <T extends keyof Stores>(
 
 const isInitable = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any | { init(): void }
+  value: any | { init(): void },
 ): value is { init: () => void } => {
   return (
     typeof value === 'object' &&

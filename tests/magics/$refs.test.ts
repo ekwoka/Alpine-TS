@@ -9,7 +9,7 @@ describe('$refs', () => {
           <span x-ref="foo">Test</span>
           <span x-text="$refs.foo.textContent"></span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('Test');
     expect(cleanTextContent($('div').textContent)).toBe('Test Test');
@@ -21,7 +21,7 @@ describe('$refs', () => {
         <div x-data="{ foo() { this.$refs.fizz.textContent = 'buzz' } }">
           <span x-ref="fizz" @click="foo">bar</span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('bar');
     await click('span');
@@ -34,7 +34,7 @@ describe('$refs', () => {
         <div x-data>
           <span x-ref="fizz" @click="$refs.fizz.textContent = 'foo'">bar</span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('bar');
     await click('span');
@@ -47,7 +47,7 @@ describe('$refs', () => {
         <div x-data x-init="$refs.foo.textContent = 'bar'">
           <span x-ref="foo"></span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('bar');
   });
@@ -61,7 +61,7 @@ describe('$refs', () => {
             <span x-text="$refs.foo.textContent"></span>
           </div>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('bar bar');
   });
@@ -78,7 +78,7 @@ describe('$refs', () => {
             </div>
           </div>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('bar baz baz');
   });

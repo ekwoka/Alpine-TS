@@ -18,7 +18,7 @@ export const dontAutoEvaluateFunctions = (callback: () => void) => {
 export const evaluate = <T>(
   el: ElementWithXAttributes,
   expression: string | (() => T),
-  extras = {}
+  extras = {},
 ): T => {
   let result: T;
 
@@ -29,15 +29,15 @@ export const evaluate = <T>(
 
 export const evaluateLater = <T>(
   el: ElementWithXAttributes,
-  expression?: string | (() => T)
+  expression?: string | (() => T),
 ) => theEvaluatorFunction<T>(el, expression);
 
 type Evaluator = <T>(
   el: ElementWithXAttributes,
-  expression?: string | (() => T)
+  expression?: string | (() => T),
 ) => (
   callback?: (value: T) => void,
-  extras?: { scope?: object; params?: unknown[] }
+  extras?: { scope?: object; params?: unknown[] },
 ) => void;
 
 export const setEvaluator = (newEvaluator: Evaluator) => {
@@ -67,12 +67,12 @@ let theEvaluatorFunction: Evaluator = normalEvaluator;
 export const generateEvaluatorFromFunction =
   (
     dataStack: Record<string, unknown>[],
-    func: () => void
+    func: () => void,
   ): ReturnType<Evaluator> =>
   <T>(
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     receiver: (val: T) => void = () => {},
-    { scope = {}, params = [] } = {}
+    { scope = {}, params = [] } = {},
   ) => {
     const result = func.apply(mergeProxies([scope, ...dataStack]), params);
 
@@ -83,7 +83,7 @@ const evaluatorMemo: Record<string, AsyncEvaluator | Promise<void>> = {};
 
 type AsyncEvaluator = (
   status: { finished: boolean; result: unknown },
-  scope: unknown
+  scope: unknown,
 ) => Promise<unknown>;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -93,7 +93,7 @@ const AsyncFunction = (async () => {}).constructor as (
 
 const generateFunctionFromString = (
   expression: string,
-  el: ElementWithXAttributes
+  el: ElementWithXAttributes,
 ) => {
   if (evaluatorMemo[expression]) return evaluatorMemo[expression];
 
@@ -113,7 +113,7 @@ const generateFunctionFromString = (
       return AsyncFunction(
         'status',
         'scope',
-        `with (scope) { status.result = ${rightSideSafeExpression} }; status.finished = true; return status.result;`
+        `with (scope) { status.result = ${rightSideSafeExpression} }; status.finished = true; return status.result;`,
       );
     } catch (error) {
       handleError(error, el, expression);
@@ -130,7 +130,7 @@ const generateFunctionFromString = (
 const generateEvaluatorFromString = (
   dataStack: Record<string, unknown>[],
   expression: string,
-  el: ElementWithXAttributes
+  el: ElementWithXAttributes,
 ): ReturnType<Evaluator> => {
   const func = generateFunctionFromString(expression, el);
 
@@ -140,7 +140,7 @@ const generateEvaluatorFromString = (
     {
       scope = {},
       params = [],
-    }: { scope?: Record<string, unknown>; params?: unknown[] } = {}
+    }: { scope?: Record<string, unknown>; params?: unknown[] } = {},
   ) => {
     const status: {
       finished: boolean;
@@ -156,7 +156,7 @@ const generateEvaluatorFromString = (
 
     if (typeof func === 'function') {
       const promise = func(status, completeScope).catch((error) =>
-        handleError(error, el, expression)
+        handleError(error, el, expression),
       );
 
       // Check if the function ran synchronously,
@@ -185,7 +185,7 @@ export const runIfTypeOfFunction = <T>(
   receiver: (value: T) => unknown,
   value: T,
   scope?: Record<string, unknown>,
-  params?: unknown[]
+  params?: unknown[],
 ) => {
   if (!shouldAutoEvaluateFunctions || typeof value !== 'function')
     return receiver(value);

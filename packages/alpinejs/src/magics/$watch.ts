@@ -28,7 +28,7 @@ magic(
           }
 
           firstTime = false;
-        })
+        }),
       );
 
       // We want to remove this effect from the list of effects
@@ -36,7 +36,7 @@ magic(
       // "re-run" Alpine effects after a page load. A "watcher"
       // shuldn't be re-run like that. It will cause infinite loops.
       el._x_effects.delete(effectReference);
-    }
+    },
 );
 
 declare module '../magics' {
@@ -50,10 +50,10 @@ declare module '../magics' {
      */
     $watch: <
       K extends keyof T | string,
-      V extends K extends keyof T ? T[K] : unknown
+      V extends K extends keyof T ? T[K] : unknown,
     >(
       property: K,
-      callback: (newValue: V, oldValue: V) => void
+      callback: (newValue: V, oldValue: V) => void,
     ) => void;
   }
 }

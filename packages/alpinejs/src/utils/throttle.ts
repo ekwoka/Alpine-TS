@@ -1,6 +1,6 @@
 export const throttle = <T extends (...args: Parameters<T>) => void>(
   func: T,
-  limit = 400
+  limit = 400,
 ): T => {
   let throttled = false;
   return ((...args: Parameters<T>): void => {

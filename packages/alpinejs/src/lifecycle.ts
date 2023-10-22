@@ -15,7 +15,7 @@ import { warn } from './utils/warn';
 export const start = () => {
   if (!document.body)
     warn(
-      "Unable to initialize. Trying to load Alpine before `<body>` is available. Did you forget to add `defer` in Alpine's `<script>` tag?"
+      "Unable to initialize. Trying to load Alpine before `<body>` is available. Did you forget to add `defer` in Alpine's `<script>` tag?",
     );
 
   dispatch(document, 'alpine:init');
@@ -57,7 +57,7 @@ export const addInitSelector = (selectorCallback: () => string) =>
 
 export const closestRoot = (
   el: ElementWithXAttributes,
-  includeInitSelectors = false
+  includeInitSelectors = false,
 ) =>
   findClosest(el, (element) => {
     const selectors = includeInitSelectors ? allSelectors() : rootSelectors();
@@ -67,7 +67,7 @@ export const closestRoot = (
 
 export const findClosest = (
   el: ElementWithXAttributes,
-  callback: (el: ElementWithXAttributes) => boolean
+  callback: (el: ElementWithXAttributes) => boolean,
 ): ElementWithXAttributes | null => {
   if (!el) return;
 
@@ -93,7 +93,7 @@ export const interceptInit = (callback: WalkerCallback) => {
 export const initTree = (
   el: ElementWithXAttributes,
   walker = walk,
-  intercept?: WalkerCallback
+  intercept?: WalkerCallback,
 ) => {
   deferHandlingDirectives(() => {
     walker(el, (el, skip) => {

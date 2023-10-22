@@ -9,7 +9,7 @@ describe('x-on', () => {
         <div x-data="{ foo: 'bar' }">
             <button @click="foo = 'buzz'"></button>
         </div>
-      `
+      `,
     );
     expect(getData(null, 'foo')).toBe('bar');
     await click('button');
@@ -22,7 +22,7 @@ describe('x-on', () => {
         <div x-data="{ foo: 'bar', updateFoo() { this.foo = 'buzz' } }">
             <button @click="updateFoo"></button>
         </div>
-      `
+      `,
     );
     expect(getData(null, 'foo')).toBe('bar');
     await click('button');
@@ -35,7 +35,7 @@ describe('x-on', () => {
         <div x-data="{ foo: 'bar', updateText(e) { this.foo = e.currentTarget.dataset.text } }">
             <button @click="updateText" data-text="buzz"></button>
         </div>
-      `
+      `,
     );
     expect(getData(null, 'foo')).toBe('bar');
     await click('button');
@@ -48,7 +48,7 @@ describe('x-on', () => {
         <div x-data="{ foo: 'bar' }">
             <button @click="foo = $event.currentTarget.dataset.text" data-text="buzz"></button>
         </div>
-      `
+      `,
     );
     expect(getData(null, 'foo')).toBe('bar');
     await click('button');
@@ -61,7 +61,7 @@ describe('x-on', () => {
         <div x-data="{ foo: 'bar', updateWithPrefix(str) { return function(e) { this.foo = str + e.currentTarget.dataset.text } } }">
             <button @click="updateWithPrefix('fizz')" data-text="buzz"></button>
         </div>
-      `
+      `,
     );
     expect(getData(null, 'foo')).toBe('bar');
     await click('button');
@@ -75,7 +75,7 @@ describe('x-on', () => {
             <button @click="nested.foo = 'buzz'"></button>
             <span x-text="nested.foo"></span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('bar');
     await click('button');
@@ -90,7 +90,7 @@ describe('x-on', () => {
             <button id="show" @click="show = true"></button>
             <span x-show="show" x-text="foo"></span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('');
     await click('button#foo');
@@ -108,7 +108,7 @@ describe('x-on', () => {
             <div @click.window="count++" x-ref="rm"></div>
             <button @click="$refs.rm.remove()" x-text="count.toString()"></button>
         </div>
-      `
+      `,
     );
     expect($('button').textContent).toBe('0');
     await click('div');
@@ -126,7 +126,7 @@ describe('x-on', () => {
           <button @click="let value = 'new string'; text = await Promise.resolve(value)"></button>
           <span x-text="text"></span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('original');
     await click('button');
@@ -141,7 +141,7 @@ describe('x-on modifiers', () => {
         <div x-data="{ prevented: null }">
             <button @click.prevent="prevented = $event.defaultPrevented" x-text="prevented"></button>
         </div>
-      `
+      `,
     );
     expect(getData(null, 'prevented')).toBe(null);
     await click('button');
@@ -154,7 +154,7 @@ describe('x-on modifiers', () => {
         <div x-data="{ prevented: null }">
             <button @click.passive="$event.preventDefault(); prevented = $event.defaultPrevented"></button>
         </div>
-      `
+      `,
     );
     expect(getData(null, 'prevented')).toBe(null);
     await click('button');
@@ -167,7 +167,7 @@ describe('x-on modifiers', () => {
         <div x-data="{ stopped: null }">
             <button @click.stop="stopped = $event.cancelBubble;"></button>
         </div>
-      `
+      `,
     );
     expect(getData(null, 'stopped')).toBe(null);
     await click('button');
@@ -180,7 +180,7 @@ describe('x-on modifiers', () => {
         <div x-data="{ captured: null }">
             <button @click.capture="captured = $event.eventPhase"></button>
         </div>
-      `
+      `,
     );
     expect(getData(null, 'captured')).toBe(null);
     await click('button');
@@ -193,7 +193,7 @@ describe('x-on modifiers', () => {
         <div x-data="{ self: null }">
             <button @click.self="self = true"><span @click="self = false"></span></button>
         </div>
-      `
+      `,
     );
     expect(getData(null, 'self')).toBe(null);
     await click('span');
@@ -208,7 +208,7 @@ describe('x-on modifiers', () => {
         <div x-data="{ window: null }">
             <button @click.window="window = true"></button>
         </div>
-      `
+      `,
     );
     expect(getData(null, 'window')).toBe(null);
     await click('div');
@@ -221,7 +221,7 @@ describe('x-on modifiers', () => {
         <div x-data="{ document: null }">
             <button @click.document="document = true"></button>
         </div>
-      `
+      `,
     );
     expect(getData(null, 'document')).toBe(null);
     await click('div');
@@ -234,7 +234,7 @@ describe('x-on modifiers', () => {
         <div x-data="{ once: 0 }">
             <button @click.once="once++"></button>
         </div>
-      `
+      `,
     );
     expect(getData(null, 'once')).toBe(0);
     await click('button');
@@ -250,7 +250,7 @@ describe('x-on modifiers', () => {
             <button @click.debounce="debounced++"></button>
             <span x-text="debounced.toString()"></span>
         </div>
-      `
+      `,
     );
     expect($('[x-text]').textContent).toBe('0');
     await click('button');
@@ -268,7 +268,7 @@ describe('x-on modifiers', () => {
             <button @click.throttle="throttled++"></button>
             <span x-text="throttled.toString()"></span>
         </div>
-      `
+      `,
     );
     expect($('[x-text]').textContent).toBe('0');
     await click('button');
@@ -291,7 +291,7 @@ describe('@keydown / @keyup modifiers', () => {
           <input @keyup.once="count++">
           <span x-text="count.toString()"></span>
         </div>
-      `
+      `,
     );
     expect($('[x-text]').textContent).toBe('0');
     $('input').dispatchEvent(new Event('keyup'));
@@ -309,21 +309,21 @@ describe('@keydown / @keyup modifiers', () => {
           <input @keyup.enter.once="count++">
           <span x-text="count.toString()"></span>
         </div>
-      `
+      `,
     );
     expect($('[x-text]').textContent).toBe('0');
     $('input').dispatchEvent(
-      new KeyboardEvent('keyup', { key: 'a' }) as unknown as Event
+      new KeyboardEvent('keyup', { key: 'a' }) as unknown as Event,
     );
     await happyDOM.whenAsyncComplete();
     expect($('span').textContent).toBe('0');
     $('input').dispatchEvent(
-      new KeyboardEvent('keyup', { key: 'Enter' }) as unknown as Event
+      new KeyboardEvent('keyup', { key: 'Enter' }) as unknown as Event,
     );
     await happyDOM.whenAsyncComplete();
     expect($('span').textContent).toBe('1');
     $('input').dispatchEvent(
-      new KeyboardEvent('keyup', { key: 'Enter' }) as unknown as Event
+      new KeyboardEvent('keyup', { key: 'Enter' }) as unknown as Event,
     );
     await happyDOM.whenAsyncComplete();
     expect($('span').textContent).toBe('1');
@@ -352,7 +352,7 @@ describe('@keydown / @keyup modifiers', () => {
           >
           <span x-text="count.toString()"></span>
         </div>
-      `
+      `,
     );
     expect($('[x-text]').textContent).toBe('0');
     await keydown('input', 'f');
@@ -392,7 +392,7 @@ describe('@keydown / @keyup modifiers', () => {
             <input id="underscore" type="text" x-on:keydown._="count++" />
             <span x-text="count.toString()"></span>
         </div>
-      `
+      `,
     );
     expect($('[x-text]').textContent).toBe('0');
     await keydown('#space', ' ');
@@ -416,7 +416,7 @@ describe('@keydown / @keyup modifiers', () => {
             <input type="text" x-on:keydown.space="count++" x-on:keydown.space.ctrl="count++" />
             <span x-text="count.toString()"></span>
         </div>
-      `
+      `,
     );
     expect($('[x-text]').textContent).toBe('0');
     await keydown('input', ' ');
@@ -434,7 +434,7 @@ describe('@keydown / @keyup modifiers', () => {
             </section>
             <span x-text="count.toString()"></span>
         </div>
-      `
+      `,
     );
     expect($('[x-text]').textContent).toBe('0');
     await keydown('input', 'g');
@@ -452,7 +452,7 @@ describe('@click modifiers', () => {
           <button @click.outside="count++" @click="count--"></button>
           <span x-text="count.toString()"></span>
         </div>
-      `
+      `,
     );
     expect($('[x-text]').textContent).toBe('1');
     await click('button');
@@ -468,7 +468,7 @@ describe('@click modifiers', () => {
           <button @click="show = true"></button>
           <span x-show="show" @click.outside="show = false"></span>
         </div>
-      `
+      `,
     );
     expect($('span').style.display).toBe('none');
     await click('button');
@@ -486,7 +486,7 @@ describe('@window / @document modifiers', () => {
           <button></button>
           <span x-text="count.toString()"></span>
         </div>
-      `
+      `,
     );
     expect($('[x-text]').textContent).toBe('0');
     await click('button');
@@ -500,7 +500,7 @@ describe('@window / @document modifiers', () => {
           <button></button>
           <span x-text="count.toString()"></span>
         </div>
-      `
+      `,
     );
     expect($('[x-text]').textContent).toBe('0');
     await click('button');
@@ -516,7 +516,7 @@ describe('event name behaviors', () => {
           <button @click="$dispatch('custom-event')"></button>
           <span x-text="count.toString()"></span>
         </div>
-      `
+      `,
     );
     expect($('[x-text]').textContent).toBe('0');
     await click('button');
@@ -530,7 +530,7 @@ describe('event name behaviors', () => {
           <button @click="$dispatch('custom:event')"></button>
           <span x-text="count.toString()"></span>
         </div>
-      `
+      `,
     );
     expect($('[x-text]').textContent).toBe('0');
     await click('button');
@@ -544,7 +544,7 @@ describe('event name behaviors', () => {
           <button @click="$dispatch('custom_event')"></button>
           <span x-text="count.toString()"></span>
         </div>
-      `
+      `,
     );
     expect($('[x-text]').textContent).toBe('0');
     await click('button');
@@ -559,7 +559,7 @@ describe('event name behaviors', () => {
             <button @click="$dispatch('customEvent')"></button>
             <span x-text="count.toString()"></span>
           </div>
-        `
+        `,
       );
       expect($('[x-text]').textContent).toBe('0');
       await click('button');
@@ -573,7 +573,7 @@ describe('event name behaviors', () => {
             <button @click="$dispatch('custom:camelEvent')"></button>
             <span x-text="count.toString()"></span>
           </div>
-        `
+        `,
       );
       expect($('[x-text]').textContent).toBe('0');
       await click('button');
@@ -589,7 +589,7 @@ describe('event name behaviors', () => {
             <button @click="$dispatch('custom.event')"></button>
             <span x-text="count.toString()"></span>
           </div>
-        `
+        `,
       );
       expect($('[x-text]').textContent).toBe('0');
       await click('button');
@@ -603,7 +603,7 @@ describe('event name behaviors', () => {
             <button @click="$dispatch('custom:dot.event')"></button>
             <span x-text="count.toString()"></span>
           </div>
-        `
+        `,
       );
       expect($('[x-text]').textContent).toBe('0');
       await click('button');

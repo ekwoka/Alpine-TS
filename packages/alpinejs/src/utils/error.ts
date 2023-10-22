@@ -16,7 +16,7 @@ export const tryCatch = <T extends (...args: Parameters<T>) => ReturnType<T>>(
 export const handleError = (
   error: Error,
   el: ElementWithXAttributes,
-  expression: string = undefined
+  expression: string = undefined,
 ) => {
   Object.assign(error, { el, expression });
 
@@ -24,7 +24,7 @@ export const handleError = (
     `Alpine Expression Error: ${error.message}\n\n${
       expression ? 'Expression: "' + expression + '"\n\n' : ''
     }`,
-    el
+    el,
   );
 
   setTimeout(() => {

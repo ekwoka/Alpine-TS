@@ -20,7 +20,7 @@ describe('x-bind:object', () => {
       <div x-data="x">
         <button x-bind="bindings"></button>
       </div>
-    `
+    `,
     );
     expect($('button').textContent).toBe('bar');
     await click('button');
@@ -33,7 +33,7 @@ describe('x-bind:object', () => {
         <div x-data>
           <button x-bind="{ 'x-bind:bob'() { return 'lob'; }, foo: 'bar', 'x-bind:bab'() { return 'lab' } }"></button>
         </div>
-      `
+      `,
     );
     expect($('button').getAttribute('foo')).toBe('bar');
     expect($('button').getAttribute('bob')).toBe('lob');
@@ -58,7 +58,7 @@ describe('x-bind:object', () => {
           <span x-text="foo.text"></span>
         </template>
       </div>
-    `
+    `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('foobar');
   });
@@ -81,19 +81,19 @@ describe('x-bind:object', () => {
       <div x-data="x">
         <button x-bind="bindingString"></button>
       </div>
-    `
+    `,
     );
     expect(
-      window.getComputedStyle($('button') as unknown as IElement).display
+      window.getComputedStyle($('button') as unknown as IElement).display,
     ).toBe('inline-block');
     click('button');
     await new Promise((res) => setTimeout(res, 200));
     expect(
-      window.getComputedStyle($('button') as unknown as IElement).display
+      window.getComputedStyle($('button') as unknown as IElement).display,
     ).toBe('inline-block');
     await new Promise((res) => setTimeout(res, 400));
     expect(
-      window.getComputedStyle($('button') as unknown as IElement).display
+      window.getComputedStyle($('button') as unknown as IElement).display,
     ).toBe('none');
   });
   it('provides element bound magics to bound event handlers', async () => {
@@ -114,7 +114,7 @@ describe('x-bind:object', () => {
       <div x-data="x">
         <button x-bind="bindings" id="baz"></button>
       </div>
-    `
+    `,
     );
     expect($('button').textContent).toBe('bar');
     await click('button');
@@ -138,7 +138,7 @@ describe('x-bind:object', () => {
       <div x-data="x">
         <button x-bind="bindings" id="baz"></button>
       </div>
-    `
+    `,
     );
     expect($('button').textContent).toBe('bar');
     await click('button');

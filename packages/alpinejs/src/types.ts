@@ -44,7 +44,7 @@ export interface XAttributes {
     el: ElementWithXAttributes,
     val: boolean,
     show: () => void,
-    hide: () => void
+    hide: () => void,
   ) => void;
   _x_teleport: ElementWithXAttributes;
   _x_transition: Partial<Transitions>;
@@ -87,7 +87,7 @@ export type MutationCallback = (node?: ElementWithXAttributes) => void;
 
 export type AttrMutationCallback = (
   el: ElementWithXAttributes,
-  attrs: { name: string; value: string }[]
+  attrs: { name: string; value: string }[],
 ) => void;
 
 export type Utilities = {
@@ -98,7 +98,7 @@ export type Utilities = {
   evaluate: <T>(
     expression: string | (() => T),
     extras?: Record<string, unknown>,
-    _?: boolean
+    _?: boolean,
   ) => ReturnType<typeof evaluate<T>>;
 };
 
@@ -118,11 +118,11 @@ export type DirectiveCallback = {
   (
     el: ElementWithXAttributes,
     directive: DirectiveData,
-    utilities: Utilities
+    utilities: Utilities,
   ): void;
   inline?: (
     el: ElementWithXAttributes,
     directive: DirectiveData,
-    utilities: Utilities
+    utilities: Utilities,
   ) => void;
 };

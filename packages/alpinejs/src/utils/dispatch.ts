@@ -3,7 +3,7 @@ import { ElementWithXAttributes } from '../types';
 export const dispatch = (
   el: ElementWithXAttributes | Window | Document,
   name: string,
-  detail = {}
+  detail = {},
 ) =>
   el.dispatchEvent(
     new CustomEvent(name, {
@@ -12,5 +12,5 @@ export const dispatch = (
       // Allows events to pass the shadow DOM barrier.
       composed: true,
       cancelable: true,
-    })
+    }),
   );

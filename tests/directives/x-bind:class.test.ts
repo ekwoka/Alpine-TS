@@ -11,7 +11,7 @@ describe('x-bind:class', () => {
 
           <button @click="isOn = ! isOn">button</button>
         </div>
-      `
+      `,
     );
     expect($('span').classList.contains('foo')).toBe(true);
     expect($('span').classList.contains('bar')).toBe(false);
@@ -26,7 +26,7 @@ describe('x-bind:class', () => {
         <div x-data="{ initialClass: 'foo' }">
           <span x-bind:class="initialClass"></span>
         </div>
-      `
+      `,
     );
     expect($('span').classList.contains('foo')).toBe(true);
   });
@@ -37,7 +37,7 @@ describe('x-bind:class', () => {
         <div x-data="{ initialClass: 'foo' }">
           <span x-bind:class="[initialClass, 'bar']"></span>
         </div>
-      `
+      `,
     );
     expect($('span').classList.contains('foo')).toBe(true);
     expect($('span').classList.contains('bar')).toBe(true);
@@ -55,7 +55,7 @@ describe('x-bind:class', () => {
             }"></span>
           <button @click="mode = (mode + 1) % 3">button</button>
         </div>
-      `
+      `,
     );
     expect($('span').classList.contains('foo')).toBe(true);
     expect($('span').classList.contains('baz')).toBe(true);
@@ -83,7 +83,7 @@ describe('x-bind:class', () => {
           <span class="text-red" :class="isOpen ? 'block' : 'hidden'"> Span </span>
           <button @click="isOpen = !isOpen">Toggle</button>
         </div>
-      `
+      `,
     );
     expect($('span').classList.contains('text-red')).toBe(true);
     expect($('span').classList.contains('block')).toBe(true);
@@ -100,7 +100,7 @@ describe('x-bind:class', () => {
         <div x-data>
           <span x-bind:class="'  foo  bar  '"></span>
         </div>
-      `
+      `,
     );
     expect($('span').classList.contains('foo')).toBe(true);
     expect($('span').classList.contains('bar')).toBe(true);
@@ -114,7 +114,7 @@ describe('x-bind:class', () => {
           <span id="error" x-bind:class="errorClass(true)">should be red</span>
           <span id="empty" x-bind:class="errorClass(false)">should be empty</span>
         </div>
-      `
+      `,
     );
     expect($('#error').classList.contains('red')).toBe(true);
     expect($('#empty').classList.contains('red')).toBe(false);

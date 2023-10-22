@@ -18,7 +18,7 @@ directive(
     (
       el: ElementWithXAttributes,
       { value, modifiers, expression },
-      { cleanup }
+      { cleanup },
     ) => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       const evaluate = expression ? evaluateLater(el, expression) : () => {};
@@ -36,6 +36,6 @@ directive(
       });
 
       cleanup(() => removeListener());
-    }
-  )
+    },
+  ),
 );

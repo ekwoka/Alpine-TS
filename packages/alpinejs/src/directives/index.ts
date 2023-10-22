@@ -24,13 +24,13 @@ import './x-transition';
 const warnMissingPluginDirective = (
   name: string,
   directiveName: string,
-  slug: string
+  slug: string,
 ) =>
   directive(directiveName, (el) =>
     warn(
       `You can't use [x-${directiveName}] without first installing the "${name}" plugin here: https://alpinejs.dev/plugins/${slug}`,
-      el
-    )
+      el,
+    ),
   );
 
 warnMissingPluginDirective('Collapse', 'collapse', 'collapse');

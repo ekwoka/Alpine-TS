@@ -13,7 +13,7 @@ const magics: Record<string, MagicFn> = {};
 
 type MagicFn = (
   el: ElementWithXAttributes,
-  options: MagicUtilities
+  options: MagicUtilities,
 ) => MaybeFunction<unknown>;
 
 export const magic = (name: string, callback: MagicFn) => {
@@ -22,7 +22,7 @@ export const magic = (name: string, callback: MagicFn) => {
 
 export const injectMagics = (
   obj: Record<string, unknown>,
-  el: ElementWithXAttributes
+  el: ElementWithXAttributes,
 ) => {
   let memoizedUtilities = null;
   Object.entries(magics).forEach(([name, callback]) =>
@@ -30,10 +30,10 @@ export const injectMagics = (
       get: () =>
         callback(
           el,
-          memoizedUtilities ?? (memoizedUtilities = getUtilities(el))
+          memoizedUtilities ?? (memoizedUtilities = getUtilities(el)),
         ),
       enumerable: false,
-    })
+    }),
   );
 
   return obj;

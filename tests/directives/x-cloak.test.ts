@@ -8,7 +8,7 @@ describe('x-cloak', () => {
       <div x-data="{ foo: 'bar' }" x-cloak>
         <span x-text="foo"></span>
       </div>
-    `
+    `,
     );
     expect($('div').getAttribute('x-cloak')).toBeNull();
   });

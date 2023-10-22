@@ -10,7 +10,7 @@ export const bind = (
   el: ElementWithXAttributes,
   name: string,
   value: unknown,
-  modifiers: string[] = []
+  modifiers: string[] = [],
 ) => {
   // Register bound data as pure observable data for other APIs to use.
   if (!el._x_bindings) el._x_bindings = reactive({});
@@ -23,7 +23,7 @@ export const bind = (
     case 'value':
       bindInputValue(
         el as ElementWithXAttributes & HTMLInputElement,
-        value as string
+        value as string,
       );
       break;
 
@@ -51,7 +51,7 @@ export const bind = (
 
 const bindInputValue = (
   el: ElementWithXAttributes & HTMLInputElement,
-  value: string
+  value: string,
 ) => {
   if (el.type === 'radio') {
     // Set radio value from x-bind:value, if no "value" attribute exists.
@@ -74,7 +74,7 @@ const bindInputValue = (
 
     if (Array.isArray(value))
       return (el.checked = value.some((val) =>
-        checkedAttrLooseCompare(val, el.value)
+        checkedAttrLooseCompare(val, el.value),
       ));
     if (typeof value !== 'boolean' && ![null, undefined].includes(value))
       return (el.value = String(value));
@@ -94,7 +94,7 @@ const bindClasses = (
     | string
     | boolean
     | Record<string, boolean>
-    | (() => string | boolean | Record<string, boolean>)
+    | (() => string | boolean | Record<string, boolean>),
 ) => {
   if (el._x_undoAddedClasses) el._x_undoAddedClasses();
 
@@ -103,7 +103,7 @@ const bindClasses = (
 
 const bindStyles = (
   el: ElementWithXAttributes,
-  value: string | Record<string, string>
+  value: string | Record<string, string>,
 ) => {
   if (el._x_undoAddedStyles) el._x_undoAddedStyles();
 
@@ -113,7 +113,7 @@ const bindStyles = (
 const bindAttributeAndProperty = (
   el: ElementWithXAttributes,
   name: string,
-  value: string | boolean
+  value: string | boolean,
 ) => {
   bindAttribute(el, name, value);
   setPropertyIfChanged(el, name, value);
@@ -122,7 +122,7 @@ const bindAttributeAndProperty = (
 const bindAttribute = (
   el: ElementWithXAttributes,
   name: string,
-  value: string | boolean
+  value: string | boolean,
 ) => {
   if (
     [null, undefined, false].includes(value as boolean) &&
@@ -137,13 +137,13 @@ const bindAttribute = (
 const setIfChanged = (
   el: ElementWithXAttributes,
   attrName: string,
-  value: string
+  value: string,
 ) => el.getAttribute(attrName) != value && el.setAttribute(attrName, value);
 
 const setPropertyIfChanged = (
   el: ElementWithXAttributes,
   propName: string,
-  value: unknown
+  value: unknown,
 ) => {
   if (el[propName] !== value) {
     el[propName] = value;
@@ -152,12 +152,12 @@ const setPropertyIfChanged = (
 
 const updateSelect = (
   el: ElementWithXAttributes,
-  value: string | boolean | string[]
+  value: string | boolean | string[],
 ) => {
   const arrayWrappedValue = [].concat(value).map(String);
 
   Array.from((el as unknown as HTMLSelectElement).options).forEach(
-    (option) => (option.selected = arrayWrappedValue.includes(option.value))
+    (option) => (option.selected = arrayWrappedValue.includes(option.value)),
   );
 };
 
@@ -199,13 +199,13 @@ const isBooleanAttr = (attrName: string) =>
 
 const attributeShouldntBePreservedIfFalsy = (name: string) =>
   !['aria-pressed', 'aria-checked', 'aria-expanded', 'aria-selected'].includes(
-    name
+    name,
   );
 
 export const getBinding = (
   el: ElementWithXAttributes,
   name: string,
-  fallback?: unknown
+  fallback?: unknown,
 ): unknown => {
   // First let's get it out of Alpine bound data.
   if (el._x_bindings?.[name] !== undefined) return el._x_bindings[name];
@@ -229,7 +229,7 @@ export const extractProp = <T extends string | boolean>(
   el: ElementWithXAttributes,
   name: string,
   fallback: (() => T) | T,
-  extract = true
+  extract = true,
 ) => {
   // First let's get it out of Alpine bound data.
   if (el._x_bindings && el._x_bindings[name] !== undefined)
@@ -251,7 +251,7 @@ export const extractProp = <T extends string | boolean>(
 export const getAttributeBinding = <T extends string | boolean>(
   el: ElementWithXAttributes,
   name: string,
-  fallback: (() => T) | T
+  fallback: (() => T) | T,
 ): T => {
   // If not, we'll return the literal attribute.
   const attr = el.getAttribute(name);

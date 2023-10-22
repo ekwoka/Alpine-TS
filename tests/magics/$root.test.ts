@@ -8,7 +8,7 @@ describe('$root', () => {
         <div x-data data-foo="bar">
           <span x-text="$root.dataset.foo"></span>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('bar');
   });

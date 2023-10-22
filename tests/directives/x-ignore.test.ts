@@ -10,7 +10,7 @@ describe('x-ignore', () => {
                 <span x-text="foo"></span>
             </div>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('');
   });
@@ -23,7 +23,7 @@ describe('x-ignore', () => {
               <span x-text="foo"></span>
             </div>
         </div>
-      `
+      `,
     );
     expect($('span').textContent).toBe('bar');
   });

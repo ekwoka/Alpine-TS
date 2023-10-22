@@ -26,7 +26,7 @@ describe('x-for', () => {
           </button>
           <button id="replace" @click="items = ['fizz', 'buzz', 'qux']"></button>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('foo bar baz');
     await click('#push');
@@ -66,7 +66,7 @@ describe('x-for', () => {
             </template>
           </div>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('#one').textContent)).toBe('foo bar baz');
     expect(cleanTextContent($('#two').textContent)).toBe('foo bar baz');
@@ -87,7 +87,7 @@ describe('x-for', () => {
           <button id="remove" @click="items.pop()">
           </button>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('foo bar baz');
     await click('#remove');
@@ -113,7 +113,7 @@ describe('x-for', () => {
           <button id="replace" @click="items = []">
           </button>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('foo bar baz');
     await click('#replace');
@@ -135,7 +135,7 @@ describe('x-for', () => {
           </template>
           <button id="foo" @click="foo = 'baz'"></button>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('foobar barbar bazbar');
     await click('#foo');
@@ -153,7 +153,7 @@ describe('x-for', () => {
                 </div>
             </template>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('span').textContent)).toBe('bar');
     await click('button');
@@ -173,7 +173,7 @@ describe('x-for', () => {
                 </ul>
             </template>
         </div>
-    `
+    `,
     );
     expect(cleanTextContent($('span').textContent)).toBe('bar');
     await click('button');
@@ -194,7 +194,7 @@ describe('x-for', () => {
             </div>
           </template>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('0 0 1 1 2 2');
   });
@@ -212,7 +212,7 @@ describe('x-for', () => {
             </div>
           </template>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('true');
   });
@@ -233,7 +233,7 @@ describe('x-for', () => {
           </template>
           <h1 x-text="selected"></h1>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('h1').textContent)).toBe('');
     await click('#select');
@@ -261,7 +261,7 @@ describe('x-for', () => {
             </div>
           </template>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('foobar fizzbuzz');
   });
@@ -283,10 +283,10 @@ describe('x-for', () => {
             </div>
           </template>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe(
-      'foo.foo foo.bar foo.baz bar.foo bar.bar bar.baz baz.foo baz.bar baz.baz'
+      'foo.foo foo.bar foo.baz bar.foo bar.bar bar.baz baz.foo baz.bar baz.baz',
     );
   });
   it('segregates sibling loops', async () => {
@@ -310,14 +310,14 @@ describe('x-for', () => {
           </template>
           <button @click="otherItems.reverse(); items = ['fizz', 'buzz']">
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe(
-      'foo bar baz fizz buzz bar'
+      'foo bar baz fizz buzz bar',
     );
     await click('button');
     expect(cleanTextContent($('div').textContent)).toBe(
-      'fizz buzz bar buzz fizz'
+      'fizz buzz bar buzz fizz',
     );
   });
   it('can loop over range', async () => {
@@ -331,7 +331,7 @@ describe('x-for', () => {
             </div>
           </template>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('1 2 3 4 5 6 7 8 9 10');
   });
@@ -347,7 +347,7 @@ describe('x-for', () => {
           </template>
           <button @click="items = [2]"></button>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('');
     await click('button');
@@ -369,10 +369,10 @@ describe('x-for', () => {
             </div>
           </template>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe(
-      'a b c gravity taxes stupidity'
+      'a b c gravity taxes stupidity',
     );
   });
   it('can directly accept x-if as a child', async () => {
@@ -389,7 +389,7 @@ describe('x-for', () => {
           </template>
           <button @click="items.push(items.shift())"></button>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('bar baz');
     await click('button');
@@ -412,7 +412,7 @@ describe('x-for', () => {
           <button @click="items = []">
           </button>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('Tony');
     await click('button');
@@ -434,7 +434,7 @@ describe('x-for', () => {
           <button @click="items = []">
           </button>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('Tony');
     await click('button');
@@ -455,7 +455,7 @@ describe('x-for', () => {
             </div>
           </template>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('#item-1').textContent)).toBe('0: 1');
     expect(cleanTextContent($('#item-2').textContent)).toBe('1: 2');
@@ -524,7 +524,7 @@ describe('expression parser', () => {
             </div>
           </template>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('foo: bar fizz: buzz');
   });
@@ -552,7 +552,7 @@ describe('expression parser', () => {
             </div>
           </template>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('foo: bar fizz: buzz');
   });
@@ -580,7 +580,7 @@ describe('expression parser', () => {
             </div>
           </template>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('foo: bar fizz: buzz');
   });
@@ -596,7 +596,7 @@ describe('expression parser', () => {
             </div>
           </template>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('foo: bar fizz: buzz');
   });
@@ -620,7 +620,7 @@ describe(':key', () => {
           <button @click="items.reverse()">
           </button>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('0 1 2');
     await click('button');
@@ -643,7 +643,7 @@ describe(':key', () => {
           <button @click="items.reverse()">
           </button>
         </div>
-      `
+      `,
     );
     expect(cleanTextContent($('div').textContent)).toBe('0 1 2');
     await click('button');
