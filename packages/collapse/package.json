@@ -28,5 +28,11 @@
     "lint:types": "tsc --noEmit",
     "prebuild": "rm -rf dist",
     "test": "vitest"
+  },
+  "peerDependencies": {
+    "alpinets": "*"
+  },
+  "devDependencies": {
+    "alpinets": "workspace:*"
   }
 }
