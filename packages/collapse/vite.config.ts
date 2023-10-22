@@ -43,5 +43,6 @@ export default defineConfig({
     reporters: ['dot'],
     deps: {},
     useAtomics: true,
+    passWithNoTests: true,
   },
 });
