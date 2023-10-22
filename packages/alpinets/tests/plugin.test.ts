@@ -1,4 +1,4 @@
-import { Alpine } from '../packages/alpinets/src/alpine';
+import { Alpine } from '../src/alpine';
 import { render } from './utils';
 
 describe('Alpine.plugin', () => {

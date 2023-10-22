@@ -1,5 +1,5 @@
-import { collapse } from '../../packages/collapse/src';
-import { render, sleep } from '../utils';
+import { render, sleep } from '../../../test-utils';
+import { collapse } from '../src';
 import { IElement } from 'happy-dom';
 
 describe('Collapse Plugin', () => {

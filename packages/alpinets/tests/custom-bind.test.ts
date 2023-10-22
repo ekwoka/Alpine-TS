@@ -1,4 +1,4 @@
-import { ElementWithXAttributes } from '../packages/alpinets/src/types';
+import { ElementWithXAttributes } from '../src/types';
 import { render } from './utils';
 import { describe, expect, it } from 'vitest';
 

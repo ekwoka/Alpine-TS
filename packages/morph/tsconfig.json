@@ -1,6 +1,5 @@
 {
   "include": ["src/**/*.js", "src/index.ts", "src/morph.ts"],
-  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"],
   "compilerOptions": {
     "types": ["vitest/importMeta", "vitest/globals"],
     "paths": {
