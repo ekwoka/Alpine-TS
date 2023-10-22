@@ -1,5 +1,5 @@
-import { collapse } from '../../packages/collapse/src';
-import { render, sleep } from '../utils';
+import { render, sleep } from '../../../test-utils';
+import { collapse } from '../src';
 import { IElement } from 'happy-dom';
 
 describe('Collapse Plugin', () => {
@@ -32,7 +32,7 @@ describe('Collapse Plugin', () => {
     await sleep(500);
     expect(getComputedStyle($('h1') as unknown as IElement).height).toBe('0px');
     expect($('h1').getAttribute('style')).toBe(
-      'display: none; height: 0px; overflow: hidden;',
+      'height: 0px; overflow: hidden; display: none;',
     );
   });
 

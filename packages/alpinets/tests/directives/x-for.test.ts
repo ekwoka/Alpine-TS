@@ -1,7 +1,7 @@
 import {
   IteratorNames,
   parseForExpression,
-} from '../../packages/alpinejs/src/utils/parseForExpression';
+} from '../../src/utils/parseForExpression';
 import { cleanTextContent, render } from '../utils';
 
 describe('x-for', () => {

@@ -1,5 +1,4 @@
-import { render } from './utils';
-import { noop } from './utils/noop';
+import { noop, render } from './utils';
 import { describe, expect, it } from 'vitest';
 
 describe('Mutations', () => {

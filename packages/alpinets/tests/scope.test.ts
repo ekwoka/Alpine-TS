@@ -1,4 +1,4 @@
-import { mergeProxies } from '@/alpinejs/scope';
+import { mergeProxies } from '../src/scope';
 
 describe('mergeProxies', () => {
   it('allows getting keys from object list', () => {

@@ -1,5 +1,5 @@
-import AlpineT from '../packages/alpinejs/src';
-import { render } from './utils/render';
+import AlpineT from '..//src';
+import { render } from './utils';
 import { describe, expect, it } from 'vitest';
 
 describe('Custom Data Providers', () => {

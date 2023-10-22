@@ -1,5 +1,5 @@
-import { morphPlugin } from '../../packages/morph/src';
-import { render } from '../utils';
+import { render } from '../../../test-utils';
+import { morphPlugin } from '../src';
 import { HTMLInputElement } from 'happy-dom';
 
 describe('Morph Plugin', () => {

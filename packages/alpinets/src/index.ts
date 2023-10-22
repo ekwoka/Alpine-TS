@@ -77,3 +77,5 @@ export type { Stores } from './store';
 export type { AlpineComponent } from './data';
 export type { PluginCallback } from './plugin';
 export type { DirectiveCallback } from './types';
+export type { Magics } from './magics';
+export type { ElementWithXAttributes } from './types';

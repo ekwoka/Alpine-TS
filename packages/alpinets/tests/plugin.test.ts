@@ -1,5 +1,5 @@
+import { Alpine } from '../src/alpine';
 import { render } from './utils';
-import { Alpine } from '@/alpinejs/alpine';
 
 describe('Alpine.plugin', () => {
   let Alpine: Alpine;

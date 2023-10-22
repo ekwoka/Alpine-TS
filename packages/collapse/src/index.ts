@@ -17,11 +17,16 @@ export const collapse: PluginCallback = (Alpine) => {
 
     // Override the setStyles function with one that won't
     // revert updates to the height style.
-    const setFunction = (el, styles) => {
+    const setFunction = (
+      el: HTMLElement,
+      styles: string | Partial<CSSStyleDeclaration>,
+    ) => {
       const revertFunction = Alpine.setStyles(el, styles);
 
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      return styles.height ? () => {} : revertFunction;
+      return typeof styles !== 'string' && styles.height
+        ? () => {}
+        : revertFunction;
     };
 
     const transitionStyles = {
@@ -33,7 +38,7 @@ export const collapse: PluginCallback = (Alpine) => {
     el._x_transition = {
       in() {
         if (fullyHide) el.hidden = false;
-        if (fullyHide) el.style.display = null;
+        if (fullyHide) el.style.removeProperty('display');
 
         let current = el.getBoundingClientRect().height;
 
@@ -56,7 +61,7 @@ export const collapse: PluginCallback = (Alpine) => {
           () => (el._x_isShown = true),
           () => {
             if (el.getBoundingClientRect().height == full) {
-              el.style.overflow = null;
+              el.style.removeProperty('overflow');
             }
           },
         );
