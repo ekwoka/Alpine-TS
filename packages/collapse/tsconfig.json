@@ -3,6 +3,9 @@
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"],
   "compilerOptions": {
     "types": ["vitest/importMeta", "vitest/globals"],
+    "paths": {
+      "alpinets": ["../alpinets/src/index.ts"]
+    },
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,

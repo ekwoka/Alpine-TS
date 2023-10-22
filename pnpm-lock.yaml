@@ -57,7 +57,7 @@ importers:
         version: 0.32.2(vitest@0.34.6)
       alpinets:
         specifier: workspace:*
-        version: link:packages/alpinejs
+        version: link:packages/alpinets
       esbuild:
         specifier: 0.19.5
         version: 0.19.5
@@ -101,7 +101,7 @@ importers:
         specifier: 0.1.1
         version: 0.1.1(vitest@0.34.6)
 
-  packages/alpinejs:
+  packages/alpinets:
     dependencies:
       '@vue/reactivity':
         specifier: ~3.1.1
@@ -111,13 +111,13 @@ importers:
     devDependencies:
       alpinets:
         specifier: workspace:*
-        version: link:../alpinejs
+        version: link:../alpinets
 
   packages/morph:
     devDependencies:
       alpinets:
         specifier: workspace:*
-        version: link:../alpinejs
+        version: link:../alpinets
 
 packages:
 

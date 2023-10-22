@@ -1,4 +1,5 @@
 /// <reference types="vitest" />
+import { accessOwnSources } from '../../plugins/accessOwnPlugins';
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
@@ -12,6 +13,7 @@ export default defineConfig({
       tsconfigPath: resolve(__dirname, 'tsconfig.json'),
     }),
     tsconfigPaths(),
+    accessOwnSources(),
   ],
   define: {
     'import.meta.vitest': 'undefined',
@@ -26,6 +28,7 @@ export default defineConfig({
     },
     minify: false,
     rollupOptions: {
+      external: ['alpinets'],
       output: {
         preserveModules: true,
         preserveModulesRoot: 'src',

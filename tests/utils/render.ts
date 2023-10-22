@@ -1,4 +1,4 @@
-import { ElementWithXAttributes } from '../../packages/alpinejs/src/types';
+import { ElementWithXAttributes } from '../../packages/alpinets/src/types';
 import { noop } from './noop';
 import type { Alpine } from 'alpinets';
 import {
@@ -31,7 +31,7 @@ export const render = async (
     CustomEvent,
     getComputedStyle: window.getComputedStyle.bind(window),
   });
-  const Alpine = (await import('../../packages/alpinejs/src')).default;
+  const Alpine = (await import('../../packages/alpinets/src')).default;
   Object.assign(global, { Alpine });
   window.Alpine = Alpine;
   if (typeof prep === 'string') window.eval(prep);

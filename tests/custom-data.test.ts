@@ -1,4 +1,4 @@
-import AlpineT from '../packages/alpinejs/src';
+import AlpineT from '../packages/alpinets/src';
 import { render } from './utils/render';
 import { describe, expect, it } from 'vitest';
 

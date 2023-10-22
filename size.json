@@ -1,12 +1,12 @@
 {
-  "alpinejs": {
+  "alpinets": {
     "minified": {
       "pretty": "39.9 kB",
       "raw": 39938
     },
     "brotli": {
       "pretty": "13.5 kB",
-      "raw": 13519
+      "raw": 13548
     }
   },
   "collapse": {
@@ -21,12 +21,12 @@
   },
   "morph": {
     "minified": {
-      "pretty": "3.14 kB",
-      "raw": 3143
+      "pretty": "3.1 kB",
+      "raw": 3103
     },
     "brotli": {
-      "pretty": "1.32 kB",
-      "raw": 1321
+      "pretty": "1.31 kB",
+      "raw": 1312
     }
   }
 }
