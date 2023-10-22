@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-bun run test --run
-bun run precommit
+pnpm run test --run
+pnpm run precommit
 git add size.json
