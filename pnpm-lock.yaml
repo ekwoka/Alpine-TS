@@ -113,6 +113,12 @@ importers:
         specifier: workspace:*
         version: link:../alpinets
 
+  packages/mask:
+    dependencies:
+      alpinets:
+        specifier: '*'
+        version: link:../alpinets
+
   packages/morph:
     devDependencies:
       alpinets:

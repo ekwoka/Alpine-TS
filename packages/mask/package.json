@@ -1,0 +1,35 @@
+{
+  "name": "@alpinets/collapse",
+  "version": "0.0.1",
+  "description": "The rugged, minimal TypeScript framework",
+  "author": "Eric Kwoka <eric@thekwoka.net> (https://thekwoka.net/)",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./src": {
+      "import": "./src/index.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "coverage": "vitest run --coverage",
+    "lint": "eslint --fix ./src; prettier --write ./src --loglevel error",
+    "lint:check": "eslint --max-warnings 10 ./src && prettier --check ./src",
+    "lint:types": "tsc --noEmit",
+    "prebuild": "rm -rf dist",
+    "test": "vitest"
+  },
+  "peerDependencies": {
+    "alpinets": "*"
+  }
+}

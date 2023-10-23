@@ -19,6 +19,16 @@
       "raw": 517
     }
   },
+  "mask": {
+    "minified": {
+      "pretty": "1.85 kB",
+      "raw": 1855
+    },
+    "brotli": {
+      "pretty": "894 B",
+      "raw": 894
+    }
+  },
   "morph": {
     "minified": {
       "pretty": "3.1 kB",
