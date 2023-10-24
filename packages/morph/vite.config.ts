@@ -28,7 +28,6 @@ export default defineConfig({
     },
     minify: false,
     rollupOptions: {
-      external: ['alpinets'],
       output: {
         preserveModules: true,
         preserveModulesRoot: 'src',
@@ -37,6 +36,7 @@ export default defineConfig({
         },
         sourcemap: true,
       },
+      external: [/node_modules/],
     },
   },
   test: {
