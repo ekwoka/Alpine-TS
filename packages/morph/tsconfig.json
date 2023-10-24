@@ -1,19 +1,16 @@
 {
-  "include": ["src/**/*.js", "src/index.ts", "src/morph.ts"],
+  "include": ["src/**/*"],
+  "exclude": ["**/node_modules", "**/dist", "scripts"],
   "compilerOptions": {
-    "types": ["vitest/importMeta", "vitest/globals"],
     "paths": {
       "alpinets": ["../alpinets/src/index.ts"]
     },
+    "types": ["vitest/importMeta", "vitest/globals"],
+    "allowJs": true,
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
-    "esModuleInterop": true,
-    "module": "es2022",
+    "module": "es2020",
     "moduleResolution": "node",
-    "outDir": "dist",
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "esNext"
+    "target": "ESNext"
   }
 }

@@ -4,6 +4,8 @@ import { ElementWithXAttributes } from 'alpinets/src/types';
 import {
   CustomEvent,
   Event,
+  HTMLInputElement,
+  HTMLTextAreaElement,
   IKeyboardEventInit,
   InputEvent,
   KeyboardEvent,
@@ -50,11 +52,15 @@ export const render = async (
       ).click();
       await window.happyDOM.whenAsyncComplete();
     },
-    type: async (selector: string, value: string) => {
-      const el = window.document.querySelector(selector);
+    type: async <T extends HTMLInputElement | HTMLTextAreaElement>(
+      selector: string,
+      value: string,
+    ) => {
+      const el = window.document.querySelector(selector) as unknown as T;
       (el as unknown as HTMLInputElement).value = value;
       el.dispatchEvent(new InputEvent('input'));
       await window.happyDOM.whenAsyncComplete();
+      return el;
     },
     keydown: async (
       selector: string,
@@ -69,6 +75,7 @@ export const render = async (
           ...options,
         }),
       );
+      el.dispatchEvent(new InputEvent('input'));
       await window.happyDOM.whenAsyncComplete();
     },
     getData: (selector?: string, key?: string) => {
@@ -120,7 +127,10 @@ type RenderReturn = {
   $$: typeof window.document.querySelectorAll;
   happyDOM: Window['happyDOM'];
   click: (selector: string) => Promise<void>;
-  type: (selector: string, value: string) => Promise<void>;
+  type: <T extends HTMLInputElement | HTMLTextAreaElement>(
+    selector: string,
+    value: string,
+  ) => Promise<T>;
   keydown: (
     selector: string,
     key: string,

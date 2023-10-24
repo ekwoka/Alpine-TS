@@ -35,10 +35,10 @@
   },
   "devDependencies": {
     "@milahu/patch-package": "6.4.14",
-    "@trivago/prettier-plugin-sort-imports": "4.2.0",
-    "@types/node": "20.8.7",
-    "@typescript-eslint/eslint-plugin": "6.8.0",
-    "@typescript-eslint/parser": "6.8.0",
+    "@trivago/prettier-plugin-sort-imports": "4.2.1",
+    "@types/node": "20.8.8",
+    "@typescript-eslint/eslint-plugin": "6.9.0",
+    "@typescript-eslint/parser": "6.9.0",
     "@vitest/coverage-c8": "0.32.2",
     "alpinets": "workspace:*",
     "esbuild": "0.19.5",
@@ -51,7 +51,7 @@
     "pretty-bytes": "6.1.1",
     "typescript": "5.2.2",
     "vite": "4.5.0",
-    "vite-plugin-dts": "3.6.0",
+    "vite-plugin-dts": "3.6.1",
     "vite-tsconfig-paths": "4.2.1",
     "vitest": "0.34.6",
     "vitest-dom": "0.1.1"

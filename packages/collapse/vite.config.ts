@@ -36,6 +36,7 @@ export default defineConfig({
         },
         sourcemap: true,
       },
+      external: [/node_modules/],
     },
   },
   test: {
