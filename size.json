@@ -21,12 +21,12 @@
   },
   "mask": {
     "minified": {
-      "pretty": "1.85 kB",
-      "raw": 1855
+      "pretty": "1.87 kB",
+      "raw": 1871
     },
     "brotli": {
-      "pretty": "894 B",
-      "raw": 894
+      "pretty": "893 B",
+      "raw": 893
     }
   },
   "morph": {

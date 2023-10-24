@@ -158,7 +158,8 @@ const isModelledInput = (
 const isTextInputElement = (
   el: ElementWithXAttributes,
 ): el is ElementWithXAttributes<TextInputElement> =>
-  el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement;
+  el instanceof window.HTMLInputElement ||
+  el instanceof window.HTMLTextAreaElement;
 
 type TextInputElement = HTMLInputElement | HTMLTextAreaElement;
 

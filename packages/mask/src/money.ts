@@ -10,7 +10,7 @@ export const formatMoney = (
   thousands ??= delimiter === ',' ? '.' : ',';
 
   const minus = input.startsWith('-') ? '-' : '';
-  const strippedInput = input.split(delimiter)[0].replaceAll(/[-,.]/g, '');
+  const strippedInput = input.split(delimiter)[0].replaceAll(/[-,.\s]/g, '');
 
   const template = `${minus}${addThousands(strippedInput, thousands)}${
     precision > 0 && input.includes(delimiter)
