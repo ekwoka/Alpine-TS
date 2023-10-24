@@ -53,6 +53,10 @@ jobs:
         shell: bash
         run: pnpm i
 
+      - name: Prune Store
+        shell: bash
+        run: pnpm store prune
+
   Lint:
     runs-on: ubuntu-latest
     needs: [collection-packages, cache-modules]
@@ -150,10 +154,6 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
 
       - uses: pnpm/action-setup@v2.4.0
         name: Install pnpm
