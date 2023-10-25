@@ -31,5 +31,8 @@
   },
   "peerDependencies": {
     "alpinets": "*"
+  },
+  "dependencies": {
+    "vitest": "0.34.6"
   }
 }

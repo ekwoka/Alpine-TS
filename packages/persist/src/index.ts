@@ -1,32 +1,17 @@
 import type { InterceptorObject, PluginCallback } from 'alpinets';
 
 export const persistPlugin: PluginCallback = (Alpine) => {
-  const persist = () => {
+  const defaultStorage = getDefaultStorage();
+  const persist = <T>() => {
     let alias: string;
-    let storage: SimpleStorage;
-
-    try {
-      storage = localStorage;
-    } catch (e) {
-      console.error(e);
-      console.warn(
-        'Alpine: $persist is using temporary storage since localStorage is unavailable.',
-      );
-
-      const dummy = new Map();
-
-      storage = {
-        getItem: dummy.get.bind(dummy),
-        setItem: dummy.set.bind(dummy),
-      };
-    }
+    let storage = defaultStorage;
 
     return Alpine.interceptor(
-      (initialValue, getter, setter, path) => {
+      (initialValue: T, getter, setter, path): T => {
         const lookup = alias || `_x_${path}`;
 
         const initial = storageHas(lookup, storage)
-          ? storageGet(lookup, storage)
+          ? storageGet<T>(lookup, storage)
           : initialValue;
 
         setter(initial);
@@ -35,6 +20,8 @@ export const persistPlugin: PluginCallback = (Alpine) => {
           const value = getter();
 
           storageSet(lookup, value, storage);
+
+          setter(value);
         });
 
         return initial;
@@ -53,7 +40,10 @@ export const persistPlugin: PluginCallback = (Alpine) => {
     );
   };
 
-  Object.defineProperty(Alpine, '$persist', { get: () => persist() });
+  Object.defineProperty(Alpine, '$persist', {
+    get: () => persist(),
+    configurable: true,
+  });
 
   Alpine.magic('persist', persist);
 
@@ -68,6 +58,7 @@ export const persistPlugin: PluginCallback = (Alpine) => {
       const value = get();
 
       storageSet(key, value, storage);
+      set(value);
     });
   };
 };
@@ -75,7 +66,7 @@ export const persistPlugin: PluginCallback = (Alpine) => {
 export default persistPlugin;
 
 export const storageHas = (key: string, storage: SimpleStorage) =>
-  storage.getItem(key) !== null;
+  ![undefined, null].includes(storage.getItem(key));
 
 export const storageGet = <T>(key: string, storage: SimpleStorage): T =>
   JSON.parse(storage.getItem(key));
@@ -116,3 +107,21 @@ declare module 'alpinets' {
     $persist: $persist;
   }
 }
+
+const getDefaultStorage = (): SimpleStorage => {
+  try {
+    return localStorage;
+  } catch (e) {
+    console.error(e);
+    console.warn(
+      'Alpine: $persist is using temporary storage since localStorage is unavailable.',
+    );
+
+    const dummy = new Map();
+
+    return {
+      getItem: dummy.get.bind(dummy),
+      setItem: dummy.set.bind(dummy),
+    };
+  }
+};
