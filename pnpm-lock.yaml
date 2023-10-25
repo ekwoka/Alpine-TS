@@ -125,6 +125,12 @@ importers:
         specifier: workspace:*
         version: link:../alpinets
 
+  packages/persist:
+    dependencies:
+      alpinets:
+        specifier: '*'
+        version: link:../alpinets
+
 packages:
 
   /@aashutoshrathi/word-wrap@1.2.6:
