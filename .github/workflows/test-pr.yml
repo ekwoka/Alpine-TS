@@ -185,3 +185,31 @@ jobs:
 
       - name: Build Package
         run: pnpm run -C ${{ matrix.package }} -r build
+
+  check-success:
+    runs-on: ubuntu-latest
+    needs: [Lint, Test, Build]
+    if: success()
+    outputs:
+      was_successful: ${{ steps.check-success.outputs.was_successful }}
+    steps:
+      - name: Check if all jobs were successful
+        id: check-success
+        run: |
+          echo "was_successful=true" >> $GITHUB_OUTPUT
+
+  was-successful:
+    runs-on: ubuntu-latest
+    needs: [check-success]
+    if: always()
+    steps:
+      - name: Was Successful
+        run: |
+          passed="${{ needs.check-success.outputs.was_successful }}"
+          if [[ $passed == "true" ]]; then
+            echo "All checks passed"
+            exit 0
+          else
+            echo "Check(s) failed"
+            exit 1
+          fi
