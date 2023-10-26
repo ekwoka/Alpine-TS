@@ -1,9 +1,9 @@
 import { build } from 'esbuild';
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile, readdir, writeFile } from 'node:fs/promises';
 import { brotliCompressSync } from 'node:zlib';
 import prettyBytes from 'pretty-bytes';
 
-const packages = ['alpinets', 'collapse', 'mask', 'morph'];
+const packages = await readdir('packages');
 
 const oldValues = JSON.parse(await readFile('size.json', 'utf8'));
 const bundleCode = async (pkg) => {

@@ -79,3 +79,4 @@ export type { PluginCallback } from './plugin';
 export type { DirectiveCallback } from './types';
 export type { Magics } from './magics';
 export type { ElementWithXAttributes, XAttributes } from './types';
+export type { InterceptorObject } from './interceptor';

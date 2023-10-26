@@ -39,7 +39,7 @@ type InterceptorCallback<T = unknown> = (
   key: string,
 ) => T;
 
-type InterceptorObject<T = unknown> = {
+export type InterceptorObject<T = unknown> = {
   initialValue: T;
   _x_interceptor: true;
   initialize: (data: Record<string, unknown>, path: string, key: string) => T;

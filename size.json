@@ -38,5 +38,15 @@
       "pretty": "1.31 kB",
       "raw": 1312
     }
+  },
+  "persist": {
+    "minified": {
+      "pretty": "874 B",
+      "raw": 874
+    },
+    "brotli": {
+      "pretty": "447 B",
+      "raw": 447
+    }
   }
 }
