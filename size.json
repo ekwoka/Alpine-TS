@@ -22,11 +22,11 @@
   "focus": {
     "minified": {
       "pretty": "14.8 kB",
-      "raw": 14771
+      "raw": 14753
     },
     "brotli": {
-      "pretty": "4.67 kB",
-      "raw": 4667
+      "pretty": "4.69 kB",
+      "raw": 4693
     }
   },
   "mask": {

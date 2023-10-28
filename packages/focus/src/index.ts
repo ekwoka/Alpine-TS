@@ -4,7 +4,7 @@ import { FocusableElement, focusable, isFocusable } from 'tabbable';
 
 let lastFocused: FocusableElement;
 let currentFocused: FocusableElement;
-class Focus {
+export class Focus {
   private preventScroll = false;
   private wrapAround = false;
   private withinElement: FocusableElement;
@@ -61,7 +61,7 @@ class Focus {
   getLast(): FocusableElement | undefined {
     return this.all().slice(-1)[0];
   }
-  getNext() {
+  getOffset(offset: 1 | -1) {
     const list = this.all() as FocusableElement[];
     const currentIndex = list.indexOf(
       document.activeElement as FocusableElement,
@@ -70,24 +70,19 @@ class Focus {
     // Can't find currently focusable element in list.
     if (currentIndex === -1) return;
 
-    // This is the last element in the list and we want to wrap around.
-    if (this.wrapAround && currentIndex === list.length - 1) return list[0];
+    let targetIndex = currentIndex + offset;
+    if (this.wrapAround) {
+      targetIndex += list.length;
+      targetIndex %= list.length;
+    }
 
-    return list[currentIndex + 1];
+    return list[targetIndex];
+  }
+  getNext() {
+    return this.getOffset(1);
   }
   getPrevious() {
-    const list = this.all() as FocusableElement[];
-    const currentIndex = list.indexOf(
-      document.activeElement as FocusableElement,
-    );
-
-    // Can't find currently focusable element in list.
-    if (currentIndex === -1) return;
-
-    // This is the first element in the list and we want to wrap around.
-    if (this.wrapAround && currentIndex === 0) return list[list.length - 1];
-
-    return list[currentIndex - 1];
+    return this.getOffset(-1);
   }
   first() {
     this.focus(this.getFirst());
