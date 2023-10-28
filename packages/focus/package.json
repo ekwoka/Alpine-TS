@@ -1,5 +1,5 @@
 {
-  "name": "@alpinets/persist",
+  "name": "@alpinets/focus",
   "version": "0.0.1",
   "description": "The rugged, minimal TypeScript framework",
   "author": "Eric Kwoka <eric@thekwoka.net> (https://thekwoka.net/)",
@@ -28,6 +28,10 @@
     "lint:types": "tsc --noEmit",
     "prebuild": "rm -rf dist",
     "test": "vitest"
+  },
+  "dependencies": {
+    "focus-trap": "^6.9.4",
+    "tabbable": "^5.3.3"
   },
   "peerDependencies": {
     "alpinets": "*"

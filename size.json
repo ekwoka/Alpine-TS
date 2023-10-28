@@ -19,6 +19,16 @@
       "raw": 517
     }
   },
+  "focus": {
+    "minified": {
+      "pretty": "14.8 kB",
+      "raw": 14753
+    },
+    "brotli": {
+      "pretty": "4.69 kB",
+      "raw": 4693
+    }
+  },
   "mask": {
     "minified": {
       "pretty": "1.87 kB",
