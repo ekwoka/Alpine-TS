@@ -125,7 +125,7 @@ importers:
         specifier: ^5.3.3
         version: 5.3.3
 
-  packages/intercept:
+  packages/intersect:
     dependencies:
       alpinets:
         specifier: '*'
