@@ -125,6 +125,12 @@ importers:
         specifier: ^5.3.3
         version: 5.3.3
 
+  packages/intercept:
+    dependencies:
+      alpinets:
+        specifier: '*'
+        version: link:../alpinets
+
   packages/mask:
     dependencies:
       alpinets:
