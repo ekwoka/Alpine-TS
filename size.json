@@ -29,6 +29,16 @@
       "raw": 4693
     }
   },
+  "intersect": {
+    "minified": {
+      "pretty": "806 B",
+      "raw": 806
+    },
+    "brotli": {
+      "pretty": "447 B",
+      "raw": 447
+    }
+  },
   "mask": {
     "minified": {
       "pretty": "1.87 kB",
