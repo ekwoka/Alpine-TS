@@ -9,6 +9,16 @@
       "raw": 13548
     }
   },
+  "anchor": {
+    "minified": {
+      "pretty": "15.1 kB",
+      "raw": 15092
+    },
+    "brotli": {
+      "pretty": "5.49 kB",
+      "raw": 5489
+    }
+  },
   "collapse": {
     "minified": {
       "pretty": "1.26 kB",
