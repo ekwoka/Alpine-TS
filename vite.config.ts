@@ -1,10 +1,11 @@
 /// <reference types="vitest" />
-import { accessOwnSources } from './plugins/accessOwnPlugins';
 import { defineConfig } from 'vite';
+import ExternalDeps from 'vite-plugin-external-deps';
+import WorkspaceSource from 'vite-plugin-workspace-source';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
-  plugins: [tsconfigPaths(), accessOwnSources()],
+  plugins: [tsconfigPaths(), ExternalDeps(), WorkspaceSource()],
   build: {
     target: 'esnext',
   },

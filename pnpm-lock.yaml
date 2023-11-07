@@ -91,6 +91,12 @@ importers:
       vite-plugin-dts:
         specifier: 3.6.1
         version: 3.6.1(@types/node@20.8.8)(typescript@5.2.2)(vite@4.5.0)
+      vite-plugin-external-deps:
+        specifier: 0.0.2
+        version: 0.0.2
+      vite-plugin-workspace-source:
+        specifier: 0.0.1
+        version: 0.0.1
       vite-tsconfig-paths:
         specifier: 4.2.1
         version: 4.2.1(typescript@5.2.2)(vite@4.5.0)
@@ -3363,6 +3369,14 @@ packages:
       - '@types/node'
       - rollup
       - supports-color
+    dev: true
+
+  /vite-plugin-external-deps@0.0.2:
+    resolution: {integrity: sha512-bDw8PVnfJ9rsySsSmiFqCBj6RUBQGxbTRE5pc5L3svMFdSRzbi1KYuTlhHsNCCcH2usJRJj6J5RMFADX2YC0mQ==}
+    dev: true
+
+  /vite-plugin-workspace-source@0.0.1:
+    resolution: {integrity: sha512-fXo7IxPXwbWWoAPqdoAVs+Gy3lsC8KnB505LQZZiUtBlTqmrZFdKXCpsaZuQAjFE4Ci46qU9D2TrpnQUihneLA==}
     dev: true
 
   /vite-tsconfig-paths@4.2.1(typescript@5.2.2)(vite@4.5.0):
