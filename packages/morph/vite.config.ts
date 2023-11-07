@@ -1,8 +1,9 @@
 /// <reference types="vitest" />
-import { accessOwnSources } from '../../plugins/accessOwnPlugins';
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
+import ExternalDeps from 'vite-plugin-external-deps';
+import WorkspaceSource from 'vite-plugin-workspace-source';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
@@ -13,7 +14,8 @@ export default defineConfig({
       tsconfigPath: resolve(__dirname, 'tsconfig.json'),
     }),
     tsconfigPaths(),
-    accessOwnSources(),
+    ExternalDeps(),
+    WorkspaceSource(),
   ],
   define: {
     'import.meta.vitest': 'undefined',
