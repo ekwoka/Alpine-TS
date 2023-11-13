@@ -14,18 +14,8 @@
       Alpine.start();
     </script>
   </head>
-  <body>
-    <ul>
-      <li key="2">foo<input /></li>
-    </ul>
-    <button
-      x-data
-      @click="Alpine.morph(document.querySelector('ul'), `<ul>
-        <li key=1>bar<input></li>
-        <li key=3>baz<input></li>
-        <li key=2>foo<input></li>
-      </ul>`)">
-      Morph It
-    </button>
+  <body
+    x-data="{ props: { 'demo:binding.modifiers': `console.log('hello')` } }">
+    <button x-bind="props">update</button>
   </body>
 </html>
