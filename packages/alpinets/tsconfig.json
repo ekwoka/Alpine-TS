@@ -8,6 +8,7 @@
     "declarationMap": true,
     "module": "es2020",
     "moduleResolution": "node",
+    "noImplicitThis": true,
     "target": "ESNext"
   }
 }

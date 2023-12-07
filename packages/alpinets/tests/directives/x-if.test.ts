@@ -105,15 +105,15 @@ describe('x-if', () => {
     expect($('#three').textContent).toBe('{"name":"Stark"}');
   });
   it('eagerly destroys tree when false', async () => {
-    const { click, getData } = await render(
+    let triggers = 0;
+    const { click } = await render(
       (Alpine) =>
         Alpine.data('destroytest', () => ({
           get username() {
-            queueMicrotask(() => this.triggers++);
+            triggers++;
             return this.innerUser;
           },
           innerUser: 'Tony',
-          triggers: 0,
         })),
       `
         <div
@@ -127,8 +127,8 @@ describe('x-if', () => {
         </div>
       `,
     );
-    expect(getData('[x-data]', 'triggers')).toBe(4);
+    expect(triggers).toBe(4);
     await click('button');
-    expect(getData('[x-data]', 'triggers')).toBe(5);
+    expect(triggers).toBe(5);
   });
 });
