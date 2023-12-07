@@ -1,16 +1,5 @@
 {
-  "include": ["src/**/*"],
-  "exclude": ["**/node_modules", "**/dist", "scripts"],
-  "compilerOptions": {
-    "paths": {
-      "alpinets": ["../alpinets/src/index.ts"]
-    },
-    "types": ["vitest/importMeta", "vitest/globals"],
-    "allowJs": true,
-    "declaration": true,
-    "declarationMap": true,
-    "module": "es2020",
-    "moduleResolution": "node",
-    "target": "ESNext"
-  }
+  "extends": "../../tsconfig.json",
+  "include": ["src/**/*", "tests/**/*"],
+  "exclude": ["**/node_modules", "**/dist"]
 }
