@@ -3,7 +3,6 @@ import { evaluateLater } from '../evaluator';
 import { destroyTree, initTree } from '../lifecycle';
 import { mutateDom } from '../mutation';
 import { reactive } from '../reactivity';
-import { dequeueJob } from '../scheduler';
 import { addScopeToNode, refreshScope } from '../scope';
 import { ElementWithXAttributes } from '../types';
 import { isNumeric, parseForExpression, warn } from '../utils';
@@ -158,10 +157,11 @@ const loop = (
     // letting the mutation observer pick them up and
     // clean up any side effects they had.
     removes.forEach((key) => {
-      // Remove any queued effects that might run after the DOM node has been removed.
-      if (lookup[key]._x_effects) lookup[key]._x_effects.forEach(dequeueJob);
+      mutateDom(() => {
+        destroyTree(lookup[key]);
 
-      lookup[key].remove();
+        lookup[key].remove();
+      });
 
       lookup[key] = null;
       delete lookup[key];
