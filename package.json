@@ -31,7 +31,7 @@
     "test": "vitest",
     "test:run": "vitest --run",
     "postinstall": "patch-package",
-    "sandbox": "vite ./sandbox"
+    "sandbox": "vite ./sandbox --open --force"
   },
   "devDependencies": {
     "@milahu/patch-package": "6.4.14",

@@ -1,6 +1,6 @@
 import { directive } from '../directives';
 import { evaluateLater } from '../evaluator';
-import { initTree } from '../lifecycle';
+import { destroyTree, initTree } from '../lifecycle';
 import { mutateDom } from '../mutation';
 import { reactive } from '../reactivity';
 import { dequeueJob } from '../scheduler';
@@ -31,7 +31,12 @@ directive(
     effect(() => loop(el, iteratorNames, evaluateItems, evaluateKey));
 
     cleanup(() => {
-      Object.values(el._x_lookup).forEach((el) => el.remove());
+      Object.values(el._x_lookup).forEach((el) => {
+        mutateDom(() => {
+          destroyTree(el);
+          el.remove();
+        });
+      });
 
       delete el._x_prevKeys;
       delete el._x_lookup;
