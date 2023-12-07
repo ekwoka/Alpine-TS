@@ -649,4 +649,47 @@ describe(':key', () => {
     await click('button');
     expect(cleanTextContent($('div').textContent)).toBe('0 1 2');
   });
+  it('actively destroys removed clones', async () => {
+    let triggers = 0;
+    const { click } = await render(
+      (Alpine) =>
+        Alpine.data('destroyfor', () => ({
+          users: [
+            {
+              id: 1,
+              get name() {
+                triggers++;
+                return this.innername;
+              },
+              innername: 'tony',
+            },
+            {
+              id: 2,
+              get name() {
+                triggers++;
+                return this.innername;
+              },
+              innername: 'stark',
+            },
+          ],
+          get filteredUsers() {
+            return this.users.filter((user) => user.name);
+          },
+        })),
+      `
+        <div
+          x-data="destroyfor">
+          <template x-for="user in filteredUsers" :key="user.id">
+            <div>
+              <p x-text="user.name">Click me!</p>
+            </div>
+          </template>
+          <button type="button" @click="users[0].innername = null">click here</button>
+        </div>
+      `,
+    );
+    expect(triggers).toBe(4);
+    await click('button');
+    expect(triggers).toBe(6);
+  });
 });

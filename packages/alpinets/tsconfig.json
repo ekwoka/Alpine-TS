@@ -1,13 +1,5 @@
 {
+  "extends": "../../tsconfig.json",
   "include": ["src/**/*", "tests/**/*"],
-  "exclude": ["**/node_modules", "**/dist", "scripts"],
-  "compilerOptions": {
-    "types": ["vitest/importMeta", "vitest/globals"],
-    "allowJs": true,
-    "declaration": true,
-    "declarationMap": true,
-    "module": "es2020",
-    "moduleResolution": "node",
-    "target": "ESNext"
-  }
+  "exclude": ["**/node_modules", "**/dist"]
 }
