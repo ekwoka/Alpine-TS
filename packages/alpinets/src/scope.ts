@@ -74,7 +74,12 @@ const proxyMerger: ProxyHandler<wrappedProxy> = {
   },
   has(proxies, name) {
     if (name == Symbol.unscopables) return false;
-    return proxies.objects.some((obj) => Reflect.has(obj, name));
+    const isPrototypeMethod = name in Object.prototype;
+    return proxies.objects.some((obj) =>
+      isPrototypeMethod
+        ? Object.prototype.hasOwnProperty.call(obj, name)
+        : Reflect.has(obj, name),
+    );
   },
   get(proxies, name, thisProxy) {
     if (name == 'toJSON') return collapseProxies;
