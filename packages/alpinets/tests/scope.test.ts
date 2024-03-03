@@ -56,15 +56,4 @@ describe('mergeProxies', () => {
     proxy.increment();
     expect(proxy.count).toBe(1);
   });
-  it('does not expose object prototype methods', () => {
-    const objects = [{ foo: 'bar' }];
-    const proxy = mergeProxies(objects);
-    expect(Reflect.has(proxy, 'foo')).toBe(true);
-    expect(Reflect.has(proxy, 'hasOwnProperty')).toBe(false);
-  });
-  it('does expose properties on the object that match Object.prototype', () => {
-    const objects = [{ valueOf: 'bar' }];
-    const proxy = mergeProxies(objects);
-    expect(Reflect.has(proxy, 'valueOf')).toBe(true);
-  });
 });

@@ -35,6 +35,6 @@
     "tabbable": "^5.3.3"
   },
   "peerDependencies": {
-    "alpinets": "*"
+    "alpinets": "workspace:^"
   }
 }
