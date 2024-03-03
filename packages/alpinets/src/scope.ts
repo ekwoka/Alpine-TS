@@ -54,18 +54,14 @@ function collapseProxies(this: Record<string, unknown>) {
   return collapsed;
 }
 
-export const mergeProxies = <
-  T extends Record<string | number | symbol, unknown>,
->(
-  objects: T[],
-) => {
+export const mergeProxies = <T extends object>(objects: T[]) => {
   const thisProxy = new Proxy({ objects }, proxyMerger);
 
   return thisProxy as unknown as T;
 };
 
 type wrappedProxy = {
-  objects: Record<string | number | symbol, unknown>[];
+  objects: object[];
 };
 
 const proxyMerger: ProxyHandler<wrappedProxy> = {
