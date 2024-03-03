@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 jobs:
   collection-packages:
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     outputs:
       packages: ${{ steps.ls.outputs.packages }}
     steps:
@@ -20,7 +20,7 @@ jobs:
         run: echo "packages=[$(ls -d packages/* | sed 's/[^[:alnum:]]/\\&/g' | sed 's/.*/"&",/' | tr -d '\n' | sed '$s/,$//')]" >> $GITHUB_OUTPUT
 
   cache-modules:
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
 
@@ -58,7 +58,7 @@ jobs:
         run: pnpm store prune
 
   Lint:
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     needs: [collection-packages, cache-modules]
     strategy:
       matrix:
@@ -104,7 +104,7 @@ jobs:
         continue-on-error: true # AlpineTS is still not fully typed
 
   Test:
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     needs: [collection-packages, cache-modules]
     strategy:
       matrix:
@@ -146,7 +146,7 @@ jobs:
         run: pnpm run -C ${{ matrix.package }} test --run --reporter=verbose
 
   Build:
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     needs: [collection-packages, cache-modules]
     strategy:
       matrix:
@@ -187,7 +187,7 @@ jobs:
         run: pnpm run -C ${{ matrix.package }} -r build
 
   check-success:
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     needs: [Lint, Test, Build]
     if: success()
     outputs:
@@ -199,7 +199,7 @@ jobs:
           echo "was_successful=true" >> $GITHUB_OUTPUT
 
   was-successful:
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     needs: [check-success]
     if: always()
     steps:
