@@ -1,22 +1,22 @@
 {
   "alpinets": {
     "minified": {
-      "pretty": "39.9 kB",
-      "raw": 39938
+      "pretty": "39.7 kB",
+      "raw": 39744
     },
     "brotli": {
       "pretty": "13.5 kB",
-      "raw": 13548
+      "raw": 13496
     }
   },
   "anchor": {
     "minified": {
-      "pretty": "15.1 kB",
-      "raw": 15092
+      "pretty": "15.5 kB",
+      "raw": 15516
     },
     "brotli": {
-      "pretty": "5.49 kB",
-      "raw": 5489
+      "pretty": "5.65 kB",
+      "raw": 5651
     }
   },
   "collapse": {

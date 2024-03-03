@@ -42,4 +42,18 @@ describe('mergeProxies', () => {
     expect(objects[0].foo).toBe('baz');
     expect(objects[1].foo).toBe('buzz');
   });
+  it('properly works with classes', () => {
+    class Count {
+      constructor(public count = 0) {}
+      increment() {
+        this.count++;
+      }
+    }
+    const proxy = mergeProxies([new Count()]);
+    expect(JSON.stringify(proxy)).toBe('{"count":0}');
+    expect(proxy.count).toBe(0);
+    expect(proxy.increment).toBeInstanceOf(Function);
+    proxy.increment();
+    expect(proxy.count).toBe(1);
+  });
 });
