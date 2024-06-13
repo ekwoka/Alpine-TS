@@ -6,26 +6,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AlpineTS Sandbox</title>
     <script type="module">
-      import Alpine from '../packages/alpinejs/src/index.ts';
-      import Morph from '../packages/morph/src/index.ts';
+      import Alpine from '../packages/alpinets/src/index.ts';
 
       window.Alpine = Alpine;
-      Alpine.plugin(Morph);
       Alpine.start();
     </script>
   </head>
   <body>
-    <ul>
-      <li key="2">foo<input /></li>
-    </ul>
-    <button
-      x-data
-      @click="Alpine.morph(document.querySelector('ul'), `<ul>
-        <li key=1>bar<input></li>
-        <li key=3>baz<input></li>
-        <li key=2>foo<input></li>
-      </ul>`)">
-      Morph It
-    </button>
+    <div x-data="{ foo: { bar: 'fizz' } }">
+      <div x-data="{ bar: 'buzz' }">
+        <button
+          id="1"
+          x-text="foo.bar + bar"
+          @click="foo.bar = foo.bar + bar"></button>
+      </div>
+      <span id="2" x-text="foo.bar"></span>
+    </div>
+    <div
+      x-data="{ foo:
+      {
+        bar: 'fizzbuzz'
+    }
+  }">
+      <div
+        x-data="{
+          get bar() {
+            console.log('getter')
+            return this.foo.bar
+          }, set bar(value) {
+            this.foo.bar = value
+           }
+          }">
+        <button id="one" x-text="bar" @click="bar = 'foobar'"></button>
+      </div>
+      <span id="two" x-text="foo.bar"></span>
+    </div>
   </body>
 </html>
