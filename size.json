@@ -1,22 +1,22 @@
 {
   "alpinets": {
     "minified": {
-      "pretty": "39.7 kB",
-      "raw": 39744
+      "pretty": "39.8 kB",
+      "raw": 39829
     },
     "brotli": {
       "pretty": "13.5 kB",
-      "raw": 13496
+      "raw": 13534
     }
   },
   "anchor": {
     "minified": {
-      "pretty": "15.5 kB",
-      "raw": 15516
+      "pretty": "15.6 kB",
+      "raw": 15618
     },
     "brotli": {
-      "pretty": "5.65 kB",
-      "raw": 5651
+      "pretty": "5.7 kB",
+      "raw": 5697
     }
   },
   "collapse": {
@@ -41,12 +41,12 @@
   },
   "intersect": {
     "minified": {
-      "pretty": "806 B",
-      "raw": 806
+      "pretty": "802 B",
+      "raw": 802
     },
     "brotli": {
-      "pretty": "447 B",
-      "raw": 447
+      "pretty": "445 B",
+      "raw": 445
     }
   },
   "mask": {

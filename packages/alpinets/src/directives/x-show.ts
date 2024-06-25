@@ -10,7 +10,6 @@ directive(
     const evaluate = evaluateLater<boolean>(el, expression);
 
     // store old value when the element is hidden so we can restore it later
-    // TODO: implement onto element attributes to work with other directives
     let oldDisplay = el.style.display !== 'none' ? el.style.display : null;
 
     // We're going to set this function on the element directly so that

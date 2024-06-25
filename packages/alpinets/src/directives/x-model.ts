@@ -188,8 +188,8 @@ const getInputValue = (
       return modifiers.includes('number')
         ? safeParseNumber(rawValue)
         : modifiers.includes('trim')
-        ? rawValue.trim()
-        : rawValue;
+          ? rawValue.trim()
+          : rawValue;
     }
   });
 };

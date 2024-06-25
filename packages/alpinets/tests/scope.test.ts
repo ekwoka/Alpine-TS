@@ -1,4 +1,5 @@
 import { mergeProxies } from '../src/scope';
+import { reactive } from '@vue/reactivity';
 
 describe('mergeProxies', () => {
   it('allows getting keys from object list', () => {
@@ -22,7 +23,20 @@ describe('mergeProxies', () => {
   });
   it('allows getters and setters to access the merged proxy', () => {
     const objects = [
-      { foo: 'bar' },
+      {
+        get bar() {
+          return this.qux.quux;
+        },
+        set bar(value) {
+          this.qux.quux = value;
+        },
+      },
+      {
+        foo: 'bar',
+        qux: {
+          quux: 'quuz',
+        },
+      },
       {
         foo: 'buzz',
         get fizz() {
@@ -32,15 +46,19 @@ describe('mergeProxies', () => {
           this.foo = value;
         },
       },
-    ];
+    ].map(reactive);
     const proxy = mergeProxies(objects);
+    expect(proxy.bar).toBe('quuz');
     expect(proxy.foo).toBe('bar');
     expect(proxy.fizz).toBe('bar');
     proxy.fizz = 'baz';
     expect(proxy.foo).toBe('baz');
     expect(proxy.fizz).toBe('baz');
-    expect(objects[0].foo).toBe('baz');
-    expect(objects[1].foo).toBe('buzz');
+    expect(objects[1].foo).toBe('baz');
+    expect(objects[2].foo).toBe('buzz');
+    Reflect.set(proxy, 'bar', 'quuy');
+    expect(proxy.bar).toBe('quuy');
+    expect(objects[1].qux.quux).toBe('quuy');
   });
   it('properly works with classes', () => {
     class Count {

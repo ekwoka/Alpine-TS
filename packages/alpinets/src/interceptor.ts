@@ -45,13 +45,14 @@ export type InterceptorObject<T = unknown> = {
   initialize: (data: Record<string, unknown>, path: string, key: string) => T;
 };
 
-type InferInterceptor<T> = T extends InterceptorObject<infer U>
-  ? U
-  : T extends Record<string | number | symbol, unknown>
-  ? {
-      [K in keyof T]: InferInterceptor<T[K]>;
-    }
-  : T;
+type InferInterceptor<T> =
+  T extends InterceptorObject<infer U>
+    ? U
+    : T extends Record<string | number | symbol, unknown>
+      ? {
+          [K in keyof T]: InferInterceptor<T[K]>;
+        }
+      : T;
 
 export type InferInterceptors<T> = {
   [K in keyof T]: InferInterceptor<T[K]>;
