@@ -41,12 +41,12 @@
   },
   "intersect": {
     "minified": {
-      "pretty": "806 B",
-      "raw": 806
+      "pretty": "802 B",
+      "raw": 802
     },
     "brotli": {
-      "pretty": "447 B",
-      "raw": 447
+      "pretty": "445 B",
+      "raw": 445
     }
   },
   "mask": {
