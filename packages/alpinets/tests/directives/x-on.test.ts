@@ -257,7 +257,9 @@ describe('x-on modifiers', () => {
     expect($('[x-text]').textContent).toBe('0');
     await click('button');
     expect($('[x-text]').textContent).toBe('0');
-    await sleep(500);
+    await sleep(200);
+    expect($('[x-text]').textContent).toBe('0');
+    await sleep(100);
     expect($('[x-text]').textContent).toBe('1');
   });
   it('can be throttled', async () => {
@@ -475,6 +477,36 @@ describe('@click modifiers', () => {
     expect($('span').style.display).toBe('');
     await click('div');
     expect($('span').style.display).toBe('none');
+  });
+  it('allows system key modifiers', async () => {
+    const { $, click } = await render(
+      undefined,
+      `
+        <div x-data="{ count: 0 }" @click.capture="count = 0" @click.ctrl="count |= 1" @click.shift="count |= 2" @click.meta="count |= 4"
+        @click.alt="count |= 8" @click.cmd="count |= 16" @click.super="count |= 32">
+        >
+          <button></button>
+          <span x-text="count.toString(2)"></span>
+        </div>
+      `,
+    );
+    expect($('[x-text]').textContent).toBe('0');
+    await click('button', { ctrlKey: true, bubbles: true });
+    expect($('[x-text]').textContent).toBe('1');
+    await click('button', { shiftKey: true, bubbles: true });
+    expect($('[x-text]').textContent).toBe('10');
+    await click('button', { metaKey: true, bubbles: true });
+    expect($('[x-text]').textContent).toBe('110100');
+    await click('button', { altKey: true, bubbles: true });
+    expect($('[x-text]').textContent).toBe('1000');
+    await click('button', {
+      ctrlKey: true,
+      shiftKey: true,
+      metaKey: true,
+      altKey: true,
+      bubbles: true,
+    });
+    expect($('[x-text]').textContent).toBe('111111');
   });
 });
 describe('@window / @document modifiers', () => {
