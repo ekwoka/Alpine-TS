@@ -25,7 +25,7 @@
   },
   "overrides": [
     {
-      "files": ["*.test.*", "*.spec.*"],
+      "files": ["*.test.*", "*.spec.*", "*.bench.*"],
       "rules": {
         "@typescript-eslint/no-explicit-any": "off"
       }

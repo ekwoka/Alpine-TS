@@ -3,117 +3,156 @@ import { debounce } from './debounce';
 import { camelCase, dotSyntax, kebabCase } from './stringTransformers';
 import { throttle } from './throttle';
 
+const callWith =
+  <T extends (ev: Event) => unknown>(ev: Event) =>
+  (fn: T) =>
+    fn(ev);
 export const on = (
   el: ElementWithXAttributes,
   event: string,
   modifiers: string[],
   callback: EventHandler,
 ) => {
-  let listenerTarget: ElementWithXAttributes | Window | Document = el;
-
-  let handler: EventHandler = (e: Event) => callback(e);
-
-  const options = {
-    passive: false,
-    capture: false,
+  const listener: ListenerInfo = {
+    event,
+    target: el,
+    filters: [],
+    handler(e) {
+      const caller = callWith(e);
+      if (listener.filters.every(caller)) {
+        listener.cleanups.forEach(caller);
+        callback(e);
+      }
+    },
+    modifiers,
+    cleanups: [],
+    options: {
+      passive: false,
+      capture: false,
+    },
   };
 
-  // This little helper allows us to add functionality to the listener's
-  // handler more flexibly in a "middleware" style.
-  const wrapHandler =
-    (
-      callback: EventHandler,
-      wrapper: (next: EventHandler, event: Event) => void,
-    ): EventHandler =>
-    (e) =>
-      wrapper(callback, e);
-
-  if (modifiers.includes('dot')) event = dotSyntax(event);
-  if (modifiers.includes('camel')) event = camelCase(event);
-  if (modifiers.includes('passive')) options.passive = true;
-  if (modifiers.includes('capture')) options.capture = true;
-  if (modifiers.includes('window')) listenerTarget = window;
-  if (modifiers.includes('document')) listenerTarget = document;
-
-  if (modifiers.includes('debounce')) {
-    const nextModifier =
-      modifiers[modifiers.indexOf('debounce') + 1] || 'invalid-wait';
-    const wait = isNumeric(nextModifier.split('ms')[0])
-      ? Number(nextModifier.split('ms')[0])
-      : 250;
-
-    handler = debounce(handler, wait);
-  }
-
-  if (modifiers.includes('throttle')) {
-    const nextModifier =
-      modifiers[modifiers.indexOf('throttle') + 1] || 'invalid-limit';
-    const limit = isNumeric(nextModifier.split('ms')[0])
-      ? Number(nextModifier.split('ms')[0])
-      : 250;
-
-    handler = throttle(handler, limit);
-  }
-
-  if (modifiers.includes('prevent'))
-    handler = wrapHandler(handler, (next, e) => {
-      e.preventDefault();
-      next(e);
-    });
-
-  if (modifiers.includes('stop'))
-    handler = wrapHandler(handler, (next, e) => {
-      e.stopPropagation();
-      next(e);
-    });
-
-  if (modifiers.includes('once')) {
-    handler = wrapHandler(handler, (next, e) => {
-      next(e);
-
-      listenerTarget.removeEventListener(event, handler, options);
-    });
-  }
-
-  if (modifiers.includes('away') || modifiers.includes('outside')) {
-    listenerTarget = document;
-
-    handler = wrapHandler(handler, (next, e) => {
-      if (el.contains(e.target as Node)) return;
-
-      if ((e.target as Node).isConnected === false) return;
-
-      if (el.offsetWidth < 1 && el.offsetHeight < 1) return;
-
-      // Additional check for special implementations like x-collapse
-      // where the element doesn't have display: none
-      if (el._x_isShown === false) return;
-
-      next(e);
-    });
-  }
-
-  if (modifiers.includes('self'))
-    handler = wrapHandler(handler, (next, e) => {
-      e.target === el && next(e);
-    });
+  for (const mod of modifiers) modifierOptions[mod]?.(listener);
 
   // Handle :keydown and :keyup listeners.
   if (isKeyEvent(event) || isClickEvent(event)) {
-    handler = wrapHandler(handler, (next, e) => {
-      if (isListeningForASpecificKeyThatHasntBeenPressed(e, modifiers)) {
-        return;
-      }
-
-      next(e);
-    });
+    keyedEvent(listener);
   }
 
-  listenerTarget.addEventListener(event, handler, options);
+  listener.target.addEventListener(
+    listener.event,
+    listener.handler,
+    listener.options,
+  );
 
   return () => {
-    listenerTarget.removeEventListener(event, handler, options);
+    listener.target.removeEventListener(
+      listener.event,
+      listener.handler,
+      listener.options,
+    );
   };
+};
+
+type ListenerInfo = {
+  event: string;
+  target: ElementWithXAttributes | Window | Document;
+  filters: ((e: Event) => boolean)[];
+  handler(e: Event): void;
+  modifiers: string[];
+  cleanups: ((e: Event) => void)[];
+  options: {
+    passive: boolean;
+    capture: boolean;
+  };
+};
+
+const dot = (listener: ListenerInfo) => {
+  listener.event = dotSyntax(listener.event);
+  return listener;
+};
+
+const camel = (listener: ListenerInfo) => {
+  listener.event = camelCase(listener.event);
+  return listener;
+};
+
+const passive = (listener: ListenerInfo) => {
+  listener.options.passive = true;
+  return listener;
+};
+
+const capture = (listener: ListenerInfo) => {
+  listener.options.capture = true;
+  return listener;
+};
+
+const hasWindow = (listener: ListenerInfo) =>
+  (listener.target = (listener.target as Element).ownerDocument?.defaultView);
+const hasDocument = (listener: ListenerInfo) =>
+  (listener.target = (listener.target as Element).ownerDocument);
+
+const debounceListener = (listener: ListenerInfo, wait: number = 250) => {
+  listener.handler = debounce(listener.handler, wait);
+  return listener;
+};
+
+const throttleListener = (listener: ListenerInfo, limit: number = 250) => {
+  listener.handler = throttle(listener.handler, limit);
+  return listener;
+};
+
+const self = (listener: ListenerInfo) => {
+  listener.filters.push(isSelf);
+  return listener;
+};
+
+const isSelf = (e: Event) => e.target === e.currentTarget;
+
+const outside = (listener: ListenerInfo) => {
+  listener.filters.push(isAwayOutside.bind(null, listener.target));
+  hasDocument(listener);
+  return listener;
+};
+
+const once = (listener: ListenerInfo) => {
+  listener.cleanups.push(() => {
+    listener.target.removeEventListener(
+      listener.event,
+      listener.handler,
+      listener.options,
+    );
+  });
+  return listener;
+};
+
+const isAwayOutside = (el: ElementWithXAttributes, e: Event) => {
+  if (el.contains(e.target as Node)) return false;
+
+  if ((e.target as Node).isConnected === false) return false;
+
+  if (el.offsetWidth < 1 && el.offsetHeight < 1) return false;
+
+  // Additional check for special implementations like x-collapse
+  // where the element doesn't have display: none
+  if (el._x_isShown === false) return false;
+
+  return true;
+};
+
+const hasPrevent = (listener: ListenerInfo) => listener.cleanups.push(prevent);
+
+const hasStop = (listener: ListenerInfo) => listener.cleanups.push(stop);
+
+const stop = (e: Event) => e.stopPropagation();
+
+const prevent = (e: Event) => e.preventDefault();
+
+const keyedEvent = (listener: ListenerInfo) => {
+  listener.filters.push(
+    (e) =>
+      !isListeningForASpecificKeyThatHasntBeenPressed(e, listener.modifiers),
+  );
 };
 
 type EventHandler = (event: Event) => void;
@@ -244,4 +283,21 @@ const keyToModifiers = (key: string): string[] => {
   return Object.entries(modifierToKeyMap)
     .map(([modifier, keytype]) => (keytype === key ? modifier : false))
     .filter((mod: string | false): mod is string => Boolean(mod));
+};
+
+const modifierOptions = {
+  dot,
+  camel,
+  passive,
+  capture,
+  window: hasWindow,
+  document: hasDocument,
+  debounce: debounceListener,
+  throttle: throttleListener,
+  self,
+  away: outside,
+  outside,
+  once,
+  prevent: hasPrevent,
+  stop: hasStop,
 };
