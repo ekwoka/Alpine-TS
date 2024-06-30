@@ -9,6 +9,7 @@ import {
   IKeyboardEventInit,
   InputEvent,
   KeyboardEvent,
+  MouseEvent,
   Window,
 } from 'happy-dom';
 
@@ -46,10 +47,12 @@ export const render = async (
     $: window.document.querySelector.bind(window.document),
     $$: window.document.querySelectorAll.bind(window.document),
     happyDOM: window.happyDOM,
-    click: async (selector: string) => {
-      (
-        window.document.querySelector(selector) as unknown as HTMLElement
-      ).click();
+    click: async (selector: string, options?: MouseEventInit) => {
+      const target = window.document.querySelector(
+        selector,
+      ) as unknown as HTMLElement;
+      if (!options) target.click();
+      else target.dispatchEvent(new MouseEvent('click', options));
       await window.happyDOM.whenAsyncComplete();
     },
     type: async <T extends HTMLInputElement | HTMLTextAreaElement>(
@@ -126,7 +129,7 @@ type RenderReturn = {
   $: typeof window.document.querySelector;
   $$: typeof window.document.querySelectorAll;
   happyDOM: Window['happyDOM'];
-  click: (selector: string) => Promise<void>;
+  click: (selector: string, options?: MouseEventInit) => Promise<void>;
   type: <T extends HTMLInputElement | HTMLTextAreaElement>(
     selector: string,
     value: string,
