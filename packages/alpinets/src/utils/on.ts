@@ -1,4 +1,4 @@
-import { ElementWithXAttributes } from '../types';
+import type { ElementWithXAttributes } from '../types';
 import { debounce } from './debounce';
 import { camelCase, dotSyntax, kebabCase } from './stringTransformers';
 import { throttle } from './throttle';
@@ -34,57 +34,6 @@ export const on = (
   if (modifiers.includes('capture')) options.capture = true;
   if (modifiers.includes('window')) listenerTarget = window;
   if (modifiers.includes('document')) listenerTarget = document;
-  if (modifiers.includes('prevent'))
-    handler = wrapHandler(handler, (next, e) => {
-      e.preventDefault();
-      next(e);
-    });
-  if (modifiers.includes('stop'))
-    handler = wrapHandler(handler, (next, e) => {
-      e.stopPropagation();
-      next(e);
-    });
-  if (modifiers.includes('self'))
-    handler = wrapHandler(handler, (next, e) => {
-      e.target === el && next(e);
-    });
-
-  if (modifiers.includes('away') || modifiers.includes('outside')) {
-    listenerTarget = document;
-
-    handler = wrapHandler(handler, (next, e) => {
-      if (el.contains(e.target as Node)) return;
-
-      if ((e.target as Node).isConnected === false) return;
-
-      if (el.offsetWidth < 1 && el.offsetHeight < 1) return;
-
-      // Additional check for special implementations like x-collapse
-      // where the element doesn't have display: none
-      if (el._x_isShown === false) return;
-
-      next(e);
-    });
-  }
-
-  if (modifiers.includes('once')) {
-    handler = wrapHandler(handler, (next, e) => {
-      next(e);
-
-      listenerTarget.removeEventListener(event, handler, options);
-    });
-  }
-
-  // Handle :keydown and :keyup listeners.
-  handler = wrapHandler(handler, (next, e) => {
-    if (isKeyEvent(event)) {
-      if (isListeningForASpecificKeyThatHasntBeenPressed(e, modifiers)) {
-        return;
-      }
-    }
-
-    next(e);
-  });
 
   if (modifiers.includes('debounce')) {
     const nextModifier =
@@ -106,6 +55,60 @@ export const on = (
     handler = throttle(handler, limit);
   }
 
+  if (modifiers.includes('prevent'))
+    handler = wrapHandler(handler, (next, e) => {
+      e.preventDefault();
+      next(e);
+    });
+
+  if (modifiers.includes('stop'))
+    handler = wrapHandler(handler, (next, e) => {
+      e.stopPropagation();
+      next(e);
+    });
+
+  if (modifiers.includes('once')) {
+    handler = wrapHandler(handler, (next, e) => {
+      next(e);
+
+      listenerTarget.removeEventListener(event, handler, options);
+    });
+  }
+
+  if (modifiers.includes('away') || modifiers.includes('outside')) {
+    listenerTarget = document;
+
+    handler = wrapHandler(handler, (next, e) => {
+      if (el.contains(e.target as Node)) return;
+
+      if ((e.target as Node).isConnected === false) return;
+
+      if (el.offsetWidth < 1 && el.offsetHeight < 1) return;
+
+      // Additional check for special implementations like x-collapse
+      // where the element doesn't have display: none
+      if (el._x_isShown === false) return;
+
+      next(e);
+    });
+  }
+
+  if (modifiers.includes('self'))
+    handler = wrapHandler(handler, (next, e) => {
+      e.target === el && next(e);
+    });
+
+  // Handle :keydown and :keyup listeners.
+  if (isKeyEvent(event) || isClickEvent(event)) {
+    handler = wrapHandler(handler, (next, e) => {
+      if (isListeningForASpecificKeyThatHasntBeenPressed(e, modifiers)) {
+        return;
+      }
+
+      next(e);
+    });
+  }
+
   listenerTarget.addEventListener(event, handler, options);
 
   return () => {
@@ -121,15 +124,28 @@ export const isNumeric = (subject: unknown): subject is number =>
 const isKeyEvent = (event: string): event is 'keydown' | 'keyup' =>
   ['keydown', 'keyup'].includes(event);
 
+const isClickEvent = (event: string) => {
+  return ['contextmenu', 'click', 'mouse'].some((i) => event.includes(i));
+};
+
 const isListeningForASpecificKeyThatHasntBeenPressed = (
   e: Event,
   modifiers: string[],
 ) => {
   let keyModifiers = modifiers.filter(
     (mod) =>
-      !['window', 'document', 'prevent', 'stop', 'once', 'capture'].includes(
-        mod,
-      ),
+      ![
+        'window',
+        'document',
+        'prevent',
+        'stop',
+        'once',
+        'capture',
+        'self',
+        'away',
+        'outside',
+        'passive',
+      ].includes(mod),
   );
 
   if (keyModifiers.includes('debounce')) {
@@ -189,6 +205,8 @@ const isListeningForASpecificKeyThatHasntBeenPressed = (
     if (
       activelyPressedKeyModifiers.length === selectedSystemKeyModifiers.length
     ) {
+      // AND the event is a click. It's a pass.
+      if (isClickEvent(e.type)) return false;
       // AND the remaining key is pressed as well. It's a press.
       if (keyToModifiers((e as KeyboardEvent).key).includes(keyModifiers[0]))
         return false;
