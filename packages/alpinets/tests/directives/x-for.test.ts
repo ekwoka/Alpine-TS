@@ -650,46 +650,43 @@ describe(':key', () => {
     expect(cleanTextContent($('div').textContent)).toBe('0 1 2');
   });
   it('actively destroys removed clones', async () => {
-    let triggers = 0;
-    const { click } = await render(
+    const { $, click } = await render(
       (Alpine) =>
-        Alpine.data('destroyfor', () => ({
-          users: [
-            {
-              id: 1,
-              get name() {
-                triggers++;
-                return this.innername;
-              },
-              innername: 'tony',
-            },
-            {
-              id: 2,
-              get name() {
-                triggers++;
-                return this.innername;
-              },
-              innername: 'stark',
-            },
-          ],
-          get filteredUsers() {
-            return this.users.filter((user) => user.name);
+        Alpine.data('destroyFor', () => ({
+          show: 0,
+          counts: [0, 0, 0],
+          items: [0, 1, 2],
+          get text() {
+            return this.counts.reduce((a, b) => a + b).toString();
           },
         })),
       `
-        <div
-          x-data="destroyfor">
-          <template x-for="user in filteredUsers" :key="user.id">
+        <div x-data="destroyFor">
+          <button
+            id="toggle"
+            @click="show^=true"
+            x-text="text">
+            Toggle
+          </button>
+          <button id="remove" @click="items.pop()">Remove</button>
+          <template x-for="num in items" :key="num">
             <div>
-              <p x-text="user.name">Click me!</p>
+              <template x-for="n in show">
+                <p x-effect="if (show) counts[num]++">hello</p>
+              </template>
             </div>
           </template>
-          <button type="button" @click="users[0].innername = null">click here</button>
         </div>
       `,
     );
-    expect(triggers).toBe(4);
+    expect($('button').textContent).toBe('0');
     await click('button');
-    expect(triggers).toBe(6);
+    expect($('button').textContent).toBe('3');
+    await click('button');
+    expect($('button').textContent).toBe('3');
+    await click('button');
+    expect($('button').textContent).toBe('6');
+    await click('button');
+    expect($('button').textContent).toBe('6');
   });
 });

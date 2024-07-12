@@ -12,23 +12,22 @@
       Alpine.start();
     </script>
   </head>
-  <body
-    x-data="{
-      count: 1,
-      outer: false,
-      inner: false,
-        }">
-    <template x-if="outer">
-      <template x-if="inner">
-        <template x-for="i in 3">
-          <p
-            x-text="count"
-            x-effect="console.log(i,':','current count:', count)"></p>
-        </template>
+  <body>
+    <div x-data="{ show: 0, counts: [0,0,0], items: [0,1,2] }">
+      <button
+        id="toggle"
+        @click="show^=true"
+        x-text="counts.reduce((a,b)=>a+b)">
+        Toggle
+      </button>
+      <button id="remove" @click="items.pop()">Remove</button>
+      <template x-for="num in items" :key="num">
+        <div>
+          <template x-for="n in show">
+            <p x-effect="if (show) counts[num]++">hello</p>
+          </template>
+        </div>
       </template>
-    </template>
-    <button @click="outer^=true">Toggle Outer</button>
-    <button @click="inner^=true">Toggle Inner</button>
-    <button @click="count++">Increment</button>
+    </div>
   </body>
 </html>
