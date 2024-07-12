@@ -7,46 +7,28 @@
     <title>AlpineTS Sandbox</title>
     <script type="module">
       import Alpine from '../packages/alpinets/src/index.ts';
-      import Morph from '../packages/morph/src/index.ts';
 
       window.Alpine = Alpine;
-      Alpine.plugin(Morph);
-      window.triggers = 0;
       Alpine.start();
     </script>
   </head>
   <body
     x-data="{
-          users: [
-            {
-              id: 1,
-              get name() {
-                triggers++
-                console.log('name getter', this.innername, triggers);
-                return this.innername;
-              },
-              innername: 'tony',
-            },
-            {
-              id: 2,
-              get name() {
-                triggers++
-                console.log('name getter', this.innername, triggers);
-                return this.innername;
-              },
-              innername: 'stark',
-            },
-          ],
-          get filteredUsers() {
-            console.log('filtering')
-            return this.users.filter((user) => user.name);
-          },
+      count: 1,
+      outer: false,
+      inner: false,
         }">
-    <template x-for="user in filteredUsers" :key="user.id">
-      <div>
-        <p x-text="user.name">Click me!</p>
-      </div>
+    <template x-if="outer">
+      <template x-if="inner">
+        <template x-for="i in 3">
+          <p
+            x-text="count"
+            x-effect="console.log(i,':','current count:', count)"></p>
+        </template>
+      </template>
     </template>
-    <button type="button" @click="users[0].innername = null">click here</button>
+    <button @click="outer^=true">Toggle Outer</button>
+    <button @click="inner^=true">Toggle Inner</button>
+    <button @click="count++">Increment</button>
   </body>
 </html>
