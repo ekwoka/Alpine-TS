@@ -1,5 +1,5 @@
 {
-  "name": "alpinets",
+  "name": "@alpinets/alpinets",
   "version": "0.0.1",
   "description": "The rugged, minimal TypeScript framework",
   "author": "Eric Kwoka <eric@thekwoka.net> (https://thekwoka.net/)",
