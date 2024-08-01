@@ -7,7 +7,6 @@ import {
   onElRemoved,
   startObservingMutations,
 } from './mutation';
-import { dequeueJob } from './scheduler';
 import { ElementWithXAttributes } from './types';
 import { dispatch } from './utils/dispatch';
 import { WalkerCallback, walk } from './utils/walk';
@@ -111,12 +110,7 @@ export const initTree = (
 
 export const destroyTree = (root: ElementWithXAttributes) => {
   walk(root, (el) => {
-    walk(el, (node) => {
-      if (node._x_effects) {
-        node._x_effects.forEach(dequeueJob);
-      }
-    });
-    cleanupAttributes(el);
     cleanupElement(el);
+    cleanupAttributes(el);
   });
 };
