@@ -40,7 +40,6 @@ magic(
 );
 
 declare module '../magics' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Magics<T> {
     /**
      * Fire the given callback when the value in the property is changed.

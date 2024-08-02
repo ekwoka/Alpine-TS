@@ -6,7 +6,7 @@ addInitSelector(() => `[${prefix('init')}]`);
 
 directive(
   'init',
-  skipDuringClone((el, { expression }, { evaluate }) => {
+  skipDuringClone((_el, { expression }, { evaluate }) => {
     if (typeof expression === 'string')
       return !!expression.trim() && evaluate(expression, {}, false);
 

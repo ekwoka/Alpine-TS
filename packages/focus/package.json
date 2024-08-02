@@ -24,8 +24,6 @@
   "scripts": {
     "build": "vite build",
     "coverage": "vitest run --coverage",
-    "lint": "eslint --fix ./src; prettier --write ./src --loglevel error",
-    "lint:check": "eslint --max-warnings 10 ./src && prettier --check ./src",
     "lint:types": "tsc --noEmit",
     "prebuild": "rm -rf dist",
     "test": "vitest"
@@ -35,6 +33,10 @@
     "tabbable": "^5.3.3"
   },
   "peerDependencies": {
-    "alpinets": "workspace:^"
+    "@alpinets/alpinets": "workspace:^"
+  },
+  "devDependencies": {
+    "vite": "5.3.5",
+    "vitest": "2.0.5"
   }
 }

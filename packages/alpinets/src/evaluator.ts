@@ -70,7 +70,7 @@ export const generateEvaluatorFromFunction =
     func: () => void,
   ): ReturnType<Evaluator> =>
   <T>(
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
     receiver: (val: T) => void = () => {},
     { scope = {}, params = [] } = {},
   ) => {
@@ -86,7 +86,7 @@ type AsyncEvaluator = (
   scope: unknown,
 ) => Promise<unknown>;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
+// biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
 const AsyncFunction = (async () => {}).constructor as (
   ...args: string[]
 ) => AsyncEvaluator;
@@ -135,7 +135,7 @@ const generateEvaluatorFromString = (
   const func = generateFunctionFromString(expression, el);
 
   return (
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
     receiver = () => {},
     {
       scope = {},

@@ -1,4 +1,4 @@
-import type { PluginCallback } from 'alpinets';
+import type { PluginCallback } from '@alpinets/alpinets';
 
 export const intersectFunction: PluginCallback = (Alpine) => {
   Alpine.directive(

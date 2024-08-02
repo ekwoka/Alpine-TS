@@ -104,4 +104,66 @@ describe('x-if', () => {
     expect($('#two').textContent).toBe('Stark');
     expect($('#three').textContent).toBe('{"name":"Stark"}');
   });
+  it('eagerly destroys tree when false', async () => {
+    let triggers = 0;
+    const { click } = await render(
+      (Alpine) =>
+        Alpine.data('destroytest', () => ({
+          get username() {
+            triggers++;
+            return this.innerUser;
+          },
+          innerUser: 'Tony',
+        })),
+      `
+        <div
+          x-data="destroytest">
+          <template x-if="username">
+            <template x-for="num in 3">
+              <span x-text="username"></span>
+            </template>
+          </template>
+          <button type="button" @click="innerUser = ''">click here</button>
+        </div>
+      `,
+    );
+    expect(triggers).toBe(4);
+    await click('button');
+    expect(triggers).toBe(5);
+  });
+  it('cleans up nested template directives correctly', async () => {
+    const { $, click } = await render(
+      (Alpine) =>
+        Alpine.data('destroytest', () => ({
+          outer: false,
+          inner: false,
+        })),
+      `
+        <div
+          x-data="destroytest">
+          <template x-if="outer">
+          <div>
+            <template x-if="inner">
+              <span>Hello</span>
+            </template>
+            </div>
+          </template>
+          <button id="outer" type="button" @click="outer^=true">click here</button>
+          <button id="inner" type="button" @click="inner^=true">click here</button>
+        </div>
+      `,
+    );
+    expect($('span')).toBeNull();
+    await click('#inner');
+    await click('#outer');
+    expect($('span')).toBeDefined();
+    expect($('span').textContent).toBe('Hello');
+    await click('#inner');
+    expect($('span')).toBeNull();
+    await click('#inner');
+    expect($('span')).toBeDefined();
+    expect($('span').textContent).toBe('Hello');
+    await click('#outer');
+    expect($('span')).toBeNull();
+  });
 });

@@ -1,5 +1,5 @@
-import { cleanTextContent, render } from '../utils';
 import { IElement } from 'happy-dom';
+import { cleanTextContent, render } from '../utils';
 
 describe('x-bind:object', () => {
   it('can bind an object of directives', async () => {

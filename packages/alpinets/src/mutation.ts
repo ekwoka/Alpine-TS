@@ -1,3 +1,4 @@
+import { dequeueJob } from './scheduler';
 import type {
   AttrMutationCallback,
   ElementWithXAttributes,
@@ -56,6 +57,7 @@ export const cleanupAttributes = (
 };
 
 export const cleanupElement = (el: ElementWithXAttributes) => {
+  el._x_effects?.forEach(dequeueJob);
   while (el._x_cleanups?.length) el._x_cleanups.pop()();
 };
 

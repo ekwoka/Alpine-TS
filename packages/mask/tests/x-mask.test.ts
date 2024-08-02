@@ -64,14 +64,17 @@ describe('x-mask', () => {
     );
     await type('input', '12');
     expect($('input').value).toBe('(12');
+    // @ts-expect-error Tapping into untyped internals
     expect(Alpine.$data($('input')).value).toBe('(12');
 
     await type('input', '123');
     expect($('input').value).toBe('(123) ');
+    // @ts-expect-error Tapping into untyped internals
     expect(Alpine.$data($('input')).value).toBe('(123) ');
 
     await type('input', '1234567890');
     expect($('input').value).toBe('(123) 456-7890');
+    // @ts-expect-error Tapping into untyped internals
     expect(Alpine.$data($('input')).value).toBe('(123) 456-7890');
   });
   it('masks initial x-model value', async () => {
@@ -84,6 +87,7 @@ describe('x-mask', () => {
       `,
     );
     expect($('input').value).toBe('(123) 456-7890');
+    // @ts-expect-error Tapping into untyped internals
     expect(Alpine.$data($('input')).value).toBe('(123) 456-7890');
   });
   it('does nothing with falsy input', async () => {

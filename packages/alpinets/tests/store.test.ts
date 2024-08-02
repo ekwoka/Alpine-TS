@@ -1,5 +1,5 @@
-import { render } from './utils';
 import { describe, expect, it } from 'vitest';
+import { render } from './utils';
 
 describe('Alpine Store', () => {
   it('can register and use a global store', async () => {

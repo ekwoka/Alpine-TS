@@ -20,7 +20,7 @@ directive(
       { value, modifiers, expression },
       { cleanup },
     ) => {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
       const evaluate = expression ? evaluateLater(el, expression) : () => {};
 
       // Forward event listeners on portals.
@@ -31,7 +31,7 @@ directive(
       }
 
       const removeListener = on(el, value, modifiers, (e) => {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
         evaluate(() => {}, { scope: { $event: e }, params: [e] });
       });
 

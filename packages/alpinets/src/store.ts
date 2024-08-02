@@ -32,7 +32,7 @@ export const store: StoreFn = <T extends keyof Stores>(
 };
 
 const isInitable = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: Requires Any
   value: any | { init(): void },
 ): value is { init: () => void } => {
   return (

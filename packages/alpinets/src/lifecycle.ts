@@ -110,7 +110,7 @@ export const initTree = (
 
 export const destroyTree = (root: ElementWithXAttributes) => {
   walk(root, (el) => {
-    cleanupAttributes(el);
     cleanupElement(el);
+    cleanupAttributes(el);
   });
 };

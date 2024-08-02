@@ -1,5 +1,5 @@
 {
-  "name": "alpinets",
+  "name": "@alpinets/alpinets",
   "version": "0.0.1",
   "description": "The rugged, minimal TypeScript framework",
   "author": "Eric Kwoka <eric@thekwoka.net> (https://thekwoka.net/)",
@@ -24,13 +24,15 @@
   "scripts": {
     "build": "vite build",
     "coverage": "vitest run --coverage",
-    "lint": "eslint --fix ./src; prettier --write ./src --loglevel error",
-    "lint:check": "eslint --max-warnings 10 ./src && prettier --check ./src",
     "lint:types": "tsc --noEmit",
     "prebuild": "rm -rf dist",
     "test": "vitest"
   },
   "dependencies": {
     "@vue/reactivity": "~3.1.1"
+  },
+  "devDependencies": {
+    "vite": "5.3.5",
+    "vitest": "2.0.5"
   }
 }

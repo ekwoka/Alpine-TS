@@ -1,6 +1,6 @@
+import { HTMLInputElement } from 'happy-dom';
 import { render } from '../../../test-utils';
 import { morphPlugin } from '../src';
-import { HTMLInputElement } from 'happy-dom';
 
 describe('Morph Plugin', () => {
   it('can morph DOM Trees while preserving Alpine State', async () => {

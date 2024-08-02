@@ -1,11 +1,9 @@
 import { directive } from '../directives';
 import { evaluateLater } from '../evaluator';
-import { initTree } from '../lifecycle';
+import { destroyTree, initTree } from '../lifecycle';
 import { mutateDom } from '../mutation';
-import { dequeueJob } from '../scheduler';
 import { addScopeToNode } from '../scope';
 import { ElementWithXAttributes } from '../types';
-import { walk } from '../utils/walk';
 
 directive(
   'if',
@@ -34,13 +32,10 @@ directive(
       templateEl._x_currentIfEl = clone;
 
       templateEl._x_undoIf = () => {
-        walk(clone, (node) => {
-          if (node._x_effects) {
-            node._x_effects.forEach(dequeueJob);
-          }
+        mutateDom(() => {
+          destroyTree(clone);
+          clone.remove();
         });
-
-        clone.remove();
 
         delete templateEl._x_currentIfEl;
       };

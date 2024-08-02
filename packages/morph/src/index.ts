@@ -1,8 +1,8 @@
+import type { PluginCallback } from '@alpinets/alpinets';
 import {
   monkeyPatchDomSetAttributeToAllowAtSymbols,
   setupMorph,
 } from './morph';
-import type { PluginCallback } from 'alpinets';
 
 export const morphPlugin: PluginCallback = (Alpine) => {
   monkeyPatchDomSetAttributeToAllowAtSymbols();
@@ -11,7 +11,7 @@ export const morphPlugin: PluginCallback = (Alpine) => {
 
 export default morphPlugin;
 
-declare module 'alpinets' {
+declare module '@alpinets/alpinets' {
   export interface Alpine {
     morph: ReturnType<typeof setupMorph>;
   }

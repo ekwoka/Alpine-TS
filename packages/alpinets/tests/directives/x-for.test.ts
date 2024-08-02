@@ -649,4 +649,44 @@ describe(':key', () => {
     await click('button');
     expect(cleanTextContent($('div').textContent)).toBe('0 1 2');
   });
+  it('actively destroys removed clones', async () => {
+    const { $, click } = await render(
+      (Alpine) =>
+        Alpine.data('destroyFor', () => ({
+          show: 0,
+          counts: [0, 0, 0],
+          items: [0, 1, 2],
+          get text() {
+            return this.counts.reduce((a, b) => a + b).toString();
+          },
+        })),
+      `
+        <div x-data="destroyFor">
+          <button
+            id="toggle"
+            @click="show^=true"
+            x-text="text">
+            Toggle
+          </button>
+          <button id="remove" @click="items.pop()">Remove</button>
+          <template x-for="num in items" :key="num">
+            <div>
+              <template x-for="n in show">
+                <p x-effect="if (show) counts[num]++">hello</p>
+              </template>
+            </div>
+          </template>
+        </div>
+      `,
+    );
+    expect($('button').textContent).toBe('0');
+    await click('button');
+    expect($('button').textContent).toBe('3');
+    await click('button');
+    expect($('button').textContent).toBe('3');
+    await click('button');
+    expect($('button').textContent).toBe('6');
+    await click('button');
+    expect($('button').textContent).toBe('6');
+  });
 });

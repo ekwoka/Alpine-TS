@@ -4,7 +4,7 @@ import { dispatch } from '../utils/dispatch';
 magic('dispatch', (el) => dispatch.bind(dispatch, el));
 
 declare module '../magics' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // biome-ignore lint/correctness/noUnusedVariables: Needed for Interface Extension
   interface Magics<T> {
     /**
      * Dispatch browser events.

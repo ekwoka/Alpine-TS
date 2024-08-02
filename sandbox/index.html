@@ -13,33 +13,21 @@
     </script>
   </head>
   <body>
-    <div x-data="{ foo: { bar: 'fizz' } }">
-      <div x-data="{ bar: 'buzz' }">
-        <button
-          id="1"
-          x-text="foo.bar + bar"
-          @click="foo.bar = foo.bar + bar"></button>
-      </div>
-      <span id="2" x-text="foo.bar"></span>
-    </div>
-    <div
-      x-data="{ foo:
-      {
-        bar: 'fizzbuzz'
-    }
-  }">
-      <div
-        x-data="{
-          get bar() {
-            console.log('getter')
-            return this.foo.bar
-          }, set bar(value) {
-            this.foo.bar = value
-           }
-          }">
-        <button id="one" x-text="bar" @click="bar = 'foobar'"></button>
-      </div>
-      <span id="two" x-text="foo.bar"></span>
+    <div x-data="{ show: 0, counts: [0,0,0], items: [0,1,2] }">
+      <button
+        id="toggle"
+        @click="show^=true"
+        x-text="counts.reduce((a,b)=>a+b)">
+        Toggle
+      </button>
+      <button id="remove" @click="items.pop()">Remove</button>
+      <template x-for="num in items" :key="num">
+        <div>
+          <template x-for="n in show">
+            <p x-effect="if (show) counts[num]++">hello</p>
+          </template>
+        </div>
+      </template>
     </div>
   </body>
 </html>

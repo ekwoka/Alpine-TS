@@ -45,14 +45,13 @@ export type InterceptorObject<T = unknown> = {
   initialize: (data: Record<string, unknown>, path: string, key: string) => T;
 };
 
-type InferInterceptor<T> =
-  T extends InterceptorObject<infer U>
-    ? U
-    : T extends Record<string | number | symbol, unknown>
-      ? {
-          [K in keyof T]: InferInterceptor<T[K]>;
-        }
-      : T;
+type InferInterceptor<T> = T extends InterceptorObject<infer U>
+  ? U
+  : T extends Record<string | number | symbol, unknown>
+    ? {
+        [K in keyof T]: InferInterceptor<T[K]>;
+      }
+    : T;
 
 export type InferInterceptors<T> = {
   [K in keyof T]: InferInterceptor<T[K]>;
@@ -60,7 +59,7 @@ export type InferInterceptors<T> = {
 
 export const interceptor = <T>(
   callback: InterceptorCallback<T>,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
   mutateObj: (obj: InterceptorObject<T>) => void = () => {},
 ) => {
   const obj: InterceptorObject<T> = {

@@ -1,5 +1,5 @@
-import { render, sleep } from '../utils';
 import { KeyboardEvent } from 'happy-dom';
+import { render, sleep } from '../utils';
 
 describe('x-on', () => {
   it('registers listeners', async () => {

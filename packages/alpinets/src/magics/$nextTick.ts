@@ -4,7 +4,7 @@ import { nextTick } from '../nextTick';
 magic('nextTick', () => nextTick);
 
 declare module '../magics' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // biome-ignore lint/correctness/noUnusedVariables: Needed for Interface Extension
   interface Magics<T> {
     /**
      * Execute a given expression AFTER Alpine has made its reactive DOM updates.

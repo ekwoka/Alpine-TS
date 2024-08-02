@@ -1,6 +1,5 @@
-import { noop } from './noop';
-import type { Alpine } from 'alpinets';
-import { ElementWithXAttributes } from 'alpinets/src/types';
+import type { Alpine } from '@alpinets/alpinets';
+import { ElementWithXAttributes } from '@alpinets/alpinets/src/types';
 import {
   CustomEvent,
   Event,
@@ -11,6 +10,7 @@ import {
   KeyboardEvent,
   Window,
 } from 'happy-dom';
+import { noop } from './noop';
 
 export const render = async (
   prep:
@@ -33,7 +33,7 @@ export const render = async (
     CustomEvent,
     getComputedStyle: window.getComputedStyle.bind(window),
   });
-  const Alpine = (await import('alpinets')).default;
+  const Alpine = (await import('@alpinets/alpinets')).default;
   Object.assign(global, { Alpine });
   window.Alpine = Alpine;
   if (typeof prep === 'string') window.eval(prep);
@@ -100,7 +100,7 @@ export const render = async (
       );
 
       const data = Alpine.mergeProxies(el._x_dataStack);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // biome-ignore lint/suspicious/noExplicitAny: Requires Any
       let target: any = data;
       while (key.length > 1) target = target?.[key.shift() as string];
       if (typeof value === 'function') value(target[key[0]]);

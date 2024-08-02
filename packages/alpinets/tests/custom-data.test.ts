@@ -1,6 +1,6 @@
+import { describe, expect, it } from 'vitest';
 import AlpineT from '..//src';
 import { render } from './utils';
-import { describe, expect, it } from 'vitest';
 
 describe('Custom Data Providers', () => {
   it('works', async () => {

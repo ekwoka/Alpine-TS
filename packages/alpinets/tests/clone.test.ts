@@ -1,5 +1,5 @@
-import { render } from './utils';
 import { describe, expect, it } from 'vitest';
+import { render } from './utils';
 
 describe('Clone', () => {
   it('can clone a component', async () => {

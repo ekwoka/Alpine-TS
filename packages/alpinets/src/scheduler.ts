@@ -9,9 +9,9 @@ const queueJob = (job: () => void) => {
 
   queueFlush();
 };
-
+let lastFlushed = -1;
 export const dequeueJob = (job: () => void) => {
-  const index = queue.indexOf(job);
+  const index = queue.indexOf(job, lastFlushed);
 
   if (index !== -1) queue.splice(index, 1);
 };
@@ -27,7 +27,12 @@ export const flushJobs = () => {
   flushPending = false;
   flushing = true;
 
-  while (queue.length) queue.shift()();
-
+  for (let i = 0; i < queue.length; i++) {
+    const cb = queue[i];
+    lastFlushed = i;
+    cb();
+  }
+  lastFlushed = -1;
+  queue.length = 0;
   flushing = false;
 };

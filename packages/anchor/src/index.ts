@@ -1,3 +1,4 @@
+import { PluginCallback } from '@alpinets/alpinets';
 import {
   autoUpdate,
   computePosition,
@@ -5,7 +6,6 @@ import {
   offset,
   shift,
 } from '@floating-ui/dom';
-import { PluginCallback } from 'alpinets';
 
 const positions = [
   'top',
@@ -85,7 +85,7 @@ const setStyles = (el: HTMLElement, x: number, y: number) =>
 
 export default anchorPlugin;
 
-declare module 'alpinets' {
+declare module '@alpinets/alpinets' {
   interface XAttributes {
     _x_anchor: {
       x: number;

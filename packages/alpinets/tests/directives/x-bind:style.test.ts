@@ -1,5 +1,5 @@
-import { noop, render } from '../utils';
 import { describe, expect, it } from 'vitest';
+import { noop, render } from '../utils';
 
 describe('x-bind:style', () => {
   it('binds from object', async () => {

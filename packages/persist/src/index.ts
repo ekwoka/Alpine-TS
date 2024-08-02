@@ -1,4 +1,4 @@
-import type { InterceptorObject, PluginCallback } from 'alpinets';
+import type { InterceptorObject, PluginCallback } from '@alpinets/alpinets';
 
 export const persistPlugin: PluginCallback = (Alpine) => {
   const defaultStorage = getDefaultStorage();
@@ -97,12 +97,12 @@ type persist = <T>(
   storage: SimpleStorage,
 ) => void;
 
-declare module 'alpinets' {
+declare module '@alpinets/alpinets' {
   interface Alpine {
     $persist: $persist;
     persist: persist;
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // biome-ignore lint/correctness/noUnusedVariables: Needed for Interface Extension
   interface Magics<T> {
     $persist: $persist;
   }

@@ -2,9 +2,10 @@
   "exclude": ["**/node_modules", "**/dist", "scripts"],
   "compilerOptions": {
     "paths": {
-      "alpinets": ["./packages/alpinets/src/index.ts"]
+      "@alpinets/alpinets": ["./packages/alpinets/src/index.ts"]
     },
     "types": ["vitest/importMeta", "vitest/globals"],
+    "noImplicitThis": true,
     "allowJs": true,
     "declaration": true,
     "declarationMap": true,
