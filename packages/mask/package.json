@@ -24,10 +24,13 @@
   "scripts": {
     "build": "vite build",
     "coverage": "vitest run --coverage",
-    "lint": "biome check --write ./src",
     "lint:types": "tsc --noEmit",
     "prebuild": "rm -rf dist",
     "test": "vitest"
+  },
+  "devDependencies": {
+    "vite": "5.3.5",
+    "vitest": "2.0.5"
   },
   "peerDependencies": {
     "@alpinets/alpinets": "workspace:^"

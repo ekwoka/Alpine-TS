@@ -19,7 +19,7 @@ jobs:
         id: ls
         run: echo "packages=[$(ls -d packages/* | sed 's/packages\///' | sed 's/[^[:alnum:]]/\\&/g' | sed 's/.*/"&",/' | tr -d '\n' | sed '$s/,$//')]" >> $GITHUB_OUTPUT
 
-Lint:
+  Lint:
     runs-on: ubuntu-latest
     needs: [collection-packages]
     strategy:
