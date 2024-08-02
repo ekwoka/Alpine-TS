@@ -1,5 +1,5 @@
-import { render } from './utils';
 import { describe, expect, it } from 'vitest';
+import { render } from './utils';
 
 describe('Custom Interceptors', () => {
   it('can register custom interceptor', async () => {

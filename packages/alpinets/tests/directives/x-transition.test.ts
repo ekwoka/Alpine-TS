@@ -1,5 +1,5 @@
-import { render } from '../utils';
 import { IElement } from 'happy-dom';
+import { render } from '../utils';
 
 describe('x-transition', () => {
   it('transitions in', async () => {

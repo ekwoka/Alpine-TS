@@ -1,6 +1,6 @@
+import { describe, expect, it } from 'vitest';
 import { ElementWithXAttributes } from '../src/types';
 import { render } from './utils';
-import { describe, expect, it } from 'vitest';
 
 describe('Custom Bindings', () => {
   it('can register custom bind object', async () => {

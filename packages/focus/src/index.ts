@@ -1,7 +1,9 @@
-import { PluginCallback } from 'alpinets';
+import { PluginCallback } from '@alpinets/alpinets';
 import { Options, createFocusTrap } from 'focus-trap';
 import { FocusableElement, focusable, isFocusable } from 'tabbable';
 
+// biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
+const noop = () => {};
 let lastFocused: FocusableElement;
 let currentFocused: FocusableElement;
 export class Focus {
@@ -137,15 +139,15 @@ export const focusPlugin: PluginCallback = (Alpine) => {
 
         const trap = createFocusTrap(el, options);
 
-        let undoInert = () => {};
-        let undoDisableScrolling = () => {};
+        let undoInert = noop;
+        let undoDisableScrolling = noop;
 
         const releaseFocus = () => {
           undoInert();
-          undoInert = () => {};
+          undoInert = noop;
 
           undoDisableScrolling();
-          undoDisableScrolling = () => {};
+          undoDisableScrolling = noop;
 
           trap.deactivate({
             returnFocus: !modifiers.includes('noreturn'),
@@ -234,8 +236,8 @@ const disableScrolling = () => {
   };
 };
 
-declare module 'alpinets' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+declare module '@alpinets/alpinets' {
+  // biome-ignore lint/correctness/noUnusedVariables: Needed for Interface Extension
   export interface Magics<T> {
     $focus: Focus;
   }

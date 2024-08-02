@@ -4,7 +4,7 @@ import { Stores, getStores } from '../store';
 magic('store', getStores);
 
 declare module '../magics' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // biome-ignore lint/correctness/noUnusedVariables: Needed for Interface Extension
   interface Magics<T> {
     /**
      * Access registered global Alpine stores.

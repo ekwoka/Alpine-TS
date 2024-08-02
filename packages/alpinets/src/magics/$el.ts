@@ -3,7 +3,7 @@ import { magic } from '../magics';
 magic('el', (el) => el);
 
 declare module '../magics' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // biome-ignore lint/correctness/noUnusedVariables: Needed for Interface Extension
   interface Magics<T> {
     /**
      * Retrieve the current DOM node.

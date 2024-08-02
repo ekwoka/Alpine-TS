@@ -1,5 +1,3 @@
-import { scheduler } from './scheduler';
-import { ElementWithXAttributes } from './types';
 import {
   ReactiveEffect,
   effect as Veffect,
@@ -7,6 +5,8 @@ import {
   reactive as Vreactive,
   stop as Vrelease,
 } from '@vue/reactivity';
+import { scheduler } from './scheduler';
+import { ElementWithXAttributes } from './types';
 
 let reactive: typeof Vreactive,
   effect: typeof Veffect,
@@ -45,7 +45,7 @@ export const overrideEffect = (override: typeof Veffect) => (effect = override);
 export const elementBoundEffect = (
   el: ElementWithXAttributes,
 ): ElementBoundEffects => {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
   let cleanup = () => {};
 
   const wrappedEffect = <T>(callback: () => T) => {

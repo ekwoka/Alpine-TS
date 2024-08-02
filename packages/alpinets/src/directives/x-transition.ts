@@ -169,7 +169,7 @@ const registerTransitionObject = (
 
       leave: { during: defaultValue, start: defaultValue, end: defaultValue },
 
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
       in(before = () => {}, after = () => {}) {
         transition(
           el,
@@ -184,7 +184,7 @@ const registerTransitionObject = (
         );
       },
 
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
       out(before = () => {}, after = () => {}) {
         transition(
           el,
@@ -242,7 +242,7 @@ const registerTransitionObject = (
   el._x_hidePromise = el._x_transition
     ? new Promise((resolve, reject) => {
         el._x_transition.out(
-          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
           () => {},
           () => resolve(hide),
         );
@@ -294,9 +294,9 @@ export const transition = (
   el: ElementWithXAttributes,
   setFunction: typeof setClasses | typeof setStyles,
   { during, start, end }: TransitionStages,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
   before = () => {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
   after = () => {},
 ) => {
   if (el._x_transitioning) el._x_transitioning.cancel();

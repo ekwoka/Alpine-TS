@@ -1,6 +1,6 @@
+import { IElement } from 'happy-dom';
 import { render, sleep } from '../../../test-utils';
 import { collapse } from '../src';
-import { IElement } from 'happy-dom';
 
 describe('Collapse Plugin', () => {
   it('can collapse and expand element', async () => {

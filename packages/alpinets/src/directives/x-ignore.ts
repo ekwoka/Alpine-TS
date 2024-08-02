@@ -1,7 +1,7 @@
 import { directive } from '../directives';
 import { DirectiveCallback } from '../types';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
+// biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
 const handler: DirectiveCallback = () => {};
 
 handler.inline = (el, { modifiers }, { cleanup }) => {

@@ -1,5 +1,5 @@
-import { mergeProxies } from '../src/scope';
 import { reactive } from '@vue/reactivity';
+import { mergeProxies } from '../src/scope';
 
 describe('mergeProxies', () => {
   it('allows getting keys from object list', () => {

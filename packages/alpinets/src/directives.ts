@@ -149,7 +149,7 @@ export const getElementBoundUtilities = (
 
 export const getDirectiveHandler = (el: ElementWithXAttributes, directive) => {
   const handler =
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
     directiveHandlers[directive.type] || ((() => {}) as DirectiveCallback);
 
   const [utilities, cleanup] = getElementBoundUtilities(el);
@@ -185,7 +185,7 @@ export const into = <T>(i: T): T => i;
 
 const toTransformedAttributes =
   (
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
     callback: (newName: string, oldName: string) => void = () => {},
   ) =>
   ({ name, value }: Attribute): Attribute => {

@@ -1,5 +1,5 @@
-import { noop, render } from './utils';
 import { describe, expect, it } from 'vitest';
+import { noop, render } from './utils';
 
 describe('Mutations', () => {
   it('cleans up side effects when element is removed', async () => {

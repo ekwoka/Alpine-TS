@@ -1,8 +1,8 @@
+import { ReactiveEffect } from '@vue/reactivity';
 import { initTree, isRoot } from './lifecycle';
 import { effect, overrideEffect, release } from './reactivity';
 import { DirectiveCallback, ElementWithXAttributes } from './types';
 import { walk } from './utils/walk';
-import { ReactiveEffect } from '@vue/reactivity';
 
 export let isCloning = false;
 export let isCloningLegacy = false;
@@ -10,7 +10,7 @@ export let isCloningLegacy = false;
 export const skipDuringClone =
   (
     callback: DirectiveCallback,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
     fallback: DirectiveCallback = () => {},
   ): DirectiveCallback =>
   (...args) =>
@@ -46,6 +46,7 @@ export const cloneNode = (
     initTree(to, (el, callback) => {
       // We're hijacking the "walker" so that we
       // only initialize the element we're cloning...
+      // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
       callback(el, () => {});
     });
   });
@@ -105,7 +106,7 @@ const dontRegisterReactiveSideEffects = (callback: () => void) => {
 
     release(storedEffect);
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
     return (() => {}) as ReactiveEffect<ReturnType<typeof callback>>;
   });
 

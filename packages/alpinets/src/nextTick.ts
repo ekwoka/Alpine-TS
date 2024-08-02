@@ -2,7 +2,7 @@ const tickStack: (() => void)[] = [];
 
 let isHolding = false;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
+// biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
 export const nextTick = (callback = () => {}) => {
   queueMicrotask(() => {
     isHolding ||

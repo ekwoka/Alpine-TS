@@ -11,7 +11,7 @@ directive('modelable', (el, { expression }, { cleanup, evaluateLater }) => {
   };
   const evaluateInnerSet = evaluateLater(`${expression} = __placeholder`);
   const innerSet = (val: T) =>
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
     evaluateInnerSet(() => {}, { scope: { __placeholder: val } });
 
   const initialValue = innerGet();

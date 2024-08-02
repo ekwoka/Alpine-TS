@@ -2,9 +2,10 @@ import {
   type Alpine,
   type ElementWithXAttributes,
   PluginCallback,
-} from 'alpinets';
+} from '@alpinets/alpinets';
 
 const defaultGetKey = (el: Element) => el.getAttribute('key');
+// biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
 const noop = () => {};
 export const setupMorph: PluginCallback =
   (Alpine: Alpine) =>
@@ -325,7 +326,7 @@ type WithoutLast<T extends unknown[]> = T extends [...infer U, unknown]
   : never;
 
 const shouldSkip = <
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: Requires Any
   T extends (...args: any) => void,
 >(
   hook: T extends (...args: [...infer _, VoidFunction]) => void ? T : never,
@@ -362,13 +363,11 @@ class Block {
   get children() {
     const children: Node[] = [];
 
-    let currentNode: Node | null = this.startComment;
+    let currentNode: Node | null = this.startComment.nextSibling;
 
-    while (
-      (currentNode = currentNode.nextSibling) &&
-      currentNode !== this.endComment
-    ) {
+    while (currentNode !== this.endComment) {
       children.push(currentNode);
+      currentNode = currentNode.nextSibling;
     }
 
     return children;

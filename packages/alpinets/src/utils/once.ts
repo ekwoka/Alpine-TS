@@ -1,6 +1,6 @@
 export const once = <T extends (...args: Parameters<T>) => void>(
   func: T,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
   fallback: T = (() => {}) as T,
 ): T => {
   let called = false;

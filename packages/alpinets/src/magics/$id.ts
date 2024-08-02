@@ -10,7 +10,7 @@ magic('id', (el) => (name: string, key = null) => {
 });
 
 declare module '../magics' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // biome-ignore lint/correctness/noUnusedVariables: Needed for Interface Extension
   interface Magics<T> {
     /**
      * Generate an element's ID and ensure that it won't conflict with other IDs of the same name on the same page.

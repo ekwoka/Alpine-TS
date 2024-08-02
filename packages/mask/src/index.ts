@@ -1,10 +1,10 @@
-import { formatMoney } from './money';
-import { buildUp, formatInput, stripDown } from './stringManipulations';
 import type {
   ElementWithXAttributes,
   PluginCallback,
   XAttributes,
-} from 'alpinets';
+} from '@alpinets/alpinets';
+import { formatMoney } from './money';
+import { buildUp, formatInput, stripDown } from './stringManipulations';
 
 export const maskPlugin: PluginCallback = (Alpine) => {
   Alpine.directive(

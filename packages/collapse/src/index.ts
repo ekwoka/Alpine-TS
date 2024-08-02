@@ -1,4 +1,4 @@
-import type { DirectiveCallback, PluginCallback } from 'alpinets';
+import type { DirectiveCallback, PluginCallback } from '@alpinets/alpinets';
 
 export const collapse: PluginCallback = (Alpine) => {
   const collapse: DirectiveCallback = (el, { modifiers }) => {
@@ -23,9 +23,9 @@ export const collapse: PluginCallback = (Alpine) => {
     ) => {
       const revertFunction = Alpine.setStyles(el, styles);
 
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       return typeof styles !== 'string' && styles.height
-        ? () => {}
+        ? // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
+          () => {}
         : revertFunction;
     };
 
@@ -100,9 +100,9 @@ export const collapse: PluginCallback = (Alpine) => {
   collapse.inline = (el, { modifiers }) => {
     if (!modifiers.includes('min')) return;
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
     el._x_doShow = () => {};
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
     el._x_doHide = () => {};
   };
 };

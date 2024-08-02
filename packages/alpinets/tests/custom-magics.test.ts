@@ -1,5 +1,5 @@
-import { render } from './utils';
 import { describe, expect, it } from 'vitest';
+import { render } from './utils';
 
 describe('Custom Magics', () => {
   it('can register custom magic properties', async () => {

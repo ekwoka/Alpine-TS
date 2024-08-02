@@ -23,7 +23,7 @@ directive(
         typeof expression === 'string' ? expression : expression();
       if (typeof expressionString === 'string')
         return evaluateLater(scopeTarget, `${expression} = __placeholder`);
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
       return () => {};
     };
     const evaluateGet = evaluateLater<unknown>(scopeTarget, expression);
@@ -42,7 +42,7 @@ directive(
 
       if (isGetterSetter(result)) result.set(value);
       else {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
         evaluateSet(() => {}, {
           scope: { __placeholder: value },
         });
@@ -68,7 +68,7 @@ directive(
         : 'input';
 
     const removeListener = isCloning
-      ? // eslint-disable-next-line @typescript-eslint/no-empty-function
+      ? // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
         () => {}
       : on(el, event, modifiers, (e) => {
           setValue(getInputValue(el, modifiers, e, getValue()));
@@ -96,7 +96,7 @@ directive(
     // on nextTick so the page doesn't end up out of sync
     if (el.form) {
       const removeResetListener = isCloning
-        ? // eslint-disable-next-line @typescript-eslint/no-empty-function
+        ? // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
           () => {}
         : on(el.form, 'reset', [], () =>
             nextTick(() => el._x_model && el._x_model.set(el.value)),
