@@ -1,10 +1,10 @@
-export const debounce = <T extends (...args: Parameters<T>) => void>(
+export const debounce = function <T extends (...args: Parameters<T>) => void>(
   func: T,
   wait = 400,
-): T => {
+): T {
   let timeout: ReturnType<typeof setTimeout>;
-  return ((...args: Parameters<T>): void => {
+  return function (...args: Parameters<T>) {
     clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  }) as T;
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  } as T;
 };

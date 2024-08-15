@@ -37,6 +37,9 @@ importers:
 
   .:
     devDependencies:
+      '@alpinejs/ui':
+        specifier: 3.14.1-beta.0
+        version: 3.14.1-beta.0
       '@alpinets/alpinets':
         specifier: workspace:*
         version: link:packages/alpinets
@@ -203,7 +206,26 @@ importers:
         specifier: 2.0.5
         version: 2.0.5(@types/node@22.0.2)(happy-dom@9.1.9)
 
+  packages/sort:
+    dependencies:
+      '@alpinets/alpinets':
+        specifier: workspace:^
+        version: link:../alpinets
+      sortablejs:
+        specifier: 1.15.2
+        version: 1.15.2
+    devDependencies:
+      vite:
+        specifier: 5.3.5
+        version: 5.3.5(@types/node@22.0.2)
+      vitest:
+        specifier: 2.0.5
+        version: 2.0.5(@types/node@22.0.2)(happy-dom@9.1.9)
+
 packages:
+
+  '@alpinejs/ui@3.14.1-beta.0':
+    resolution: {integrity: sha512-k7sm5Zyfaq+0Wp6hxAKGc/+eSIohlRLywgYNvMoULstz/xUDJi2sGGH1+tZ0+qgMy9cG3AkCyoUk0zfaTOyx8Q==}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -1169,6 +1191,7 @@ packages:
 
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rollup@4.13.1:
@@ -1224,6 +1247,9 @@ packages:
   slice-ansi@7.1.0:
     resolution: {integrity: sha512-bSiSngZ/jWeX93BqeIAbImyTbEihizcwNjFoRUIY/T1wWQsfsm2Vw1agPKylXvQTU7iASGdHhyqRlqQzfz+Htg==}
     engines: {node: '>=18'}
+
+  sortablejs@1.15.2:
+    resolution: {integrity: sha512-FJF5jgdfvoKn1MAKSdGs33bIqLi3LmsgVTliuX6iITj834F+JRQZN90Z93yql8h0K2t0RwDPBmxwlbZfDcxNZA==}
 
   source-map-js@1.2.0:
     resolution: {integrity: sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==}
@@ -1480,6 +1506,8 @@ packages:
     hasBin: true
 
 snapshots:
+
+  '@alpinejs/ui@3.14.1-beta.0': {}
 
   '@ampproject/remapping@2.3.0':
     dependencies:
@@ -2431,6 +2459,8 @@ snapshots:
     dependencies:
       ansi-styles: 6.2.1
       is-fullwidth-code-point: 5.0.0
+
+  sortablejs@1.15.2: {}
 
   source-map-js@1.2.0: {}
 
