@@ -25,11 +25,11 @@ directive(
       el._x_keyExpression || 'index',
     );
 
-    el._x_lookup = {};
+    el._x_lookup = new Map();
     effect(() => loop(el, iteratorNames, evaluateItems, evaluateKey));
 
     cleanup(() => {
-      Object.values(el._x_lookup).forEach((el) => {
+      el._x_lookup.forEach((el) => {
         mutateDom(() => {
           destroyTree(el);
           el.remove();
@@ -61,8 +61,9 @@ const loop = (
 
     if (items === undefined) items = [];
 
-    const lookup = templateEl._x_lookup;
-    const newFragment = new window.DocumentFragment();
+    const oldLookup = templateEl._x_lookup;
+    const oldKeys = new Set(oldLookup.keys());
+    const newLookup = new Map<string, ElementWithXAttributes>();
     const scopeEntries: [key: string, scope: Scope][] = [];
 
     if (isObject(items)) {
@@ -77,9 +78,15 @@ const loop = (
           items as Record<string, unknown>[],
         );
 
-        evaluateKey((value) => scopeEntries.push([value, scope]), {
-          scope: { index: key, ...scope },
-        });
+        evaluateKey(
+          (value) => {
+            oldKeys.delete(value);
+            scopeEntries.push([value, scope]);
+          },
+          {
+            scope: { index: key, ...scope },
+          },
+        );
       });
     } else {
       (items as unknown[]).forEach((item, index) => {
@@ -90,26 +97,50 @@ const loop = (
           items as unknown[],
         );
 
-        evaluateKey((value) => scopeEntries.push([value, scope]), {
-          scope: { index, ...scope },
-        });
+        evaluateKey(
+          (value) => {
+            oldKeys.delete(value);
+            scopeEntries.push([value, scope]);
+          },
+          {
+            scope: { index, ...scope },
+          },
+        );
       });
     }
 
-    const added: ElementWithXAttributes[] = [];
+    oldKeys.forEach((key) => {
+      const el = oldLookup.get(key)!;
+      oldLookup.delete(key);
+      mutateDom(() => {
+        destroyTree(el);
+        el.remove();
+      });
+    });
+
+    const added = new Set<ElementWithXAttributes>();
     // This is the important part of the diffing algo. Identifying
     // which keys (future DOM elements) are new, which ones have
     // or haven't moved (noting where they moved to / from).
-    const newChildren = scopeEntries.flatMap(([key, scope]) => {
-      if (lookup[key]) {
-        const el = lookup[key];
+    let prev: HTMLElement = templateEl;
+    scopeEntries.forEach(([key, scope]) => {
+      if (oldLookup.has(key)) {
+        const el = oldLookup.get(key)!;
+        newLookup.set(key, el);
         el._x_refreshXForScope(scope);
-        if (el._x_currentIfEl) return [el, el._x_currentIfEl];
-        return el;
+        mutateDom(() => {
+          if (el.previousElementSibling !== prev) prev.after(el);
+          prev = el;
+          if (el._x_currentIfEl) {
+            prev.after(el._x_currentIfEl);
+            prev = el._x_currentIfEl;
+          }
+        });
+        return;
       }
 
       const clone = document.importNode(templateEl.content, true)
-        .firstElementChild as ElementWithXAttributes;
+        .firstElementChild! as ElementWithXAttributes;
       const reactiveScope = reactive(scope);
       addScopeToNode(clone, reactiveScope, templateEl);
       clone._x_refreshXForScope = (newScope: Record<string, unknown>) => {
@@ -117,30 +148,18 @@ const loop = (
           reactiveScope[key] = value;
         });
       };
-
-      lookup[key] = clone;
-      clone._x_forKey = key;
-      added.push(clone);
-      return clone;
+      newLookup.set(key, clone);
+      added.add(clone);
+      mutateDom(() => {
+        prev.after(clone);
+      });
+      prev = clone;
     });
 
     mutateDom(() => {
-      newFragment.append(...newChildren);
-      const removedChildren = Object.values(lookup).filter(
-        (el) => !newChildren.includes(el),
-      );
-      Array.prototype.forEach.call(
-        removedChildren,
-        (el: ElementWithXAttributes) => {
-          console.error('removing element', el);
-          destroyTree(el);
-          delete lookup[el._x_forKey];
-          el.remove();
-        },
-      );
-      templateEl.after(newFragment);
       skipDuringClone(() => added.forEach((clone) => initTree(clone)))();
     });
+    templateEl._x_lookup = newLookup;
   });
 };
 

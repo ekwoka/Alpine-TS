@@ -1,4 +1,4 @@
-import type { PluginCallback } from '@alpinets/alpinets'
+import type { PluginCallback, Alpine } from '@alpinets/alpinets'
 import Sortable from 'sortablejs'
 
 export const Sort: PluginCallback = (Alpine) => {
@@ -42,11 +42,11 @@ export const Sort: PluginCallback = (Alpine) => {
     })
 }
 
-function generateSortHandler(expression, evaluateLater) {
+function generateSortHandler(expression: string, evaluateLater: Alpine['evaluateLater']) {
     // No handler was passed to x-sort...
     if ([undefined, null, ''].includes(expression)) return () => {}
 
-    let handle = evaluateLater(expression)
+    const handle = evaluateLater(expression)
 
     return (key, position) => {
         // In the case of `x-sort="handleSort"`, let us call it manually...

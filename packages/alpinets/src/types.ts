@@ -30,7 +30,7 @@ export interface XAttributes {
   _x_forScope: Record<string, unknown>;
   _x_forKey: string;
   _x_refreshXForScope: (scope: Record<string, unknown>) => void;
-  _x_lookup: Record<string, ElementWithXAttributes>;
+  _x_lookup: Map<string, ElementWithXAttributes>;
   _x_currentIfEl: ElementWithXAttributes;
   _x_undoIf: () => void;
   _x_removeModelListeners: Record<string, () => void>;
