@@ -7,14 +7,13 @@ import { walk } from './utils/walk';
 export let isCloning = false;
 export let isCloningLegacy = false;
 
-export const skipDuringClone =
-  (
-    callback: DirectiveCallback,
-    // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
-    fallback: DirectiveCallback = () => {},
-  ): DirectiveCallback =>
-  (...args) =>
-    isCloning ? fallback(...args) : callback(...args);
+export const skipDuringClone = <T extends (...args: unknown[]) => unknown>(
+  callback: T,
+  // biome-ignore lint/suspicious/noEmptyBlockStatements: Intentional No-op
+  fallback: T = (() => {}) as T,
+): T =>
+  ((...args: Parameters<T>): ReturnType<T> =>
+    (isCloning ? fallback(...args) : callback(...args)) as ReturnType<T>) as T;
 
 export const onlyDuringClone = (
   callback: DirectiveCallback,

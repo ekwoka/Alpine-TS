@@ -1,11 +1,12 @@
+import { skipDuringClone } from '../clone';
 import { directive } from '../directives';
 import { evaluateLater } from '../evaluator';
 import { destroyTree, initTree } from '../lifecycle';
 import { mutateDom } from '../mutation';
 import { reactive } from '../reactivity';
-import { addScopeToNode, refreshScope } from '../scope';
+import { addScopeToNode } from '../scope';
 import { ElementWithXAttributes } from '../types';
-import { isNumeric, parseForExpression, warn } from '../utils';
+import { isNumeric, isObject, parseForExpression, warn } from '../utils';
 import type { IteratorNames } from '../utils';
 
 directive(
@@ -24,24 +25,28 @@ directive(
       el._x_keyExpression || 'index',
     );
 
-    el._x_prevKeys = [];
-    el._x_lookup = {};
-
+    el._x_lookup = new Map();
     effect(() => loop(el, iteratorNames, evaluateItems, evaluateKey));
 
     cleanup(() => {
-      Object.values(el._x_lookup).forEach((el) => {
+      el._x_lookup.forEach((el) => {
         mutateDom(() => {
           destroyTree(el);
           el.remove();
         });
       });
 
-      delete el._x_prevKeys;
       delete el._x_lookup;
     });
   },
 );
+
+const makeRefresher =
+  (scope: Record<string, unknown>) => (newScope: Record<string, unknown>) => {
+    Object.entries(newScope).forEach(([key, value]) => {
+      scope[key] = value;
+    });
+  };
 
 const loop = (
   templateEl: ElementWithXAttributes<HTMLTemplateElement>,
@@ -49,42 +54,46 @@ const loop = (
   evaluateItems: ReturnType<typeof evaluateLater<unknown[]>>,
   evaluateKey: ReturnType<typeof evaluateLater<string>>,
 ) => {
-  const isObject = (i: unknown): i is Record<string, unknown> =>
-    typeof i === 'object' && !Array.isArray(i);
-
   evaluateItems((items) => {
     // Prepare yourself. There's a lot going on here. Take heart,
     // every bit of complexity in this function was added for
     // the purpose of making Alpine fast with large datas.
 
     // Support number literals. Ex: x-for="i in 100"
-    if (isNumeric(items) && items >= 0)
+    if (isNumeric(items))
       items = Array.from({ length: items }, (_, i) => i + 1);
 
     if (items === undefined) items = [];
 
-    const lookup = templateEl._x_lookup;
-    let prevKeys = templateEl._x_prevKeys;
-    const scopes: Scope[] = [];
-    const keys: string[] = [];
+    const oldLookup = templateEl._x_lookup;
+    const lookup = new Map<string, ElementWithXAttributes>();
+    templateEl._x_lookup = lookup;
+    const scopeEntries: [key: string, scope: Scope][] = [];
 
-    // In order to preserve DOM elements (move instead of replace)
-    // we need to generate all the keys for every iteration up
-    // front. These will be our source of truth for diffing.
     if (isObject(items)) {
-      items = Object.entries(items).map(([key, value]) => {
+      // In order to preserve DOM elements (move instead of replace)
+      // we need to generate all the keys for every iteration up
+      // front. These will be our source of truth for diffing.
+      Object.entries(items).forEach(([prop, value]) => {
         const scope = getIterationScopeVariables(
           iteratorNames,
           value,
-          key,
-          items as Record<string, unknown>[],
+          prop,
+          items,
         );
 
-        evaluateKey((value) => keys.push(value), {
-          scope: { index: key, ...scope },
-        });
-
-        scopes.push(scope);
+        evaluateKey(
+          (key) => {
+            if (oldLookup.has(key)) {
+              lookup.set(key, oldLookup.get(key));
+              oldLookup.delete(key);
+            }
+            scopeEntries.push([key, scope]);
+          },
+          {
+            scope: { index: prop, ...scope },
+          },
+        );
       });
     } else {
       (items as unknown[]).forEach((item, index) => {
@@ -92,143 +101,69 @@ const loop = (
           iteratorNames,
           item,
           index,
-          items as unknown[],
+          items,
         );
 
-        evaluateKey((value) => keys.push(value), {
-          scope: { index, ...scope },
-        });
+        evaluateKey(
+          (key) => {
+            if (typeof key === 'object')
+              warn(
+                'x-for key cannot be an object, it must be a string or an integer',
+                templateEl,
+              );
 
-        scopes.push(scope);
+            if (oldLookup.has(key)) {
+              lookup.set(key, oldLookup.get(key));
+              oldLookup.delete(key);
+            }
+            scopeEntries.push([key, scope]);
+          },
+          {
+            scope: { index, ...scope },
+          },
+        );
       });
     }
 
-    // Rather than making DOM manipulations inside one large loop, we'll
-    // instead track which mutations need to be made in the following
-    // arrays. After we're finished, we can batch them at the end.
-    const adds: [string, number][] = [];
-    const moves: [string, string][] = [];
-    const removes: string[] = [];
-    const sames: string[] = [];
-
-    // First, we track elements that will need to be removed.
-    prevKeys.forEach((key) => keys.indexOf(key) === -1 && removes.push(key));
-
-    // Notice we're mutating prevKeys as we go. This makes it
-    // so that we can efficiently make incremental comparisons.
-    prevKeys = prevKeys.filter((key) => !removes.includes(key));
-
-    let lastKey = 'template';
-
-    // This is the important part of the diffing algo. Identifying
-    // which keys (future DOM elements) are new, which ones have
-    // or haven't moved (noting where they moved to / from).
-    keys.forEach((key, index) => {
-      const prevIndex = prevKeys.indexOf(key);
-
-      if (prevIndex === -1) {
-        // New key found.
-        prevKeys.splice(index, 0, key);
-
-        adds.push([lastKey, index]);
-      } else if (prevIndex !== index) {
-        // A key has moved.
-        const keyInSpot = prevKeys.splice(index, 1)[0];
-        const keyForSpot = prevKeys.splice(prevIndex - 1, 1)[0];
-
-        prevKeys.splice(index, 0, keyForSpot);
-        prevKeys.splice(prevIndex, 0, keyInSpot);
-
-        moves.push([keyInSpot, keyForSpot]);
-      } else {
-        // This key hasn't moved, but we'll still keep track
-        // so that we can refresh it later on.
-        sames.push(key);
-      }
-
-      lastKey = key;
-    });
-
-    // Now that we've done the diffing work, we can apply the mutations
-    // in batches for both separating types work and optimizing
-    // for browser performance.
-
-    // We'll remove all the nodes that need to be removed,
-    // letting the mutation observer pick them up and
-    // clean up any side effects they had.
-    removes.forEach((key) => {
-      mutateDom(() => {
-        destroyTree(lookup[key]);
-
-        lookup[key].remove();
-      });
-
-      lookup[key] = null;
-      delete lookup[key];
-    });
-
-    // Here we'll move elements around, skipping
-    // mutation observer triggers by using "mutateDom".
-    moves.forEach(([keyInSpot, keyForSpot]) => {
-      const elInSpot = lookup[keyInSpot];
-      const elForSpot = lookup[keyForSpot];
-
-      const marker = document.createElement('div');
-
-      mutateDom(() => {
-        elForSpot.after(marker);
-        elInSpot.after(elForSpot);
-        elForSpot._x_currentIfEl && elForSpot.after(elForSpot._x_currentIfEl);
-        marker.before(elInSpot);
-        elInSpot._x_currentIfEl && elInSpot.after(elInSpot._x_currentIfEl);
-        marker.remove();
-      });
-
-      refreshScope(elForSpot, scopes[keys.indexOf(keyForSpot)], true);
-    });
-
-    // We can now create and add new elements.
-    adds.forEach(([lastKey, index]) => {
-      let lastEl = lastKey === 'template' ? templateEl : lookup[lastKey];
-      // If the element is a x-if template evaluated to true,
-      // point lastEl to the if-generated node
-      if (lastEl._x_currentIfEl) lastEl = lastEl._x_currentIfEl;
-
-      const scope = scopes[index];
-      const key = keys[index];
-
-      const clone = document.importNode(templateEl.content, true)
-        .firstElementChild as ElementWithXAttributes;
-
-      addScopeToNode(clone, reactive(scope), templateEl);
-      clone._x_forScope = clone._x_dataStack[0];
-
-      mutateDom(() => {
-        lastEl.after(clone);
-
-        initTree(clone);
-      });
-
-      if (typeof key === 'object') {
-        warn(
-          'x-for key cannot be an object, it must be a string or an integer',
-          templateEl,
-        );
-      }
-
-      lookup[key] = clone;
-    });
-
-    // If an element hasn't changed, we still want to "refresh" the
-    // data it depends on in case the data has changed in an
-    // "unobservable" way.
-    sames.forEach((key) =>
-      refreshScope(lookup[key], scopes[keys.indexOf(key)], true),
+    mutateDom(() =>
+      oldLookup.forEach((el) => {
+        destroyTree(el);
+        el.remove();
+      }),
     );
 
-    // Now we'll log the keys (and the order they're in) for comparing
-    // against next time.
-    templateEl._x_prevKeys = keys;
+    const added = new Set<ElementWithXAttributes>();
+
+    let prev: HTMLElement = templateEl;
+    mutateDom(() => {
+      scopeEntries.forEach(([key, scope]) => {
+        if (lookup.has(key)) {
+          const el = lookup.get(key)!;
+          el._x_refreshXForScope(scope);
+          if (el.previousElementSibling !== prev) prev.after(el);
+          prev = el;
+          if (el._x_currentIfEl) {
+            if (el.nextElementSibling !== el._x_currentIfEl)
+              prev.after(el._x_currentIfEl);
+            prev = el._x_currentIfEl;
+          }
+          return;
+        }
+
+        const clone = document.importNode(templateEl.content, true)
+          .firstElementChild as ElementWithXAttributes;
+        const reactiveScope = reactive(scope);
+        addScopeToNode(clone, reactiveScope, templateEl);
+        clone._x_refreshXForScope = makeRefresher(reactiveScope);
+
+        lookup.set(key, clone);
+        added.add(clone);
+
+        prev.after(clone);
+        prev = clone;
+      });
+      skipDuringClone(() => added.forEach((clone) => initTree(clone)))();
+    });
   });
 };
 

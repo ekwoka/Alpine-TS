@@ -33,10 +33,11 @@
     "sandbox": "vite ./sandbox --open --force"
   },
   "devDependencies": {
+    "@alpinejs/ui": "3.14.1-beta.0",
+    "@alpinets/alpinets": "workspace:*",
     "@biomejs/biome": "1.8.3",
     "@milahu/patch-package": "6.4.14",
     "@types/node": "22.0.2",
-    "@alpinets/alpinets": "workspace:*",
     "esbuild": "0.23.0",
     "happy-dom": "14.12.3",
     "husky": "9.1.4",

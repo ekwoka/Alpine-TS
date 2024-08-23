@@ -4,8 +4,7 @@ import { evaluateLater } from '../evaluator';
 import { mutateDom } from '../mutation';
 import { nextTick } from '../nextTick';
 import { ElementWithXAttributes } from '../types';
-import { bind, checkedAttrLooseCompare } from '../utils/bind';
-import { isNumeric, on } from '../utils/on';
+import { bind, checkedAttrLooseCompare, isNumeric, on } from '../utils';
 
 export let fromModel = false;
 directive(

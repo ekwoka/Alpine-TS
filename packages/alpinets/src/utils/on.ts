@@ -1,5 +1,6 @@
 import { ElementWithXAttributes } from '../types';
 import { debounce } from './debounce';
+import { isNumeric } from './isType';
 import { camelCase, dotSyntax, kebabCase } from './stringTransformers';
 import { throttle } from './throttle';
 
@@ -114,9 +115,6 @@ export const on = (
 };
 
 type EventHandler = (event: Event) => void;
-
-export const isNumeric = (subject: unknown): subject is number =>
-  !Array.isArray(subject) && !isNaN(Number(subject));
 
 const isKeyEvent = (event: string): event is 'keydown' | 'keyup' =>
   ['keydown', 'keyup'].includes(event);

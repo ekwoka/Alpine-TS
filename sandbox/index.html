@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -9,17 +9,20 @@
       import Alpine from '../packages/alpinets/src/index.ts';
 
       window.Alpine = Alpine;
+      Alpine.data('destroyFor', () => ({
+        show: 0,
+        counts: [0, 0, 0],
+        items: [0, 1, 2],
+        get text() {
+          return this.counts.reduce((a, b) => a + b).toString();
+        }
+      }));
       Alpine.start();
     </script>
   </head>
   <body>
-    <div x-data="{ show: 0, counts: [0,0,0], items: [0,1,2] }">
-      <button
-        id="toggle"
-        @click="show^=true"
-        x-text="counts.reduce((a,b)=>a+b)">
-        Toggle
-      </button>
+    <div x-data="destroyFor" x-effect="console.log(show)">
+      <button id="toggle" @click="show^=true" x-text="text">Toggle</button>
       <button id="remove" @click="items.pop()">Remove</button>
       <template x-for="num in items" :key="num">
         <div>
