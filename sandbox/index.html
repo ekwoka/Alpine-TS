@@ -7,116 +7,30 @@
     <title>AlpineTS Sandbox</title>
     <script type="module">
       import Alpine from '../packages/alpinets/src/index.ts';
-      import Sort from '../packages/sort/src/index.ts';
-      import UI from '@alpinejs/ui/src/combobox.js';
 
       window.Alpine = Alpine;
-      Alpine.plugin(Sort);
-      Alpine.plugin(UI);
+      Alpine.data('destroyFor', () => ({
+        show: 0,
+        counts: [0, 0, 0],
+        items: [0, 1, 2],
+        get text() {
+          return this.counts.reduce((a, b) => a + b).toString();
+        }
+      }));
       Alpine.start();
     </script>
   </head>
   <body>
-    <div
-      x-data="{ internal: ['Item 1', 'Item 2', 'Item 3'], get items() {
-      return this.internal;
-    }, i: 3, add() {
-      this.internal.push('Item ' + (++this.i));
-    }, remove() {
-      this.internal.pop();
-    }}">
-      <button @click="add">Add</button>
-      <button @click="remove">Remove</button>
-      <div
-        x-data="{
-             resort(item, position) {
-
-                const index = items.findIndex(element => element == item);
-
-                if (index !== -1) {
-                    const removedItem = items.splice(index, 1)[0];
-                    items.splice(position, 0, removedItem);
-                }
-              }
-             }">
-        <p>Sortable</p>
-        <p></p>
-        <ol x-sort="resort">
-          <template id="sortable" x-for="(item,idx) in items" :key="item">
-            <li x-sort:item="item"><button type="button" @click="resort(item, idx-1)">Move Up</button> <span x-text="item"></span></li>
-          </template>
-        </ol>
-
-        <p>Sorted</p>
-        <p></p>
-        <ol>
-          <template id="sorted" x-for="item in items" :key="item">
-            <li x-text="item"></li>
-          </template>
-        </ol>
-      </div>
-    </div>
-
-    test
-
-    <div
-      x-data="{
-          items: [{ name: 'Tony'}],
-        }">
-      <template x-for="user in items" :key="user.name">
+    <div x-data="destroyFor" x-effect="console.log(show)">
+      <button id="toggle" @click="show^=true" x-text="text">Toggle</button>
+      <button id="remove" @click="items.pop()">Remove</button>
+      <template x-for="num in items" :key="num">
         <div>
-          <span x-text="user.name"></span>
+          <template x-for="n in show">
+            <p x-effect="if (show) counts[num]++">hello</p>
+          </template>
         </div>
       </template>
-      <button @click="items = []"></button>
-    </div>
-
-    comboboxtest
-    <div
-      x-data="{
-                query: '',
-                selected: null,
-                people: [
-                    { id: 1, name: 'Wade Cooper' },
-                    { id: 2, name: 'Arlene Mccoy' },
-                    { id: 3, name: 'Devon Webb' },
-                    { id: 4, name: 'Tom Cook' },
-                    { id: 5, name: 'Tanya Fox', disabled: true },
-                    { id: 6, name: 'Hellen Schmidt' },
-                    { id: 7, name: 'Caroline Schultz' },
-                    { id: 8, name: 'Mason Heaney' },
-                    { id: 9, name: 'Claudie Smitham' },
-                    { id: 10, name: 'Emil Schaefer' },
-                ],
-                get filteredPeople() {
-                    return this.query === ''
-                        ? this.people
-                        : this.people.filter((person) => {
-                            return person.name.toLowerCase().includes(this.query.toLowerCase())
-                        })
-                },
-            }">
-      <div x-combobox x-model="selected">
-        <label x-combobox:label>Select person</label>
-
-        <div>
-          <div>
-            <input x-combobox:input :display-value="person => person.name" @change="query = $event.target.value" placeholder="Search..." />
-
-            <button x-combobox:button>Toggle</button>
-          </div>
-
-          <div x-combobox:options>
-            <ul>
-              <template x-for="person in filteredPeople" :key="person.id" hidden>
-                <li x-combobox:option :option="person.id" :value="person" :disabled="person.disabled" :class="$comboboxOption.isActive ? 'active' : ''" x-text="person.name"></li>
-              </template>
-            </ul>
-
-            <p x-show="filteredPeople.length == 0">No people match your query.</p>
-          </div>
-        </div>
-      </div>
     </div>
   </body>
 </html>

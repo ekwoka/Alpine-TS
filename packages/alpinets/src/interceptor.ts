@@ -1,10 +1,9 @@
 // Warning: The concept of "interceptors" in Alpine is not public API and is subject to change
 // without tagging a major release.
 
-export const initInterceptors = (data: Record<string, unknown>) => {
-  const isObject = (val: object): val is Record<string, unknown> =>
-    typeof val === 'object' && !Array.isArray(val) && val !== null;
+import { isObject } from './utils/isType';
 
+export const initInterceptors = (data: Record<string, unknown>) => {
   const recurse = (obj: Record<string, unknown>, basePath = '') => {
     Object.entries(Object.getOwnPropertyDescriptors(obj)).forEach(
       ([key, { value, enumerable }]) => {

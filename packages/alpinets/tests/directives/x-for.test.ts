@@ -637,7 +637,7 @@ describe(':key', () => {
         <div x-data="forloop">
           <template x-for="(item, index) in items" :key="index">
             <div>
-              <span x-text="String(attrMap.get($el)?.ogIndex ?? index)" x-init="attrMap.set($el, { ogIndex: index })"></span>
+              <span x-text="item + String(attrMap.get($el)?.ogIndex ?? index)" x-init="attrMap.set($el, { ogIndex: index })">test</span>
             </div>
           </template>
           <button @click="items.reverse()">
@@ -645,9 +645,9 @@ describe(':key', () => {
         </div>
       `,
     );
-    expect(cleanTextContent($('div').textContent)).toBe('0 1 2');
+    expect(cleanTextContent($('div').textContent)).toBe('foo0 bar1 baz2');
     await click('button');
-    expect(cleanTextContent($('div').textContent)).toBe('0 1 2');
+    expect(cleanTextContent($('div').textContent)).toBe('baz0 bar1 foo2');
   });
   it('actively destroys removed clones', async () => {
     const { $, click } = await render(

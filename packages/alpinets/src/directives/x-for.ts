@@ -4,9 +4,9 @@ import { evaluateLater } from '../evaluator';
 import { destroyTree, initTree } from '../lifecycle';
 import { mutateDom } from '../mutation';
 import { reactive } from '../reactivity';
-import { addScopeToNode, refreshScope } from '../scope';
+import { addScopeToNode } from '../scope';
 import { ElementWithXAttributes } from '../types';
-import { isNumeric, parseForExpression, warn } from '../utils';
+import { isNumeric, isObject, parseForExpression, warn } from '../utils';
 import type { IteratorNames } from '../utils';
 
 directive(
@@ -41,8 +41,12 @@ directive(
   },
 );
 
-const isObject = (i: unknown): i is Record<string, unknown> =>
-  typeof i === 'object' && !Array.isArray(i);
+const makeRefresher =
+  (scope: Record<string, unknown>) => (newScope: Record<string, unknown>) => {
+    Object.entries(newScope).forEach(([key, value]) => {
+      scope[key] = value;
+    });
+  };
 
 const loop = (
   templateEl: ElementWithXAttributes<HTMLTemplateElement>,
@@ -56,35 +60,38 @@ const loop = (
     // the purpose of making Alpine fast with large datas.
 
     // Support number literals. Ex: x-for="i in 100"
-    if (isNumeric(items) && items >= 0)
+    if (isNumeric(items))
       items = Array.from({ length: items }, (_, i) => i + 1);
 
     if (items === undefined) items = [];
 
     const oldLookup = templateEl._x_lookup;
-    const oldKeys = new Set(oldLookup.keys());
-    const newLookup = new Map<string, ElementWithXAttributes>();
+    const lookup = new Map<string, ElementWithXAttributes>();
+    templateEl._x_lookup = lookup;
     const scopeEntries: [key: string, scope: Scope][] = [];
 
     if (isObject(items)) {
       // In order to preserve DOM elements (move instead of replace)
       // we need to generate all the keys for every iteration up
       // front. These will be our source of truth for diffing.
-      Object.entries(items).forEach(([key, value]) => {
+      Object.entries(items).forEach(([prop, value]) => {
         const scope = getIterationScopeVariables(
           iteratorNames,
           value,
-          key,
-          items as Record<string, unknown>[],
+          prop,
+          items,
         );
 
         evaluateKey(
-          (value) => {
-            oldKeys.delete(value);
-            scopeEntries.push([value, scope]);
+          (key) => {
+            if (oldLookup.has(key)) {
+              lookup.set(key, oldLookup.get(key));
+              oldLookup.delete(key);
+            }
+            scopeEntries.push([key, scope]);
           },
           {
-            scope: { index: key, ...scope },
+            scope: { index: prop, ...scope },
           },
         );
       });
@@ -94,13 +101,22 @@ const loop = (
           iteratorNames,
           item,
           index,
-          items as unknown[],
+          items,
         );
 
         evaluateKey(
-          (value) => {
-            oldKeys.delete(value);
-            scopeEntries.push([value, scope]);
+          (key) => {
+            if (typeof key === 'object')
+              warn(
+                'x-for key cannot be an object, it must be a string or an integer',
+                templateEl,
+              );
+
+            if (oldLookup.has(key)) {
+              lookup.set(key, oldLookup.get(key));
+              oldLookup.delete(key);
+            }
+            scopeEntries.push([key, scope]);
           },
           {
             scope: { index, ...scope },
@@ -109,57 +125,45 @@ const loop = (
       });
     }
 
-    oldKeys.forEach((key) => {
-      const el = oldLookup.get(key)!;
-      oldLookup.delete(key);
-      mutateDom(() => {
+    mutateDom(() =>
+      oldLookup.forEach((el) => {
         destroyTree(el);
         el.remove();
-      });
-    });
+      }),
+    );
 
     const added = new Set<ElementWithXAttributes>();
-    // This is the important part of the diffing algo. Identifying
-    // which keys (future DOM elements) are new, which ones have
-    // or haven't moved (noting where they moved to / from).
+
     let prev: HTMLElement = templateEl;
-    scopeEntries.forEach(([key, scope]) => {
-      if (oldLookup.has(key)) {
-        const el = oldLookup.get(key)!;
-        newLookup.set(key, el);
-        el._x_refreshXForScope(scope);
-        mutateDom(() => {
+    mutateDom(() => {
+      scopeEntries.forEach(([key, scope]) => {
+        if (lookup.has(key)) {
+          const el = lookup.get(key)!;
+          el._x_refreshXForScope(scope);
           if (el.previousElementSibling !== prev) prev.after(el);
           prev = el;
           if (el._x_currentIfEl) {
-            prev.after(el._x_currentIfEl);
+            if (el.nextElementSibling !== el._x_currentIfEl)
+              prev.after(el._x_currentIfEl);
             prev = el._x_currentIfEl;
           }
-        });
-        return;
-      }
+          return;
+        }
 
-      const clone = document.importNode(templateEl.content, true)
-        .firstElementChild! as ElementWithXAttributes;
-      const reactiveScope = reactive(scope);
-      addScopeToNode(clone, reactiveScope, templateEl);
-      clone._x_refreshXForScope = (newScope: Record<string, unknown>) => {
-        Object.entries(newScope).forEach(([key, value]) => {
-          reactiveScope[key] = value;
-        });
-      };
-      newLookup.set(key, clone);
-      added.add(clone);
-      mutateDom(() => {
+        const clone = document.importNode(templateEl.content, true)
+          .firstElementChild as ElementWithXAttributes;
+        const reactiveScope = reactive(scope);
+        addScopeToNode(clone, reactiveScope, templateEl);
+        clone._x_refreshXForScope = makeRefresher(reactiveScope);
+
+        lookup.set(key, clone);
+        added.add(clone);
+
         prev.after(clone);
+        prev = clone;
       });
-      prev = clone;
-    });
-
-    mutateDom(() => {
       skipDuringClone(() => added.forEach((clone) => initTree(clone)))();
     });
-    templateEl._x_lookup = newLookup;
   });
 };
 
