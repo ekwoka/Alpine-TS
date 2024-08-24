@@ -78,5 +78,15 @@
       "pretty": "447 B",
       "raw": 447
     }
+  },
+  "sort": {
+    "minified": {
+      "pretty": "78.2 kB",
+      "raw": 78168
+    },
+    "brotli": {
+      "pretty": "25.3 kB",
+      "raw": 25287
+    }
   }
 }

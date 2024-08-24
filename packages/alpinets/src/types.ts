@@ -57,6 +57,7 @@ export interface XAttributes {
   };
   _x_hideChildren: ElementWithXAttributes[];
   _x_inlineBindings: Record<string, Binding>;
+  _x_sort_key: string;
 }
 
 type Binding = {

@@ -203,6 +203,25 @@ importers:
         specifier: 2.0.5
         version: 2.0.5(@types/node@22.0.2)(happy-dom@9.1.9)
 
+  packages/sort:
+    dependencies:
+      '@alpinets/alpinets':
+        specifier: workspace:^
+        version: link:../alpinets
+      sortablejs:
+        specifier: 1.15.2
+        version: 1.15.2
+    devDependencies:
+      '@types/sortablejs':
+        specifier: 1.15.8
+        version: 1.15.8
+      vite:
+        specifier: 5.3.5
+        version: 5.3.5(@types/node@22.0.2)
+      vitest:
+        specifier: 2.0.5
+        version: 2.0.5(@types/node@22.0.2)(happy-dom@9.1.9)
+
 packages:
 
   '@ampproject/remapping@2.3.0':
@@ -583,6 +602,9 @@ packages:
 
   '@types/node@22.0.2':
     resolution: {integrity: sha512-yPL6DyFwY5PiMVEwymNeqUTKsDczQBJ/5T7W/46RwLU/VH+AA8aT5TZkvBviLKLbbm0hlfftEkGrNzfRk/fofQ==}
+
+  '@types/sortablejs@1.15.8':
+    resolution: {integrity: sha512-b79830lW+RZfwaztgs1aVPgbasJ8e7AXtZYHTELNXZPsERt4ymJdjV4OccDbHQAvHrCcFpbF78jkm0R6h/pZVg==}
 
   '@vitest/expect@2.0.5':
     resolution: {integrity: sha512-yHZtwuP7JZivj65Gxoi8upUN2OzHTi3zVfjwdpu2WrvCZPLwsJ2Ey5ILIPccoW23dd/zQBlJ4/dhi7DWNyXCpA==}
@@ -1169,6 +1191,7 @@ packages:
 
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rollup@4.13.1:
@@ -1224,6 +1247,9 @@ packages:
   slice-ansi@7.1.0:
     resolution: {integrity: sha512-bSiSngZ/jWeX93BqeIAbImyTbEihizcwNjFoRUIY/T1wWQsfsm2Vw1agPKylXvQTU7iASGdHhyqRlqQzfz+Htg==}
     engines: {node: '>=18'}
+
+  sortablejs@1.15.2:
+    resolution: {integrity: sha512-FJF5jgdfvoKn1MAKSdGs33bIqLi3LmsgVTliuX6iITj834F+JRQZN90Z93yql8h0K2t0RwDPBmxwlbZfDcxNZA==}
 
   source-map-js@1.2.0:
     resolution: {integrity: sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==}
@@ -1781,6 +1807,8 @@ snapshots:
   '@types/node@22.0.2':
     dependencies:
       undici-types: 6.11.1
+
+  '@types/sortablejs@1.15.8': {}
 
   '@vitest/expect@2.0.5':
     dependencies:
@@ -2431,6 +2459,8 @@ snapshots:
     dependencies:
       ansi-styles: 6.2.1
       is-fullwidth-code-point: 5.0.0
+
+  sortablejs@1.15.2: {}
 
   source-map-js@1.2.0: {}
 
