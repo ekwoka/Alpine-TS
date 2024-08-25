@@ -1,0 +1,42 @@
+{
+  "name": "@alpinets/sort",
+  "version": "0.0.1",
+  "description": "The rugged, minimal TypeScript framework",
+  "author": "Eric Kwoka <eric@thekwoka.net> (https://thekwoka.net/)",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./src": {
+      "import": "./src/index.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "coverage": "vitest run --coverage",
+    "lint:types": "tsc --noEmit",
+    "prebuild": "rm -rf dist",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "sortablejs": "1.15.2"
+  },
+  "peerDependencies": {
+    "@alpinets/alpinets": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/sortablejs": "1.15.8",
+    "vite": "5.3.5",
+    "vitest": "2.0.5"
+  }
+}
